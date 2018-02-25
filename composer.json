@@ -1,7 +1,7 @@
 {
-    "name": "luuhoangna/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "luuhoangnam/vaas",
+    "description": "The App to Interact with eBay.",
+    "keywords": ["framework", "laravel", "ebay"],
     "license": "MIT",
     "type": "project",
     "require": {
