@@ -11,6 +11,11 @@ class Account extends Model
 {
     protected $fillable = ['username', 'token'];
 
+    public static function exists($username): bool
+    {
+        return static::query()->where('username', $username)->exists();
+    }
+
     public function trading(): TradingService
     {
         return app(TradingService::class);
