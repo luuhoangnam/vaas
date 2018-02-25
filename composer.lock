@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0f1b7a353489eb1d5b6c4ab33d56c92c",
+    "content-hash": "b0761079e303180b03dac131ee7c4402",
     "packages": [
         {
             "name": "cakephp/chronos",
@@ -328,6 +328,59 @@
                 "schedule"
             ],
             "time": "2017-10-12T15:59:13+00:00"
+        },
+        {
+            "name": "dts/ebay-sdk-php",
+            "version": "14.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/davidtsadler/ebay-sdk-php.git",
+                "reference": "927d0eeedbcea5a13ea1b1a47530afa225a6fef2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/davidtsadler/ebay-sdk-php/zipball/927d0eeedbcea5a13ea1b1a47530afa225a6fef2",
+                "reference": "927d0eeedbcea5a13ea1b1a47530afa225a6fef2",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~6.0",
+                "guzzlehttp/promises": "^1.1",
+                "guzzlehttp/psr7": "~1.0",
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "squizlabs/php_codesniffer": "2.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DTS\\eBaySDK\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "(Apache-2.0 and MIT)"
+            ],
+            "authors": [
+                {
+                    "name": "David T. Sadler",
+                    "email": "davidtsadler@googlemail.com",
+                    "homepage": "http://davidtsadler.com"
+                }
+            ],
+            "description": "An eBay SDK for PHP. Use the eBay API in your PHP projects.",
+            "homepage": "http://devbay.net/",
+            "keywords": [
+                "api",
+                "ebay",
+                "sdk"
+            ],
+            "time": "2017-12-15T13:33:29+00:00"
         },
         {
             "name": "egulias/email-validator",
