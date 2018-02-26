@@ -17,7 +17,7 @@ class LowPerformanceListing extends Command
      *
      * @var string
      */
-    protected $signature = 'ebay:performance:unsold {username} {--days=14}';
+    protected $signature = 'ebay:performance:unsold {username} {--days=14} {--analysis}';
 
     /**
      * The console command description.
@@ -53,20 +53,48 @@ class LowPerformanceListing extends Command
 
         $this->info("There are {$lowPerformanceItems->count()} unsold listings has age > {$days} days.");
 
-        $headers = ['Item ID', 'Title', 'Price', 'Since'];
-
-        $this->table($headers, $lowPerformanceItems);
-
         if ($lowPerformanceItems->count() === 0) {
             $this->info('Done!');
 
             return 0;
         }
 
+        // Draw Table
+        $headers = ['Item ID', 'Title', 'Price', 'Since', 'Rank/Total'];
+
+        // Ranking Analysis
+        if ($this->option('analysis')) {
+            $this->warn('Analysing...');
+            $bar = $this->output->createProgressBar($lowPerformanceItems->count());
+
+            $rows = $lowPerformanceItems->map(function (Item $item) use ($bar) {
+
+                $rank  = $item['title_rank']['rank'] ?: 'n/a';
+                $total = $item['title_rank']['total'];
+
+                $row = array_merge(
+                    $item->toArray(),
+                    ['ranking' => "{$rank}/{$total}"]
+                );
+
+                $bar->advance();
+
+                return $row;
+            });
+
+            $bar->finish();
+            $this->line(''); // Empty Line
+        } else {
+            $rows = $lowPerformanceItems;
+        }
+
+        $this->table($headers, $rows);
+
+        // End Listing (Optional)
         $willEndListings = $this->choice(
             'Do you wanna end these listings?',
             ['No', 'Yes'],
-            1
+            0
         );
 
         $willEndListings = $willEndListings === 'Yes' ? true : false;
