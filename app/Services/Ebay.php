@@ -110,7 +110,7 @@ class Ebay
         return $rank;
     }
 
-    protected function finding(): FindingService
+    protected function finding()
     {
         return app(FindingService::class);
     }
