@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Services\ApiTransporter;
 use DTS\eBaySDK\Constants\SiteIds;
 use DTS\eBaySDK\Finding\Services\FindingService;
 use DTS\eBaySDK\Sdk;
@@ -43,7 +42,7 @@ class EbayServiceProvider extends ServiceProvider
         $this->app->bind(FindingService::class, function () {
             $sdk = $this->app->make(Sdk::class);
 
-            return new ApiTransporter($sdk->createFinding());
+            return $sdk->createFinding();
         });
 
         $this->app->bind(TradingService::class, function () {
