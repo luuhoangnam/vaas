@@ -32,6 +32,19 @@ class Ebay
 
         $response = $finding->findItemsByKeywords($request)->toArray();
 
+        $total = (int)$response['paginationOutput']['totalEntries'];
+
+        if ($total == 0) {
+            $items   = collect();
+            $ranking = collect(@$options['ranking'])->map(function ($check) {
+                $rank = null;
+
+                return array_merge($check, compact('rank'));
+            });
+
+            return compact('items', 'ranking', 'total');
+        }
+
         // Normalize Response
         $items = collect($response['searchResult']['item'])->map(function (array $item) {
             return [
@@ -52,8 +65,6 @@ class Ebay
 
             return array_merge($check, compact('rank'));
         });
-
-        $total = (int)$response['paginationOutput']['totalEntries'];
 
         return compact('items', 'ranking', 'total');
     }
