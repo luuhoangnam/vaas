@@ -6,8 +6,11 @@ use App\Exceptions\ItemExistedException;
 use DTS\eBaySDK\Trading\Services\TradingService;
 use DTS\eBaySDK\Trading\Types\AbstractRequestType;
 use DTS\eBaySDK\Trading\Types\CustomSecurityHeaderType;
+use DTS\eBaySDK\Trading\Types\EndItemsRequestType;
 use DTS\eBaySDK\Trading\Types\GetSellerListRequestType;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
+use function PHPSTORM_META\type;
 
 class Account extends Model
 {
@@ -28,6 +31,19 @@ class Account extends Model
     {
         return $this->hasMany(Item::class, 'account_id')
                     ->where('status', 'Completed');
+    }
+
+    public function unsoldItemsByListingAge($days = null)
+    {
+        $query = $this->hasMany(Item::class, 'account_id')
+                      ->where('status', 'Active')
+                      ->where('quantity_sold', 0);
+
+        if (is_int($days)) {
+            $query = $query->whereDate('start_time', '<', Carbon::now()->subDays($days));
+        }
+
+        return $query;
     }
 
     public static function exists($username): bool
@@ -59,6 +75,11 @@ class Account extends Model
         $request->RequesterCredentials = $credentials;
 
         return $request;
+    }
+
+    public function endItemsRequest(): EndItemsRequestType
+    {
+        return $this->prepareAuthRequiredRequest(new EndItemsRequestType);
     }
 
     public function getSellerListRequest(): GetSellerListRequestType
