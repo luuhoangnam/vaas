@@ -10,7 +10,6 @@ use DTS\eBaySDK\Trading\Types\EndItemsRequestType;
 use DTS\eBaySDK\Trading\Types\GetSellerListRequestType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use function PHPSTORM_META\type;
 
 class Account extends Model
 {
