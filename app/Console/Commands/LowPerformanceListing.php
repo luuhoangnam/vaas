@@ -110,8 +110,9 @@ class LowPerformanceListing extends Command
 
             foreach ($response->toArray()['EndItemResponseContainer'] as $result) {
                 $title = $items[$result['CorrelationID']]['title'];
+                $time  = app_carbon($result['EndTime']);
 
-                $this->info("{$result['EndTime']}: ({$result['CorrelationID']}) {$title}");
+                $this->info("{$time->toDateTimeString()}: ({$result['CorrelationID']}) {$title}");
 
                 // Manual Update in Database
                 Item::find($result['CorrelationID'])->update(['status' => 'Completed']);
