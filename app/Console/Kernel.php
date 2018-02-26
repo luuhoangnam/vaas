@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Console\Commands\Ebay\SyncItems;
+use App\Console\Commands\SyncItems;
 use App\Console\Commands\LowPerformanceListing;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;

@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Console\Commands\Ebay;
+namespace App\Console\Commands;
 
 use App\Account;
 use App\Exceptions\ItemExistedException;
 use App\Exceptions\TradingApiException;
 use App\Item;
 use DTS\eBaySDK\Trading\Enums\DetailLevelCodeType;
-use DTS\eBaySDK\Trading\Types\GetSellerListRequestType;
 use DTS\eBaySDK\Trading\Types\PaginationType;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
