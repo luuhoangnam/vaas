@@ -39,13 +39,15 @@ class Item extends Model
 
     public function getTitleRankAttribute()
     {
-        $result = (new Ebay)->search($this['title'], [
-            'ranking' => [
-                ['id' => $this['item_id'], 'type' => 'item_id'], // Self
-            ],
-        ]);
+        $result = cache()->remember("item(id:{$this['item_id']}):title_rank", 60, function () {
+            return (new Ebay)->search($this['title'], [
+                'ranking' => [
+                    ['id' => $this['item_id'], 'type' => 'item_id'], // Self
+                ],
+            ]);
+        });
 
-        $rank = $result['ranking']->first()['rank'];
+        $rank  = $result['ranking']->first()['rank'];
         $total = $result['total'];
 
         return compact('rank', 'total');
