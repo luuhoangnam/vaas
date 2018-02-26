@@ -60,10 +60,12 @@ class LowPerformanceListing extends Command
         }
 
         // Draw Table
-        $headers = ['Item ID', 'Title', 'Price', 'Since', 'Rank/Total'];
+        $headers = ['Item ID', 'Title', 'Price', 'Since'];
 
         // Ranking Analysis
         if ($this->option('analysis')) {
+            $headers[] = 'Rank/Total';
+
             $this->warn('Analysing...');
             $bar = $this->output->createProgressBar($lowPerformanceItems->count());
 
