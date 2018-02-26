@@ -108,6 +108,7 @@ class SyncItems extends Command
         $bar->finish();
 
         $items = $items->map(function (array $item) use ($account) : Item {
+
             try {
                 return $account->saveItem([
                     'item_id'             => $item['ItemID'],
@@ -116,7 +117,7 @@ class SyncItems extends Command
                     'quantity'            => $item['Quantity'],
                     'quantity_sold'       => $item['SellingStatus']['QuantitySold'],
                     'primary_category_id' => $item['PrimaryCategory']['CategoryID'],
-                    'start_time'          => new Carbon($item['ListingDetails']['StartTime']),
+                    'start_time'          => app_carbon($item['ListingDetails']['StartTime']),
                     'status'              => $item['SellingStatus']['ListingStatus'],
                 ]);
             } catch (ItemExistedException $exception) {
