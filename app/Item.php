@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Services\Ebay;
 use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
@@ -34,5 +35,19 @@ class Item extends Model
     public function getQuantityAvailableAttribute()
     {
         return $this['quantity'] - $this['quantity_sold'];
+    }
+
+    public function getTitleRankAttribute()
+    {
+        $result = (new Ebay)->search($this['title'], [
+            'ranking' => [
+                ['id' => $this['item_id'], 'type' => 'item_id'], // Self
+            ],
+        ]);
+
+        $rank = $result['ranking']->first()['rank'];
+        $total = $result['total'];
+
+        return compact('rank', 'total');
     }
 }
