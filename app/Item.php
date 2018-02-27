@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Services\Ebay;
+use DTS\eBaySDK\Trading\Types\ItemType;
 use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
@@ -51,5 +52,18 @@ class Item extends Model
         $total = $result['total'];
 
         return compact('rank', 'total');
+    }
+
+    public static function extractItemAttributes(ItemType $item): array
+    {
+        return [
+            'item_id'             => $item->ItemID,
+            'price'               => $item->SellingStatus->CurrentPrice->value,
+            'quantity'            => $item->Quantity,
+            'quantity_sold'       => $item->SellingStatus->QuantitySold,
+            'primary_category_id' => $item->PrimaryCategory->CategoryID,
+            'start_time'          => app_carbon($item->ListingDetails->StartTime),
+            'status'              => $item->SellingStatus->ListingStatus,
+        ];
     }
 }

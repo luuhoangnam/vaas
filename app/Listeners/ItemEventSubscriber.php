@@ -7,10 +7,9 @@ use App\Events\PlatformNotifications\ItemClosed;
 use App\Events\PlatformNotifications\ItemListed;
 use App\Events\PlatformNotifications\ItemRevised;
 use App\Item;
-use DTS\eBaySDK\Trading\Types\ItemType;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class ItemEventSubscriber implements ShouldQueue
 {
@@ -23,7 +22,7 @@ class ItemEventSubscriber implements ShouldQueue
 
         $account = Account::find($responsePayload->RecipientUserID);
 
-        $attributes = $this->extractItemAttributes($itemPayload);
+        $attributes = Item::extractItemAttributes($itemPayload);
 
         $account->saveItem(
             array_only($attributes, [
@@ -67,25 +66,12 @@ class ItemEventSubscriber implements ShouldQueue
         );
     }
 
-    protected function extractItemAttributes(ItemType $item): array
-    {
-        return [
-            'item_id'             => $item->ItemID,
-            'price'               => $item->SellingStatus->CurrentPrice->value,
-            'quantity'            => $item->Quantity,
-            'quantity_sold'       => $item->SellingStatus->QuantitySold,
-            'primary_category_id' => $item->PrimaryCategory->CategoryID,
-            'start_time'          => app_carbon($item->ListingDetails->StartTime),
-            'status'              => $item->SellingStatus->ListingStatus,
-        ];
-    }
-
     protected function updateItem($event): void
     {
         /** @var ItemRevised|ItemClosed $event */
         $itemPayload = $event->payload->Item;
 
-        $attributes = $this->extractItemAttributes($itemPayload);
+        $attributes = Item::extractItemAttributes($itemPayload);
 
         Item::find($itemPayload->ItemID)->update(
             array_only($attributes, [
