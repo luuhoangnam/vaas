@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\SubscribePlatformNotification;
 use App\Console\Commands\SyncItems;
 use App\Console\Commands\LowPerformanceListing;
 use Illuminate\Console\Scheduling\Schedule;
@@ -17,6 +18,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         SyncItems::class,
         LowPerformanceListing::class,
+        SubscribePlatformNotification::class,
     ];
 
     /**
