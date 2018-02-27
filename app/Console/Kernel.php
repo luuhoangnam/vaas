@@ -2,9 +2,9 @@
 
 namespace App\Console;
 
+use App\Console\Commands\LowPerformanceListing;
 use App\Console\Commands\SubscribePlatformNotification;
 use App\Console\Commands\SyncItems;
-use App\Console\Commands\LowPerformanceListing;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
