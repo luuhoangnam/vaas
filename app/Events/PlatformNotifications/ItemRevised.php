@@ -37,4 +37,9 @@ class ItemRevised implements ShouldBroadcast
     {
         return new PrivateChannel('channel-name');
     }
+
+    public function broadcastAs()
+    {
+        return 'ebay.item.revised';
+    }
 }

@@ -36,4 +36,9 @@ class ItemClosed
     {
         return new PrivateChannel('channel-name');
     }
+
+    public function broadcastAs()
+    {
+        return 'ebay.item.closed';
+    }
 }
