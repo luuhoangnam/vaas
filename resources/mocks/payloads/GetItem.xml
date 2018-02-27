@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GetItemResponse xmlns="urn:ebay:apis:eBLBaseComponents">
+    <Timestamp>2018-02-27T08:05:06.112Z</Timestamp>
+    <Ack>Success</Ack>
+    <Version>1047</Version>
+    <Build>E1047_CORE_API_18630299_R1</Build>
+    <Item>
+        <AutoPay>true</AutoPay>
+        <BuyerProtection>ItemIneligible</BuyerProtection>
+        <BuyItNowPrice currencyID="USD">0.0</BuyItNowPrice>
+        <Country>US</Country>
+        <Currency>USD</Currency>
+        <GiftIcon>0</GiftIcon>
+        <HitCounter>NoHitCounter</HitCounter>
+        <ItemID>173173831788</ItemID>
+        <ListingDetails>
+            <Adult>false</Adult>
+            <BindingAuction>false</BindingAuction>
+            <CheckoutEnabled>true</CheckoutEnabled>
+            <ConvertedBuyItNowPrice currencyID="USD">0.0</ConvertedBuyItNowPrice>
+            <ConvertedStartPrice currencyID="USD">18.65</ConvertedStartPrice>
+            <ConvertedReservePrice currencyID="USD">0.0</ConvertedReservePrice>
+            <HasReservePrice>false</HasReservePrice>
+            <StartTime>2018-02-22T15:05:58.000Z</StartTime>
+            <EndTime>2018-03-24T15:05:58.000Z</EndTime>
+            <ViewItemURL>
+                http://www.ebay.com/itm/Cooper-Non-Stick-Cooking-Fry-Pan-Square-frying-Ceramic-Dishwasher-kitchen-/173173831788
+            </ViewItemURL>
+            <HasUnansweredQuestions>false</HasUnansweredQuestions>
+            <HasPublicMessages>false</HasPublicMessages>
+            <ViewItemURLForNaturalSearch>
+                http://www.ebay.com/itm/Cooper-Non-Stick-Cooking-Fry-Pan-Square-frying-Ceramic-Dishwasher-kitchen-/173173831788
+            </ViewItemURLForNaturalSearch>
+        </ListingDetails>
+        <ListingDuration>GTC</ListingDuration>
+        <ListingType>FixedPriceItem</ListingType>
+        <Location>Florida</Location>
+        <PaymentMethods>PayPal</PaymentMethods>
+        <PayPalEmailAddress>goodiedepot@gmail.com</PayPalEmailAddress>
+        <PrimaryCategory>
+            <CategoryID>20628</CategoryID>
+            <CategoryName>Home &amp; Garden:Kitchen, Dining &amp; Bar:Cookware</CategoryName>
+        </PrimaryCategory>
+        <PrivateListing>false</PrivateListing>
+        <Quantity>1</Quantity>
+        <ReservePrice currencyID="USD">0.0</ReservePrice>
+        <ReviseStatus>
+            <ItemRevised>true</ItemRevised>
+        </ReviseStatus>
+        <Seller>
+            <AboutMePage>false</AboutMePage>
+            <Email>goodiedepot@gmail.com</Email>
+            <FeedbackScore>24</FeedbackScore>
+            <PositiveFeedbackPercent>100.0</PositiveFeedbackPercent>
+            <FeedbackPrivate>false</FeedbackPrivate>
+            <FeedbackRatingStar>Yellow</FeedbackRatingStar>
+            <IDVerified>false</IDVerified>
+            <eBayGoodStanding>true</eBayGoodStanding>
+            <NewUser>false</NewUser>
+            <RegistrationDate>2018-01-03T08:38:15.000Z</RegistrationDate>
+            <Site>US</Site>
+            <Status>Confirmed</Status>
+            <UserID>goodie.depot</UserID>
+            <UserIDChanged>false</UserIDChanged>
+            <UserIDLastChanged>2018-01-03T08:40:30.000Z</UserIDLastChanged>
+            <VATStatus>NoVATTax</VATStatus>
+            <SellerInfo>
+                <AllowPaymentEdit>false</AllowPaymentEdit>
+                <CheckoutEnabled>true</CheckoutEnabled>
+                <CIPBankAccountStored>false</CIPBankAccountStored>
+                <GoodStanding>true</GoodStanding>
+                <LiveAuctionAuthorized>false</LiveAuctionAuthorized>
+                <MerchandizingPref>OptIn</MerchandizingPref>
+                <QualifiesForB2BVAT>false</QualifiesForB2BVAT>
+                <StoreOwner>true</StoreOwner>
+                <StoreURL>http://stores.ebay.com/goodiedepot</StoreURL>
+                <SafePaymentExempt>false</SafePaymentExempt>
+            </SellerInfo>
+            <MotorsDealer>false</MotorsDealer>
+        </Seller>
+        <SellingStatus>
+            <BidCount>0</BidCount>
+            <BidIncrement currencyID="USD">0.0</BidIncrement>
+            <ConvertedCurrentPrice currencyID="USD">18.65</ConvertedCurrentPrice>
+            <CurrentPrice currencyID="USD">18.65</CurrentPrice>
+            <LeadCount>0</LeadCount>
+            <MinimumToBid currencyID="USD">18.65</MinimumToBid>
+            <QuantitySold>0</QuantitySold>
+            <ReserveMet>true</ReserveMet>
+            <SecondChanceEligible>false</SecondChanceEligible>
+            <ListingStatus>Active</ListingStatus>
+            <QuantitySoldByPickupInStore>0</QuantitySoldByPickupInStore>
+        </SellingStatus>
+        <ShippingDetails>
+            <ApplyShippingDiscount>false</ApplyShippingDiscount>
+            <GlobalShipping>true</GlobalShipping>
+            <CalculatedShippingRate>
+                <WeightMajor measurementSystem="English" unit="lbs">0</WeightMajor>
+                <WeightMinor measurementSystem="English" unit="oz">1</WeightMinor>
+            </CalculatedShippingRate>
+            <SalesTax>
+                <SalesTaxPercent>0.0</SalesTaxPercent>
+                <ShippingIncludedInTax>false</ShippingIncludedInTax>
+            </SalesTax>
+            <ShippingServiceOptions>
+                <ShippingService>USPSFirstClass</ShippingService>
+                <ShippingServiceCost currencyID="USD">0.0</ShippingServiceCost>
+                <ShippingServicePriority>1</ShippingServicePriority>
+                <ExpeditedService>false</ExpeditedService>
+                <ShippingTimeMin>2</ShippingTimeMin>
+                <ShippingTimeMax>3</ShippingTimeMax>
+                <FreeShipping>true</FreeShipping>
+            </ShippingServiceOptions>
+            <ShippingType>Flat</ShippingType>
+            <ThirdPartyCheckout>false</ThirdPartyCheckout>
+            <ShippingDiscountProfileID>0</ShippingDiscountProfileID>
+            <InternationalShippingDiscountProfileID>0</InternationalShippingDiscountProfileID>
+            <ExcludeShipToLocation>Alaska/Hawaii</ExcludeShipToLocation>
+            <ExcludeShipToLocation>APO/FPO</ExcludeShipToLocation>
+            <ExcludeShipToLocation>US Protectorates</ExcludeShipToLocation>
+            <SellerExcludeShipToLocationsPreference>true</SellerExcludeShipToLocationsPreference>
+        </ShippingDetails>
+        <ShipToLocations>US</ShipToLocations>
+        <ShipToLocations>GB</ShipToLocations>
+        <ShipToLocations>DK</ShipToLocations>
+        <ShipToLocations>RO</ShipToLocations>
+        <ShipToLocations>SK</ShipToLocations>
+        <ShipToLocations>BG</ShipToLocations>
+        <ShipToLocations>CZ</ShipToLocations>
+        <ShipToLocations>FI</ShipToLocations>
+        <ShipToLocations>HU</ShipToLocations>
+        <ShipToLocations>LV</ShipToLocations>
+        <ShipToLocations>LT</ShipToLocations>
+        <ShipToLocations>MT</ShipToLocations>
+        <ShipToLocations>EE</ShipToLocations>
+        <ShipToLocations>AU</ShipToLocations>
+        <ShipToLocations>GR</ShipToLocations>
+        <ShipToLocations>PT</ShipToLocations>
+        <ShipToLocations>CY</ShipToLocations>
+        <ShipToLocations>SI</ShipToLocations>
+        <ShipToLocations>JP</ShipToLocations>
+        <ShipToLocations>SE</ShipToLocations>
+        <ShipToLocations>KR</ShipToLocations>
+        <ShipToLocations>ID</ShipToLocations>
+        <ShipToLocations>TW</ShipToLocations>
+        <ShipToLocations>ZA</ShipToLocations>
+        <ShipToLocations>TH</ShipToLocations>
+        <ShipToLocations>BE</ShipToLocations>
+        <ShipToLocations>FR</ShipToLocations>
+        <ShipToLocations>HK</ShipToLocations>
+        <ShipToLocations>IE</ShipToLocations>
+        <ShipToLocations>NL</ShipToLocations>
+        <ShipToLocations>PL</ShipToLocations>
+        <ShipToLocations>ES</ShipToLocations>
+        <ShipToLocations>IT</ShipToLocations>
+        <ShipToLocations>DE</ShipToLocations>
+        <ShipToLocations>AT</ShipToLocations>
+        <ShipToLocations>RU</ShipToLocations>
+        <ShipToLocations>IL</ShipToLocations>
+        <ShipToLocations>MX</ShipToLocations>
+        <ShipToLocations>NZ</ShipToLocations>
+        <ShipToLocations>PH</ShipToLocations>
+        <ShipToLocations>SG</ShipToLocations>
+        <ShipToLocations>CH</ShipToLocations>
+        <ShipToLocations>NO</ShipToLocations>
+        <ShipToLocations>SA</ShipToLocations>
+        <ShipToLocations>UA</ShipToLocations>
+        <ShipToLocations>AE</ShipToLocations>
+        <ShipToLocations>QA</ShipToLocations>
+        <ShipToLocations>KW</ShipToLocations>
+        <ShipToLocations>BH</ShipToLocations>
+        <ShipToLocations>HR</ShipToLocations>
+        <ShipToLocations>MY</ShipToLocations>
+        <ShipToLocations>BR</ShipToLocations>
+        <ShipToLocations>CL</ShipToLocations>
+        <ShipToLocations>CO</ShipToLocations>
+        <ShipToLocations>CR</ShipToLocations>
+        <ShipToLocations>DO</ShipToLocations>
+        <ShipToLocations>PA</ShipToLocations>
+        <ShipToLocations>TT</ShipToLocations>
+        <ShipToLocations>GT</ShipToLocations>
+        <ShipToLocations>SV</ShipToLocations>
+        <ShipToLocations>HN</ShipToLocations>
+        <ShipToLocations>JM</ShipToLocations>
+        <Site>US</Site>
+        <StartPrice currencyID="USD">18.65</StartPrice>
+        <Storefront>
+            <StoreCategoryID>1</StoreCategoryID>
+            <StoreCategory2ID>0</StoreCategory2ID>
+            <StoreURL>http://stores.ebay.com/goodiedepot</StoreURL>
+        </Storefront>
+        <TimeLeft>P25DT7H52S</TimeLeft>
+        <Title>Cooper Non Stick Cooking Fry Pan Square frying Ceramic Dishwasher kitchen</Title>
+        <HitCount>6</HitCount>
+        <GetItFast>false</GetItFast>
+        <BuyerResponsibleForShipping>false</BuyerResponsibleForShipping>
+        <SKU>B01N0I6OCU</SKU>
+        <PostalCode>34249</PostalCode>
+        <PictureDetails>
+            <GalleryType>Gallery</GalleryType>
+            <GalleryURL>https://i.ebayimg.com/00/s/MTYwMFg5NzY=/z/IM8AAOSwycxajtv5/$_10.jpg</GalleryURL>
+            <PhotoDisplay>PicturePack</PhotoDisplay>
+            <PictureURL>https://i.ebayimg.com/00/s/MTYwMFg5NzY=/z/IM8AAOSwycxajtv5/$_10.jpg</PictureURL>
+            <PictureURL>https://i.ebayimg.com/00/s/MTYwMFg5MDU=/z/gCQAAOSwR6xajtv7/$_10.jpg</PictureURL>
+        </PictureDetails>
+        <DispatchTimeMax>2</DispatchTimeMax>
+        <ProxyItem>false</ProxyItem>
+        <BuyerGuaranteePrice currencyID="USD">20000.0</BuyerGuaranteePrice>
+        <BuyerRequirementDetails>
+            <ShipToRegistrationCountry>true</ShipToRegistrationCountry>
+        </BuyerRequirementDetails>
+        <IntangibleItem>false</IntangibleItem>
+        <ReturnPolicy>
+            <RefundOption>MoneyBackOrReplacement</RefundOption>
+            <Refund>Money back or replacement (buyer&apos;s choice)</Refund>
+            <ReturnsWithinOption>Days_30</ReturnsWithinOption>
+            <ReturnsWithin>30 Days</ReturnsWithin>
+            <ReturnsAcceptedOption>ReturnsAccepted</ReturnsAcceptedOption>
+            <ReturnsAccepted>Returns Accepted</ReturnsAccepted>
+            <ShippingCostPaidByOption>Buyer</ShippingCostPaidByOption>
+            <ShippingCostPaidBy>Buyer</ShippingCostPaidBy>
+            <RestockingFeeValue>20%</RestockingFeeValue>
+            <RestockingFeeValueOption>Percent_20</RestockingFeeValueOption>
+        </ReturnPolicy>
+        <ConditionID>1000</ConditionID>
+        <ConditionDisplayName>New</ConditionDisplayName>
+        <PostCheckoutExperienceEnabled>false</PostCheckoutExperienceEnabled>
+        <SellerProfiles>
+            <SellerShippingProfile>
+                <ShippingProfileID>122809716013</ShippingProfileID>
+                <ShippingProfileName>Free Shipping (2S2H)</ShippingProfileName>
+            </SellerShippingProfile>
+            <SellerReturnProfile>
+                <ReturnProfileID>122809736013</ReturnProfileID>
+                <ReturnProfileName>30 Days Return</ReturnProfileName>
+            </SellerReturnProfile>
+            <SellerPaymentProfile>
+                <PaymentProfileID>122809677013</PaymentProfileID>
+                <PaymentProfileName>PayPal Immediate Payment</PaymentProfileName>
+            </SellerPaymentProfile>
+        </SellerProfiles>
+        <ShippingPackageDetails>
+            <ShippingIrregular>true</ShippingIrregular>
+            <ShippingPackage>Letter</ShippingPackage>
+            <WeightMajor measurementSystem="English" unit="lbs">0</WeightMajor>
+            <WeightMinor measurementSystem="English" unit="oz">1</WeightMinor>
+        </ShippingPackageDetails>
+        <HideFromSearch>false</HideFromSearch>
+        <OutOfStockControl>true</OutOfStockControl>
+        <eBayPlus>false</eBayPlus>
+        <eBayPlusEligible>false</eBayPlusEligible>
+        <IsSecureDescription>true</IsSecureDescription>
+    </Item>
+</GetItemResponse>
