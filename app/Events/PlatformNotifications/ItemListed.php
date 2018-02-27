@@ -2,6 +2,7 @@
 
 namespace App\Events\PlatformNotifications;
 
+use App\Item;
 use DTS\eBaySDK\Trading\Types\GetItemResponseType;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -34,11 +35,16 @@ class ItemListed
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new PrivateChannel("ebay.items");
     }
 
     public function broadcastAs()
     {
         return 'ebay.item.listed';
+    }
+
+    public function broadcastWith()
+    {
+        return Item::extractItemAttributes($this->payload->Item);
     }
 }
