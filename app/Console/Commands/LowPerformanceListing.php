@@ -17,7 +17,7 @@ class LowPerformanceListing extends Command
      *
      * @var string
      */
-    protected $signature = 'ebay:performance:unsold {username} {--days=14} {--analysis}';
+    protected $signature = 'ebay:performance:unsold {username} {--days=14} {--analysis} {--export=}';
 
     /**
      * The console command description.
@@ -91,6 +91,12 @@ class LowPerformanceListing extends Command
         }
 
         $this->table($headers, $rows);
+
+        // Export Column
+        if ($column = $this->option('export')) {
+            $this->info('Exported Column:');
+            $this->line($lowPerformanceItems->pluck($column)->implode("\n"));
+        }
 
         // End Listing (Optional)
         $willEndListings = $this->choice(
