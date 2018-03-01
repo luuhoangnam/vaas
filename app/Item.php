@@ -17,6 +17,8 @@ class Item extends Model
         'primary_category_id',
         'start_time',
         'status',
+        'sku',
+        'upc',
     ];
 
     protected $casts = [
@@ -54,9 +56,9 @@ class Item extends Model
         return compact('rank', 'total');
     }
 
-    public static function extractItemAttributes(ItemType $item): array
+    public static function extractItemAttributes(ItemType $item, $fields = []): array
     {
-        return [
+        $attrs = [
             'item_id'             => $item->ItemID,
             'title'               => $item->Title,
             'price'               => $item->SellingStatus->CurrentPrice->value,
@@ -65,6 +67,15 @@ class Item extends Model
             'primary_category_id' => $item->PrimaryCategory->CategoryID,
             'start_time'          => app_carbon($item->ListingDetails->StartTime),
             'status'              => $item->SellingStatus->ListingStatus,
+            //
+            'sku'                 => $item->SKU,
+            'upc'                 => optional($item->ProductListingDetails)->UPC,
         ];
+
+        if ($fields) {
+            return array_only($attrs, $fields);
+        }
+
+        return $attrs;
     }
 }

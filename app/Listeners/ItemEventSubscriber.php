@@ -54,6 +54,9 @@ class ItemEventSubscriber implements ShouldQueue
                 'primary_category_id',
                 'start_time',
                 'status',
+                //
+                'sku',
+                'upc',
             ])
         );
     }
@@ -107,6 +110,9 @@ class ItemEventSubscriber implements ShouldQueue
                 'primary_category_id',
                 'start_time',
                 'status',
+                //
+                'sku',
+                'upc',
             ])
         );
     }

@@ -7,6 +7,7 @@ use App\Exceptions\ItemExistedException;
 use App\Exceptions\TradingApiException;
 use App\Item;
 use DTS\eBaySDK\Trading\Enums\DetailLevelCodeType;
+use DTS\eBaySDK\Trading\Types\ItemType;
 use DTS\eBaySDK\Trading\Types\PaginationType;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -71,6 +72,7 @@ class SyncItems extends Command
             'ItemArray.Item.ListingDetails.StartTime',
             'ItemArray.Item.SKU',
             'ItemArray.Item.Quantity',
+            'ItemArray.Item.ProductListingDetails.UPC',
             'ItemArray.Item.PrimaryCategory.CategoryID',
             'ItemArray.Item.SellingStatus.QuantitySold',
             'ItemArray.Item.SellingStatus.CurrentPrice',
@@ -93,9 +95,7 @@ class SyncItems extends Command
                 throw new TradingApiException($request, $response);
             }
 
-            $newItems = $response->toArray()['ItemArray']['Item'];
-
-            $items = $items->concat($newItems);
+            $items = $items->concat(collect($response->ItemArray->Item));
 
             $bar->setBarWidth($response->PaginationResult->TotalNumberOfPages);
             $bar->advance();
@@ -106,21 +106,30 @@ class SyncItems extends Command
 
         $bar->finish();
 
-        $items = $items->map(function (array $item) use ($account) : Item {
+        $items = $items->map(function (ItemType $item) use ($account) : Item {
+
+            $attrs = Item::extractItemAttributes($item, [
+                'item_id',
+                'title',
+                'price',
+                'quantity',
+                'quantity_sold',
+                'primary_category_id',
+                'start_time',
+                'status',
+                //
+                'sku',
+                'upc',
+            ]);
 
             try {
-                return $account->saveItem([
-                    'item_id'             => $item['ItemID'],
-                    'title'               => $item['Title'],
-                    'price'               => $item['SellingStatus']['CurrentPrice']['value'],
-                    'quantity'            => $item['Quantity'],
-                    'quantity_sold'       => $item['SellingStatus']['QuantitySold'],
-                    'primary_category_id' => $item['PrimaryCategory']['CategoryID'],
-                    'start_time'          => app_carbon($item['ListingDetails']['StartTime']),
-                    'status'              => $item['SellingStatus']['ListingStatus'],
-                ]);
+                return $account->saveItem($attrs);
             } catch (ItemExistedException $exception) {
-                return Item::find($item['ItemID']);
+                $itemModel = Item::find($item->ItemID);
+
+                $itemModel->update($attrs);
+
+                return $itemModel;
             }
         });
 
