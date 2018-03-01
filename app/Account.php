@@ -16,6 +16,7 @@ use DTS\eBaySDK\Trading\Types\GetNotificationPreferencesRequestType;
 use DTS\eBaySDK\Trading\Types\GetSellerListRequestType;
 use DTS\eBaySDK\Trading\Types\NotificationEnableArrayType;
 use DTS\eBaySDK\Trading\Types\NotificationEnableType;
+use DTS\eBaySDK\Trading\Types\ReviseItemRequestType;
 use DTS\eBaySDK\Trading\Types\SetNotificationPreferencesRequestType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -151,5 +152,10 @@ class Account extends Model
     public function getItemRequest(): GetItemRequestType
     {
         return $this->prepareAuthRequiredRequest(new GetItemRequestType);
+    }
+
+    public function reviseItemRequest(): ReviseItemRequestType
+    {
+        return $this->prepareAuthRequiredRequest(new ReviseItemRequestType);
     }
 }
