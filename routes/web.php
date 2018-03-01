@@ -18,3 +18,8 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+# EBAY AUTH'N'AUTH AUTHORIZATION FLOW
+Route::get('ebay/auth', 'AuthnAuthController@signin')->name('ebay.auth');
+Route::get('ebay/callback', 'AuthnAuthController@callback')->name('ebay.callback');
+# END EBAY AUTH'N'AUTH AUTHORIZATION FLOW
