@@ -58,6 +58,7 @@ class Item extends Model
     {
         return [
             'item_id'             => $item->ItemID,
+            'title'               => $item->Title,
             'price'               => $item->SellingStatus->CurrentPrice->value,
             'quantity'            => $item->Quantity,
             'quantity_sold'       => $item->SellingStatus->QuantitySold,
