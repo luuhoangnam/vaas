@@ -10,6 +10,7 @@ use DTS\eBaySDK\Trading\Types\ApplicationDeliveryPreferencesType;
 use DTS\eBaySDK\Trading\Types\NotificationEnableArrayType;
 use DTS\eBaySDK\Trading\Types\NotificationEnableType;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Collection;
 
 class SubscribePlatformNotification extends Command
 {
@@ -18,7 +19,7 @@ class SubscribePlatformNotification extends Command
      *
      * @var string
      */
-    protected $signature = 'ebay:notification:subscribe {username}';
+    protected $signature = 'ebay:notification:subscribe {--username=}';
 
     /**
      * The console command description.
@@ -39,25 +40,32 @@ class SubscribePlatformNotification extends Command
 
     public function handle()
     {
-        $account = $this->getAccount();
+        $accounts = $this->getAccounts();
 
-        try {
+        $accounts->each(function (Account $account) {
 
-            $account->subscribePlatformNotification();
+            try {
+                $account->subscribePlatformNotification();
+            } catch (TradingApiException $exception) {
+                $this->error("[{$account['username']}] Can not subscribe to platform notification event");
 
-        } catch (TradingApiException $exception) {
-            $this->error('Can not subscribe to platform notification event');
+                return;
+            }
 
-            return 1;
-        }
-
-        $this->info('Done!');
+            $this->info("[{$account['username']}] Success!");
+        });
 
         return 0;
     }
 
-    protected function getAccount(): Account
+    protected function getAccounts(): Collection
     {
-        return Account::query()->where('username', $this->argument('username'))->firstOrFail();
+        $query = Account::query();
+
+        if ($this->option('username')) {
+            $query->where('username', $this->option('username'));
+        }
+
+        return $query->get();
     }
 }
