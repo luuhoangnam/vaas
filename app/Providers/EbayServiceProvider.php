@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use DTS\eBaySDK\BusinessPoliciesManagement\Services\BusinessPoliciesManagementService;
+use DTS\eBaySDK\Constants\GlobalIds;
 use DTS\eBaySDK\Constants\SiteIds;
 use DTS\eBaySDK\Finding\Services\FindingService;
 use DTS\eBaySDK\Sdk;
@@ -55,6 +57,12 @@ class EbayServiceProvider extends ServiceProvider
             $sdk = $this->app->make(Sdk::class);
 
             return $sdk->createShopping();
+        });
+
+        $this->app->bind(BusinessPoliciesManagementService::class, function () {
+            $sdk = $this->app->make(Sdk::class);
+
+            return $sdk->createBusinessPoliciesManagement();
         });
     }
 }

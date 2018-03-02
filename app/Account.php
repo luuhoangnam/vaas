@@ -4,22 +4,47 @@ namespace App;
 
 use App\Exceptions\ItemExistedException;
 use App\Exceptions\TradingApiException;
+use DTS\eBaySDK\BusinessPoliciesManagement\Services\BusinessPoliciesManagementService;
+use DTS\eBaySDK\BusinessPoliciesManagement\Types\GetSellerProfilesRequest;
+use DTS\eBaySDK\Constants\SiteIds;
+use DTS\eBaySDK\Trading\Enums\AckCodeType;
+use DTS\eBaySDK\Trading\Enums\CountryCodeType;
+use DTS\eBaySDK\Trading\Enums\CurrencyCodeType;
+use DTS\eBaySDK\Trading\Enums\DetailLevelCodeType;
 use DTS\eBaySDK\Trading\Enums\EnableCodeType;
+use DTS\eBaySDK\Trading\Enums\FeatureIDCodeType;
+use DTS\eBaySDK\Trading\Enums\ListingDurationCodeType;
+use DTS\eBaySDK\Trading\Enums\ListingTypeCodeType;
 use DTS\eBaySDK\Trading\Enums\NotificationEventTypeCodeType;
+use DTS\eBaySDK\Trading\Enums\SiteCodeType;
 use DTS\eBaySDK\Trading\Services\TradingService;
 use DTS\eBaySDK\Trading\Types\AbstractRequestType;
+use DTS\eBaySDK\Trading\Types\AddItemResponseType;
+use DTS\eBaySDK\Trading\Types\AmountType;
 use DTS\eBaySDK\Trading\Types\ApplicationDeliveryPreferencesType;
+use DTS\eBaySDK\Trading\Types\CategoryType;
 use DTS\eBaySDK\Trading\Types\CustomSecurityHeaderType;
 use DTS\eBaySDK\Trading\Types\EndItemsRequestType;
+use DTS\eBaySDK\Trading\Types\GetCategoryFeaturesRequestType;
 use DTS\eBaySDK\Trading\Types\GetItemRequestType;
 use DTS\eBaySDK\Trading\Types\GetItemTransactionsRequestType;
-use DTS\eBaySDK\Trading\Types\GetItemTransactionsResponseType;
 use DTS\eBaySDK\Trading\Types\GetNotificationPreferencesRequestType;
 use DTS\eBaySDK\Trading\Types\GetSellerListRequestType;
+use DTS\eBaySDK\Trading\Types\GetSuggestedCategoriesRequestType;
+use DTS\eBaySDK\Trading\Types\GetUserPreferencesRequestType;
+use DTS\eBaySDK\Trading\Types\ItemType;
 use DTS\eBaySDK\Trading\Types\NotificationEnableArrayType;
 use DTS\eBaySDK\Trading\Types\NotificationEnableType;
+use DTS\eBaySDK\Trading\Types\PictureDetailsType;
+use DTS\eBaySDK\Trading\Types\ProductListingDetailsType;
 use DTS\eBaySDK\Trading\Types\ReviseItemRequestType;
+use DTS\eBaySDK\Trading\Types\SellerPaymentProfileType;
+use DTS\eBaySDK\Trading\Types\SellerProfilesType;
+use DTS\eBaySDK\Trading\Types\SellerReturnProfileType;
+use DTS\eBaySDK\Trading\Types\SellerShippingProfileType;
 use DTS\eBaySDK\Trading\Types\SetNotificationPreferencesRequestType;
+use DTS\eBaySDK\Trading\Types\VerifyAddItemRequestType;
+use DTS\eBaySDK\Trading\Types\VerifyAddItemResponseType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
@@ -81,6 +106,11 @@ class Account extends Model
         return app(TradingService::class);
     }
 
+    public function businessPoliciesManagement(): BusinessPoliciesManagementService
+    {
+        return app(BusinessPoliciesManagementService::class);
+    }
+
     public function prepareAuthRequiredRequest(AbstractRequestType $request): AbstractRequestType
     {
         // Credentials
@@ -131,6 +161,27 @@ class Account extends Model
         ]);
     }
 
+//    public function __call($method, $parameters)
+//    {
+//        $requests = [
+//            'getSellerListRequest'              => GetSellerListRequestType::class,
+//            'getNotificationPreferencesRequest' => GetNotificationPreferencesRequestType::class,
+//            'setNotificationPreferencesRequest' => SetNotificationPreferencesRequestType::class,
+//            'getItemTransactionsRequest'        => GetItemTransactionsRequestType::class,
+//            'getItemRequest'                    => GetItemRequestType::class,
+//            'reviseItemRequest'                 => ReviseItemRequestType::class,
+//            'endItemsRequest'                   => EndItemsRequestType::class,
+//        ];
+//
+//        if (in_array($method, array_keys($requests))) {
+//            $className = $requests[$method];
+//
+//            return $this->prepareAuthRequiredRequest(new $className);
+//        }
+//
+//        return forward_static_call_array([$this, $method], $parameters);
+//    }
+
     public function endItemsRequest(): EndItemsRequestType
     {
         return $this->prepareAuthRequiredRequest(new EndItemsRequestType);
@@ -164,5 +215,161 @@ class Account extends Model
     public function reviseItemRequest(): ReviseItemRequestType
     {
         return $this->prepareAuthRequiredRequest(new ReviseItemRequestType);
+    }
+
+    public function addItemRequest(): VerifyAddItemRequestType
+//    public function addItemRequest(): AddItemRequestType
+    {
+        return $this->prepareAuthRequiredRequest(new VerifyAddItemRequestType);
+//        return $this->prepareAuthRequiredRequest(new AddItemRequestType);
+    }
+
+    public function getSuggestedCategoriesRequest(): GetSuggestedCategoriesRequestType
+    {
+        return $this->prepareAuthRequiredRequest(new GetSuggestedCategoriesRequestType);
+    }
+
+    public function addItem(array $data): VerifyAddItemResponseType
+//    public function addItem(array $data): AddItemResponseType
+    {
+        $request = $this->addItemRequest();
+
+        $request->Item = new ItemType;
+
+        // Title
+        $request->Item->Title = $data['title'];
+
+        // Quantity
+        $request->Item->Quantity = array_get($data, 'quantity', 1);
+
+        if (@$data['sku']) {
+            $request->Item->SKU = $data['sku'];
+        }
+
+        // Site
+        $request->Item->Site = SiteCodeType::C_US;
+
+        // Price
+        $request->Item->StartPrice = new AmountType;
+
+        $request->Item->StartPrice->currencyID = CurrencyCodeType::C_USD;
+        $request->Item->StartPrice->value      = (float)$data['price'];
+
+        // Category
+        $request->Item->PrimaryCategory             = new CategoryType;
+        $request->Item->PrimaryCategory->CategoryID = (string)$data['category_id'];
+
+        // Profiles
+        $request->Item->SellerProfiles = new SellerProfilesType;
+
+        $request->Item->SellerProfiles->SellerPaymentProfile                   = new SellerPaymentProfileType;
+        $request->Item->SellerProfiles->SellerPaymentProfile->PaymentProfileID = $data['payment_profile_id'];
+
+        $request->Item->SellerProfiles->SellerShippingProfile                    = new SellerShippingProfileType;
+        $request->Item->SellerProfiles->SellerShippingProfile->ShippingProfileID = $data['shipping_profile_id'];
+
+        $request->Item->SellerProfiles->SellerReturnProfile                  = new SellerReturnProfileType;
+        $request->Item->SellerProfiles->SellerReturnProfile->ReturnProfileID = $data['return_profile_id'];
+
+        // Description
+        $request->Item->Description = $data['description'];
+
+        // Pictures
+        $request->Item->PictureDetails             = new PictureDetailsType;
+        $request->Item->PictureDetails->PictureURL = $data['pictures'];
+
+        // Duration (Always GTC)
+        $request->Item->ListingDuration = ListingDurationCodeType::C_GTC;
+
+        // Location
+        $request->Item->Location = 'Florida, 34249';
+        $request->Item->Country  = CountryCodeType::C_US;
+
+        // Condition
+        $request->Item->ConditionID = $data['condition_id'];
+
+        // Product Details
+        $request->Item->ProductListingDetails = new ProductListingDetailsType;
+
+        // Currency
+        $request->Item->Currency = CurrencyCodeType::C_USD;
+
+        // UPC
+        if (@$data['upc']) {
+            $request->Item->ProductListingDetails->UPC = $data['upc'];
+        }
+
+        // Listing Type
+        $request->Item->ListingType = ListingTypeCodeType::C_FIXED_PRICE_ITEM;
+
+        // MPN
+        if (@$data['mpn']) {
+            $request->Item->ProductListingDetails->BrandMPN = $data['mpn'];
+        }
+
+        $response = $this->trading()->verifyAddItem($request);
+//        $response = $this->trading()->addItem($request);
+
+        return $response;
+    }
+
+    public function suggestCategory(string $query): array
+    {
+        $request = $this->getSuggestedCategoriesRequest();
+
+        $request->Query = $query;
+
+        $response = $this->trading()->getSuggestedCategories($request);
+
+        if ($response->Ack !== AckCodeType::C_SUCCESS) {
+            throw new TradingApiException($request, $response);
+        }
+
+        return $response->SuggestedCategoryArray->toArray()['SuggestedCategory'];
+    }
+
+    public function getUserPreferencesRequest(): GetUserPreferencesRequestType
+    {
+        return $this->prepareAuthRequiredRequest(new GetUserPreferencesRequestType);
+    }
+
+    public function sellerProfiles(): array
+    {
+        $request = $this->getUserPreferencesRequest();
+
+        $request->ShowSellerProfilePreferences = true;
+
+        $response = $this->trading()->getUserPreferences($request);
+
+        if ($response->Ack !== AckCodeType::C_SUCCESS) {
+            throw new TradingApiException($request, $response);
+        }
+
+        return $response->SellerProfilePreferences->SupportedSellerProfiles->toArray()['SupportedSellerProfile'];
+    }
+
+    public function getCategoryFeaturesRequest(): GetCategoryFeaturesRequestType
+    {
+        return $this->prepareAuthRequiredRequest(new GetCategoryFeaturesRequestType);
+    }
+
+    public function categoryFeatures($categoryId)
+    {
+        $request = $this->getCategoryFeaturesRequest();
+
+        $request->CategoryID = (string)$categoryId;
+
+        $request->FeatureID[] = FeatureIDCodeType::C_CONDITION_VALUES;
+        $request->FeatureID[] = FeatureIDCodeType::C_CONDITION_ENABLED;
+
+        $request->DetailLevel = [DetailLevelCodeType::C_RETURN_ALL];
+
+        $response = $this->trading()->getCategoryFeatures($request);
+
+        if ($response->Ack !== AckCodeType::C_SUCCESS) {
+            throw new TradingApiException($request, $response);
+        }
+
+        return $response->Category[0]->ConditionValues->toArray()['Condition'];
     }
 }

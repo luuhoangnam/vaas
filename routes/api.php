@@ -2,17 +2,23 @@
 
 use Illuminate\Http\Request;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:api')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    # EBAY INTERACTIONS
+    Route::group(['prefix' => 'accounts/{account}'], function () {
+        Route::post('add_item', 'Account\ItemsController@addItem');
+
+        // Supports
+        Route::post('suggest_category', 'Account\ItemsController@suggestCategory');
+        Route::post('seller_profiles', 'Account\ItemsController@sellerProfiles');
+        Route::post(
+            'category_supported_conditions/{category_id}',
+            'Account\ItemsController@categorySupportedConditions'
+        );
+    });
+# END EBAY INTERACTIONS
 });
