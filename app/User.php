@@ -15,6 +15,13 @@ class User extends Authenticatable
 
     protected $hidden = ['password', 'remember_token'];
 
+    public function isDeveloper(): bool
+    {
+        $developers = app('developers') ?: [];
+
+        return in_array($this['email'], $developers);
+    }
+
     public function accounts()
     {
         return $this->hasMany(Account::class);

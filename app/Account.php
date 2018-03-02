@@ -52,6 +52,11 @@ class Account extends Model
 {
     protected $fillable = ['username', 'token'];
 
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
     public static function find($username): Account
     {
         return static::query()->where('username', $username)->firstOrFail();

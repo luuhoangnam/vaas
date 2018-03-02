@@ -8,6 +8,10 @@ Route::middleware('auth:api')->group(function () {
         return $request->user();
     });
 
+    # ACCOUNT
+    Route::get('/user/accounts', 'AccountsController@myAccounts');
+    # END ACCOUNT
+
     # EBAY INTERACTIONS
     Route::group(['prefix' => 'accounts/{account}'], function () {
         Route::post('add_item', 'Account\ItemsController@addItem');
