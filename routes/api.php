@@ -19,10 +19,7 @@ Route::middleware('auth:api')->group(function () {
         // Supports
         Route::post('suggest_category', 'Account\ItemsController@suggestCategory');
         Route::post('seller_profiles', 'Account\ItemsController@sellerProfiles');
-        Route::post(
-            'category_supported_conditions/{category_id}',
-            'Account\ItemsController@categorySupportedConditions'
-        );
+        Route::post('allowed_conditions/{category_id}', 'Account\ItemsController@allowedConditions');
     });
 # END EBAY INTERACTIONS
 });

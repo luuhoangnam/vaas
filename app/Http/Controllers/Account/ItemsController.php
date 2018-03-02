@@ -47,10 +47,8 @@ class ItemsController extends Controller
         return $account->sellerProfiles();
     }
 
-    public function categorySupportedConditions(Request $request, Account $account, $categoryId)
+    public function allowedConditions(Request $request, Account $account, $categoryId)
     {
-        $response = $account->categoryFeatures($categoryId);
-
-        return $response;
+        return $account->categoryFeatures($categoryId);
     }
 }
