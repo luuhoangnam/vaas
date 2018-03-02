@@ -12,6 +12,8 @@ use DTS\eBaySDK\Trading\Types\ApplicationDeliveryPreferencesType;
 use DTS\eBaySDK\Trading\Types\CustomSecurityHeaderType;
 use DTS\eBaySDK\Trading\Types\EndItemsRequestType;
 use DTS\eBaySDK\Trading\Types\GetItemRequestType;
+use DTS\eBaySDK\Trading\Types\GetItemTransactionsRequestType;
+use DTS\eBaySDK\Trading\Types\GetItemTransactionsResponseType;
 use DTS\eBaySDK\Trading\Types\GetNotificationPreferencesRequestType;
 use DTS\eBaySDK\Trading\Types\GetSellerListRequestType;
 use DTS\eBaySDK\Trading\Types\NotificationEnableArrayType;
@@ -142,6 +144,11 @@ class Account extends Model
     public function getNotificationPreferencesRequest(): GetNotificationPreferencesRequestType
     {
         return $this->prepareAuthRequiredRequest(new GetNotificationPreferencesRequestType);
+    }
+
+    public function getItemTransactionsRequest(): GetItemTransactionsRequestType
+    {
+        return $this->prepareAuthRequiredRequest(new GetItemTransactionsRequestType);
     }
 
     public function setNotificationPreferencesRequest(): SetNotificationPreferencesRequestType

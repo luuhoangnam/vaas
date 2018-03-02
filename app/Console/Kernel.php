@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Console\Commands\FindItemByProduct;
+use App\Console\Commands\ItemResearch;
 use App\Console\Commands\LowPerformanceListing;
 use App\Console\Commands\SubscribePlatformNotification;
 use App\Console\Commands\SyncItems;
@@ -19,6 +21,7 @@ class Kernel extends ConsoleKernel
         SyncItems::class,
         LowPerformanceListing::class,
         SubscribePlatformNotification::class,
+        ItemResearch::class,
     ];
 
     /**
