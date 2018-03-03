@@ -7,14 +7,14 @@ use Illuminate\Support\Collection;
 
 class DateRange extends Collection
 {
-    public function toDateString()
+    public function toDateStringCollection()
     {
         return $this->map(function (Carbon $carbon) {
             return $carbon->toDateString();
         });
     }
 
-    public function toDateTimeString()
+    public function toDateTimeStringCollection()
     {
         return $this->map(function (Carbon $carbon) {
             return $carbon->toDateTimeString();

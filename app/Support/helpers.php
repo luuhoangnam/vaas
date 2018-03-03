@@ -1,8 +1,8 @@
 <?php
 
 use App\Support\DateRange;
+use App\Support\Retention;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 
 if ( ! function_exists('app_carbon')) {
     /**
@@ -51,10 +51,11 @@ if ( ! function_exists('date_range')) {
     /**
      * @param \Carbon\Carbon $from
      * @param \Carbon\Carbon $until
+     * @param string         $retention
      *
      * @return DateRange
      */
-    function date_range(\Carbon\Carbon $from, \Carbon\Carbon $until = null): DateRange
+    function date_range(\Carbon\Carbon $from, \Carbon\Carbon $until = null, $retention = Retention::DAILY): DateRange
     {
         $from  = $from->startOfDay();
         $until = $until ?: Carbon::today();
@@ -66,7 +67,26 @@ if ( ! function_exists('date_range')) {
         while ($current->lessThanOrEqualTo($until)) {
             $dates->push(clone $current);
 
-            $current->addDay();
+            switch ($retention) {
+                case Retention::HOURLY:
+                    $current->addHour();
+                    break;
+                case Retention::DAILY:
+                    $current->addDay();
+                    break;
+                case Retention::WEEKLY:
+                    $current->addWeek();
+                    break;
+                case Retention::MONTHLY:
+                    $current->addMonth();
+                    break;
+                case Retention::YEARLY:
+                    $current->addYear();
+                    break;
+                default:
+                    $current->addDay();
+                    break;
+            }
         }
 
         return $dates;
