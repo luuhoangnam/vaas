@@ -21,5 +21,14 @@ Route::middleware('auth:api')->group(function () {
         Route::get('seller_profiles', 'Account\ItemsController@sellerProfiles');
         Route::get('allowed_conditions/{category_id}', 'Account\ItemsController@allowedConditions');
     });
+
+    # TRACKING
+    Route::group(['prefix' => 'items/{item}'], function () {
+        Route::get('trackers', 'TrackersController@itemTrackers');
+        Route::post('trackers', 'TrackersController@addTrackerForItem');
+    });
+
+    Route::delete('trackers/{tracker}', 'TrackersController@deleteTracker');
+    # END TRACKING
 # END EBAY INTERACTIONS
 });
