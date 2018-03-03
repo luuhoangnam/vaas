@@ -62,9 +62,11 @@ class Tracker extends Model
         return app(FindingService::class);
     }
 
-    protected function performSearch(): FindItemsByKeywordsResponse
+    protected function performSearch($buyerPostalCode = 10001): FindItemsByKeywordsResponse
     {
         $request = new FindItemsByKeywordsRequest;
+
+        $request->buyerPostalCode = (string)$buyerPostalCode;
 
         $request->keywords = $this['keyword'];
 
