@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Exceptions\TradingApiException;
+use App\Ranking\Trackable;
 use DTS\eBaySDK\BusinessPoliciesManagement\Services\BusinessPoliciesManagementService;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Enums\CountryCodeType;
@@ -38,7 +39,7 @@ use Illuminate\Support\Collection;
 
 class Account extends Model
 {
-    use TradingRequests;
+    use TradingRequests, Trackable;
 
     protected $fillable = ['username', 'token'];
 

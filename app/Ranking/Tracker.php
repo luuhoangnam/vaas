@@ -2,12 +2,15 @@
 
 namespace App\Ranking;
 
+use App\Account;
 use App\Exceptions\FindingApiException;
+use App\Item;
 use DTS\eBaySDK\Finding\Enums\AckValue;
 use DTS\eBaySDK\Finding\Enums\OutputSelectorType;
 use DTS\eBaySDK\Finding\Services\FindingService;
 use DTS\eBaySDK\Finding\Types\FindItemsByKeywordsRequest;
 use DTS\eBaySDK\Finding\Types\FindItemsByKeywordsResponse;
+use DTS\eBaySDK\Finding\Types\SearchItem;
 use Illuminate\Database\Eloquent\Model;
 
 class Tracker extends Model
@@ -33,19 +36,7 @@ class Tracker extends Model
     {
         $response = $this->performSearch();
 
-        $rank = null;
-
-        if ($response->searchResult->item) {
-            foreach ($response->searchResult->item as $index => $searchItem) {
-                $trackableId = $this['trackable']['item_id'];
-
-                if ($searchItem->itemId == $trackableId) {
-                    $rank = $index + 1;
-
-                    break;
-                }
-            }
-        }
+        $this->detectRankFromSearchResponse($response);
 
         $total = $response->paginationOutput->totalEntries ?: 0;
 
@@ -91,5 +82,31 @@ class Tracker extends Model
     protected function getSearchCacheTime(): float
     {
         return 1.0; // 1 minute
+    }
+
+    protected function isTrackingItem(SearchItem $searchItem): bool
+    {
+        $trackable = $this['trackable'];
+
+        if ($trackable instanceof Item) {
+            return $searchItem->itemId == $trackable['item_id'];
+        } elseif ($trackable instanceof Account) {
+            return $searchItem->sellerInfo->sellerUserName == $trackable['username'];
+        }
+
+        throw new \Exception('Can not get trackable eBay ID');
+    }
+
+    protected function detectRankFromSearchResponse(FindItemsByKeywordsResponse $response)
+    {
+        if ($response->searchResult->item) {
+            foreach ($response->searchResult->item as $index => $searchItem) {
+                if ($this->isTrackingItem($searchItem)) {
+                    return $index + 1;
+                }
+            }
+        }
+
+        return null;
     }
 }

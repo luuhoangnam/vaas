@@ -8,6 +8,7 @@ use App\Console\Commands\LowPerformanceListing;
 use App\Console\Commands\PeriodicRefreshRank;
 use App\Console\Commands\SubscribePlatformNotification;
 use App\Console\Commands\SynceBayAccount;
+use App\Console\Commands\TrackRankingForAccount;
 use App\Console\Commands\TrackRankingForItem;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -25,6 +26,7 @@ class Kernel extends ConsoleKernel
         SubscribePlatformNotification::class,
         ItemResearch::class,
         TrackRankingForItem::class,
+        TrackRankingForAccount::class,
         PeriodicRefreshRank::class,
     ];
 
