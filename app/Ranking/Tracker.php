@@ -47,10 +47,9 @@ class Tracker extends Model
 
     public function report(Carbon $from, Carbon $until)
     {
-        $dates      = date_range($from, $until);
+        $dates      = date_range($from, $until); // Default: Daily Retention
         $whereDates = $dates->toDateStringCollection()->implode("','");
-
-        // Default: Daily Retention
+        
         return $this->records()
                     ->whereRaw("DATE(`records`.`created_at`) IN ('{$whereDates}')")
                     ->groupBy('date')
