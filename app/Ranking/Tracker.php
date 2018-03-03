@@ -5,7 +5,6 @@ namespace App\Ranking;
 use App\Account;
 use App\Exceptions\FindingApiException;
 use App\Item;
-use App\Support\Retention;
 use Carbon\Carbon;
 use DTS\eBaySDK\Finding\Enums\AckValue;
 use DTS\eBaySDK\Finding\Enums\OutputSelectorType;
@@ -45,9 +44,9 @@ class Tracker extends Model
         return $this->records()->create(compact('rank', 'total'));
     }
 
-    public function report(Carbon $from, Carbon $until, $retention = Retention::DAILY)
+    public function report(Carbon $from, Carbon $until)
     {
-        $dates      = date_range($from, $until, $retention); // Default: Daily Retention
+        $dates      = date_range($from, $until); // Default: Daily Retention
         $whereDates = $dates->toDateStringCollection()->implode("','");
 
         return $this->records()
