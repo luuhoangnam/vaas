@@ -5,9 +5,12 @@ namespace App;
 use App\Services\Ebay;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Item extends Model
 {
+    use Searchable;
+
     protected $fillable = [
         'item_id',
         'title',
@@ -24,6 +27,21 @@ class Item extends Model
     protected $casts = [
         'start_time' => 'datetime',
     ];
+
+    public function searchableAs()
+    {
+        return 'items';
+    }
+
+    public function toSearchableArray()
+    {
+        return array_merge(
+            $this->toArray(),
+            [
+                'seller' => $this['account']['username'],
+            ]
+        );
+    }
 
     public function account()
     {
