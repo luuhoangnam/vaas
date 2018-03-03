@@ -5,11 +5,9 @@ namespace App\Listeners;
 use App\Account;
 use App\Events\PlatformNotifications\FixedPriceTransaction;
 use App\Exceptions\TradingApiException;
-use App\Item;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\InteractsWithQueue;
 
 class RefillItemQuantity implements ShouldQueue

@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Exceptions\ItemExistedException;
 use App\Exceptions\TradingApiException;
 use DTS\eBaySDK\BusinessPoliciesManagement\Services\BusinessPoliciesManagementService;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
@@ -43,14 +42,19 @@ class Account extends Model
 
     protected $fillable = ['username', 'token'];
 
-    public function owner()
-    {
-        return $this->belongsTo(User::class, 'user_id', 'id');
-    }
-
     public static function find($username): Account
     {
         return static::query()->where('username', $username)->firstOrFail();
+    }
+
+    public static function exists($username): bool
+    {
+        return static::query()->where('username', $username)->exists();
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function items()
@@ -88,18 +92,12 @@ class Account extends Model
         return $query;
     }
 
-    public static function exists($username): bool
+    public function updateOrCreateOrder(OrderType $order)
     {
-        return static::query()->where('username', $username)->exists();
-    }
-
-    public function saveItem(array $data): Item
-    {
-        if (Item::exists($data['item_id'])) {
-            throw new ItemExistedException($data);
-        }
-
-        return $this->items()->create($data);
+        return $this->orders()->updateOrCreate(
+            ['order_id' => $order->OrderID],
+            Order::extractAttribute($order)
+        );
     }
 
     public function trading(): TradingService
@@ -154,16 +152,7 @@ class Account extends Model
         }
     }
 
-    protected function enableEvent(string $event): NotificationEnableType
-    {
-        return new NotificationEnableType([
-            'EventType'   => $event,
-            'EventEnable' => EnableCodeType::C_ENABLE,
-        ]);
-    }
-
     public function addItem(array $data): VerifyAddItemResponseType
-//    public function addItem(array $data): AddItemResponseType
     {
         $request = $this->addItemRequest();
 
@@ -241,8 +230,6 @@ class Account extends Model
         }
 
         $response = $this->trading()->verifyAddItem($request);
-
-//        $response = $this->trading()->addItem($request);
 
         return $response;
     }
@@ -330,12 +317,6 @@ class Account extends Model
             'HasMoreItems',
         ];
 
-        $items = new Collection;
-
-//        $this->info('Fetching Items from eBay');
-
-//        $bar = $this->output->createProgressBar();
-
         do {
             $response = $this->trading()->getSellerList($request);
 
@@ -343,20 +324,14 @@ class Account extends Model
                 throw new TradingApiException($request, $response);
             }
 
-            $items = $items->concat(collect($response->ItemArray->Item));
-
-//            $bar->setBarWidth($response->PaginationResult->TotalNumberOfPages);
-//            $bar->advance();
+            // Create/Update Mirror Item to Databse
+            collect($response->ItemArray->Item)->each(function (ItemType $item) {
+                $this->updateOrCreateItem($item);
+            });
 
             # UPDATE PAGINATION PAGE NUMBER
             $request->Pagination->PageNumber++;
         } while ($response->HasMoreItems);
-
-//        $bar->finish();
-
-        $items->each(function (ItemType $item) {
-            return $this->updateOrCreateItem($item);
-        });
     }
 
     public function updateOrCreateItem(ItemType $item)
@@ -423,11 +398,11 @@ class Account extends Model
         });
     }
 
-    public function updateOrCreateOrder(OrderType $order)
+    protected function enableEvent(string $event): NotificationEnableType
     {
-        return $this->orders()->updateOrCreate(
-            ['order_id' => $order->OrderID],
-            Order::extractAttribute($order)
-        );
+        return new NotificationEnableType([
+            'EventType'   => $event,
+            'EventEnable' => EnableCodeType::C_ENABLE,
+        ]);
     }
 }
