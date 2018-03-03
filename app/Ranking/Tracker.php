@@ -5,6 +5,7 @@ namespace App\Ranking;
 use App\Account;
 use App\Exceptions\FindingApiException;
 use App\Item;
+use Carbon\Carbon;
 use DTS\eBaySDK\Finding\Enums\AckValue;
 use DTS\eBaySDK\Finding\Enums\OutputSelectorType;
 use DTS\eBaySDK\Finding\Services\FindingService;
@@ -12,6 +13,7 @@ use DTS\eBaySDK\Finding\Types\FindItemsByKeywordsRequest;
 use DTS\eBaySDK\Finding\Types\FindItemsByKeywordsResponse;
 use DTS\eBaySDK\Finding\Types\SearchItem;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Tracker extends Model
 {
@@ -27,7 +29,7 @@ class Tracker extends Model
         return $this->hasMany(Record::class);
     }
 
-    public function lastRecord()
+    public function current()
     {
         return $this->records()->latest()->limit(1);
     }
@@ -41,6 +43,20 @@ class Tracker extends Model
         $total = $response->paginationOutput->totalEntries ?: 0;
 
         return $this->records()->create(compact('rank', 'total'));
+    }
+
+    public function report(Carbon $from, Carbon $until)
+    {
+        $dates      = date_range($from, $until);
+        $whereDates = $dates->toDateStringCollection()->implode("','");
+
+        // Default: Daily Retention
+        return $this->records()
+                    ->whereRaw("DATE(`records`.`created_at`) IN ('{$whereDates}')")
+                    ->groupBy('date')
+                    ->latest()
+                    ->selectRaw('*, DATE(`records`.created_at) AS date')
+                    ->get();
     }
 
     protected function finding(): FindingService
