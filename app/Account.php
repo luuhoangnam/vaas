@@ -5,8 +5,6 @@ namespace App;
 use App\Exceptions\ItemExistedException;
 use App\Exceptions\TradingApiException;
 use DTS\eBaySDK\BusinessPoliciesManagement\Services\BusinessPoliciesManagementService;
-use DTS\eBaySDK\BusinessPoliciesManagement\Types\GetSellerProfilesRequest;
-use DTS\eBaySDK\Constants\SiteIds;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Enums\CountryCodeType;
 use DTS\eBaySDK\Trading\Enums\CurrencyCodeType;
@@ -19,20 +17,10 @@ use DTS\eBaySDK\Trading\Enums\NotificationEventTypeCodeType;
 use DTS\eBaySDK\Trading\Enums\SiteCodeType;
 use DTS\eBaySDK\Trading\Services\TradingService;
 use DTS\eBaySDK\Trading\Types\AbstractRequestType;
-use DTS\eBaySDK\Trading\Types\AddItemResponseType;
 use DTS\eBaySDK\Trading\Types\AmountType;
 use DTS\eBaySDK\Trading\Types\ApplicationDeliveryPreferencesType;
 use DTS\eBaySDK\Trading\Types\CategoryType;
 use DTS\eBaySDK\Trading\Types\CustomSecurityHeaderType;
-use DTS\eBaySDK\Trading\Types\EndItemsRequestType;
-use DTS\eBaySDK\Trading\Types\GetCategoryFeaturesRequestType;
-use DTS\eBaySDK\Trading\Types\GetItemRequestType;
-use DTS\eBaySDK\Trading\Types\GetItemTransactionsRequestType;
-use DTS\eBaySDK\Trading\Types\GetNotificationPreferencesRequestType;
-use DTS\eBaySDK\Trading\Types\GetOrdersRequestType;
-use DTS\eBaySDK\Trading\Types\GetSellerListRequestType;
-use DTS\eBaySDK\Trading\Types\GetSuggestedCategoriesRequestType;
-use DTS\eBaySDK\Trading\Types\GetUserPreferencesRequestType;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use DTS\eBaySDK\Trading\Types\NotificationEnableArrayType;
 use DTS\eBaySDK\Trading\Types\NotificationEnableType;
@@ -40,13 +28,10 @@ use DTS\eBaySDK\Trading\Types\OrderType;
 use DTS\eBaySDK\Trading\Types\PaginationType;
 use DTS\eBaySDK\Trading\Types\PictureDetailsType;
 use DTS\eBaySDK\Trading\Types\ProductListingDetailsType;
-use DTS\eBaySDK\Trading\Types\ReviseItemRequestType;
 use DTS\eBaySDK\Trading\Types\SellerPaymentProfileType;
 use DTS\eBaySDK\Trading\Types\SellerProfilesType;
 use DTS\eBaySDK\Trading\Types\SellerReturnProfileType;
 use DTS\eBaySDK\Trading\Types\SellerShippingProfileType;
-use DTS\eBaySDK\Trading\Types\SetNotificationPreferencesRequestType;
-use DTS\eBaySDK\Trading\Types\VerifyAddItemRequestType;
 use DTS\eBaySDK\Trading\Types\VerifyAddItemResponseType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -54,6 +39,8 @@ use Illuminate\Support\Collection;
 
 class Account extends Model
 {
+    use TradingRequests;
+
     protected $fillable = ['username', 'token'];
 
     public function owner()
@@ -175,74 +162,6 @@ class Account extends Model
         ]);
     }
 
-//    public function __call($method, $parameters)
-//    {
-//        $requests = [
-//            'getSellerListRequest'              => GetSellerListRequestType::class,
-//            'getNotificationPreferencesRequest' => GetNotificationPreferencesRequestType::class,
-//            'setNotificationPreferencesRequest' => SetNotificationPreferencesRequestType::class,
-//            'getItemTransactionsRequest'        => GetItemTransactionsRequestType::class,
-//            'getItemRequest'                    => GetItemRequestType::class,
-//            'reviseItemRequest'                 => ReviseItemRequestType::class,
-//            'endItemsRequest'                   => EndItemsRequestType::class,
-//        ];
-//
-//        if (in_array($method, array_keys($requests))) {
-//            $className = $requests[$method];
-//
-//            return $this->prepareAuthRequiredRequest(new $className);
-//        }
-//
-//        return forward_static_call_array([$this, $method], $parameters);
-//    }
-
-    public function endItemsRequest(): EndItemsRequestType
-    {
-        return $this->prepareAuthRequiredRequest(new EndItemsRequestType);
-    }
-
-    public function getSellerListRequest(): GetSellerListRequestType
-    {
-        return $this->prepareAuthRequiredRequest(new GetSellerListRequestType);
-    }
-
-    public function getNotificationPreferencesRequest(): GetNotificationPreferencesRequestType
-    {
-        return $this->prepareAuthRequiredRequest(new GetNotificationPreferencesRequestType);
-    }
-
-    public function getItemTransactionsRequest(): GetItemTransactionsRequestType
-    {
-        return $this->prepareAuthRequiredRequest(new GetItemTransactionsRequestType);
-    }
-
-    public function setNotificationPreferencesRequest(): SetNotificationPreferencesRequestType
-    {
-        return $this->prepareAuthRequiredRequest(new SetNotificationPreferencesRequestType);
-    }
-
-    public function getItemRequest(): GetItemRequestType
-    {
-        return $this->prepareAuthRequiredRequest(new GetItemRequestType);
-    }
-
-    public function reviseItemRequest(): ReviseItemRequestType
-    {
-        return $this->prepareAuthRequiredRequest(new ReviseItemRequestType);
-    }
-
-    public function addItemRequest(): VerifyAddItemRequestType
-//    public function addItemRequest(): AddItemRequestType
-    {
-        return $this->prepareAuthRequiredRequest(new VerifyAddItemRequestType);
-//        return $this->prepareAuthRequiredRequest(new AddItemRequestType);
-    }
-
-    public function getSuggestedCategoriesRequest(): GetSuggestedCategoriesRequestType
-    {
-        return $this->prepareAuthRequiredRequest(new GetSuggestedCategoriesRequestType);
-    }
-
     public function addItem(array $data): VerifyAddItemResponseType
 //    public function addItem(array $data): AddItemResponseType
     {
@@ -343,11 +262,6 @@ class Account extends Model
         return $response->SuggestedCategoryArray->toArray()['SuggestedCategory'];
     }
 
-    public function getUserPreferencesRequest(): GetUserPreferencesRequestType
-    {
-        return $this->prepareAuthRequiredRequest(new GetUserPreferencesRequestType);
-    }
-
     public function sellerProfiles(): array
     {
         $request = $this->getUserPreferencesRequest();
@@ -361,11 +275,6 @@ class Account extends Model
         }
 
         return $response->SellerProfilePreferences->SupportedSellerProfiles->toArray()['SupportedSellerProfile'];
-    }
-
-    public function getCategoryFeaturesRequest(): GetCategoryFeaturesRequestType
-    {
-        return $this->prepareAuthRequiredRequest(new GetCategoryFeaturesRequestType);
     }
 
     public function categoryFeatures($categoryId)
@@ -388,18 +297,83 @@ class Account extends Model
         return $response->Category[0]->ConditionValues->toArray()['Condition'];
     }
 
-    public function getOrdersRequest(): GetOrdersRequestType
+    public function syncItemsByStartTimeRange(Carbon $from = null, Carbon $until = null)
     {
-        return $this->prepareAuthRequiredRequest(new GetOrdersRequestType);
+        $request = $this->getSellerListRequest();
+
+        # START TIME RAGE WITHIN LAST 3 MONTHS
+        $request->StartTimeFrom = dt($from, 'GMT');
+        $request->StartTimeTo   = dt($until, 'GMT');
+
+        # PAGINATION
+        $request->Pagination = new PaginationType;
+
+        $request->Pagination->EntriesPerPage = 100;
+        $request->Pagination->PageNumber     = 1;
+
+        # OUTPUT SELECTOR
+        $request->DetailLevel = [DetailLevelCodeType::C_RETURN_ALL];
+
+        $request->OutputSelector = [
+            'ItemArray.Item.ItemID',
+            'ItemArray.Item.Title',
+            'ItemArray.Item.ListingDetails.StartTime',
+            'ItemArray.Item.SKU',
+            'ItemArray.Item.Quantity',
+            'ItemArray.Item.ProductListingDetails.UPC',
+            'ItemArray.Item.PrimaryCategory.CategoryID',
+            'ItemArray.Item.SellingStatus.QuantitySold',
+            'ItemArray.Item.SellingStatus.CurrentPrice',
+            'ItemArray.Item.SellingStatus.ListingStatus',
+            // Pagination
+            'PaginationResult',
+            'HasMoreItems',
+        ];
+
+        $items = new Collection;
+
+//        $this->info('Fetching Items from eBay');
+
+//        $bar = $this->output->createProgressBar();
+
+        do {
+            $response = $this->trading()->getSellerList($request);
+
+            if ($response->Ack !== 'Success') {
+                throw new TradingApiException($request, $response);
+            }
+
+            $items = $items->concat(collect($response->ItemArray->Item));
+
+//            $bar->setBarWidth($response->PaginationResult->TotalNumberOfPages);
+//            $bar->advance();
+
+            # UPDATE PAGINATION PAGE NUMBER
+            $request->Pagination->PageNumber++;
+        } while ($response->HasMoreItems);
+
+//        $bar->finish();
+
+        $items->each(function (ItemType $item) {
+            return $this->updateOrCreateItem($item);
+        });
     }
 
-    public function syncOrdersByTimeRange(Carbon $from = null, Carbon $until = null)
+    public function updateOrCreateItem(ItemType $item)
+    {
+        return $this->items()->updateOrCreate(
+            ['item_id' => $item->ItemID],
+            Item::extractItemAttributes($item)
+        );
+    }
+
+    public function syncOrdersByCreatedTimeRange(Carbon $from = null, Carbon $until = null)
     {
         $request = $this->getOrdersRequest();
 
-        # CREATED TIME RAGE WITHIN LAST 15 MINUTES
-        $request->CreateTimeFrom = dt($from); // Last 15 Minutes
-        $request->CreateTimeTo   = dt($until);
+        # CREATED TIME RAGE
+        $request->CreateTimeFrom = dt($from, 'GMT');
+        $request->CreateTimeTo   = dt($until, 'GMT');
 
         # Final Value Fee
         $request->IncludeFinalValueFee = true;
@@ -445,11 +419,15 @@ class Account extends Model
 
         // Save Orders
         $orders->each(function (OrderType $data) {
-
-            $this->orders()->updateOrCreate(
-                ['order_id' => $data->OrderID],
-                Order::extractAttribute($data)
-            );
+            $this->updateOrCreateOrder($data);
         });
+    }
+
+    public function updateOrCreateOrder(OrderType $order)
+    {
+        return $this->orders()->updateOrCreate(
+            ['order_id' => $order->OrderID],
+            Order::extractAttribute($order)
+        );
     }
 }

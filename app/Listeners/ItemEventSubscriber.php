@@ -16,6 +16,13 @@ class ItemEventSubscriber implements ShouldQueue
 {
     use InteractsWithQueue;
 
+    public function fixedPriceTransaction(FixedPriceTransaction $event): void
+    {
+        Item::find($event->payload->Item->ItemID)->update(
+            Item::extractItemAttributes($event->payload->Item)
+        );
+    }
+
     public function listed(ItemListed $event): void
     {
         $itemPayload     = $event->payload->Item;
@@ -67,6 +74,11 @@ class ItemEventSubscriber implements ShouldQueue
         $events->listen(
             ItemClosed::class,
             [$this, 'closed']
+        );
+
+        $events->listen(
+            FixedPriceTransaction::class,
+            [$this, 'fixedPriceTransaction']
         );
     }
 

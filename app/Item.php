@@ -2,11 +2,8 @@
 
 namespace App;
 
-use App\Exceptions\TradingApiException;
 use App\Services\Ebay;
-use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Types\ItemType;
-use DTS\eBaySDK\Trading\Types\ReviseItemResponseType;
 use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
@@ -35,7 +32,7 @@ class Item extends Model
 
     public static function find($itemID)
     {
-        return static::query()->where('item_id', $itemID)->first();
+        return static::query()->where('item_id', $itemID)->firstOrFail();
     }
 
     public static function exists($itemID)
@@ -85,43 +82,5 @@ class Item extends Model
         }
 
         return $attrs;
-    }
-
-    public function refillQuantity($displayQuantity = 1, ItemType $item = null)
-    {
-        /** @var \App\Account $account */
-        $account = $this['account'];
-
-        $request = $account->reviseItemRequest();
-
-        $request->Item = new ItemType;
-
-        $quantitySold = $item->SellingStatus->QuantitySold;
-
-        // NewQuantity = CurrentQuantity + DisplayQuantity
-        if ($item->Quantity - $quantitySold === $displayQuantity) {
-            return null;
-        }
-
-        if ($item) {
-            $newQuantity = $quantitySold + $displayQuantity;
-        } else {
-            $newQuantity = $this['quantity'] + $displayQuantity;
-        }
-
-        $request->Item->Quantity = $newQuantity;
-
-        $response = $account->trading()->reviseItem($request);
-
-        if ($response->Ack === AckCodeType::C_FAILURE) {
-            throw new TradingApiException($request, $response);
-        }
-
-        $this->update([
-            'quantity'      => $newQuantity,
-            'quantity_sold' => $quantitySold,
-        ]);
-
-        return $response;
     }
 }

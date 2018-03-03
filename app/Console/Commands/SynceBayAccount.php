@@ -81,96 +81,15 @@ class SynceBayAccount extends Command
 
     protected function syncItems(Account $account): void
     {
-        $request = $account->getSellerListRequest();
-
-        # START TIME RAGE WITHIN LAST 3 MONTHS
-        $request->StartTimeFrom = dt(Carbon::now()->subMonths(3));
-        $request->StartTimeTo   = dt(Carbon::now());
-
-        # PAGINATION
-        $request->Pagination = new PaginationType;
-
-        $request->Pagination->EntriesPerPage = 100;
-        $request->Pagination->PageNumber     = 1;
-
-        # OUTPUT SELECTOR
-        $request->DetailLevel = [DetailLevelCodeType::C_RETURN_ALL];
-
-        $request->OutputSelector = [
-            'ItemArray.Item.ItemID',
-            'ItemArray.Item.Title',
-            'ItemArray.Item.ListingDetails.StartTime',
-            'ItemArray.Item.SKU',
-            'ItemArray.Item.Quantity',
-            'ItemArray.Item.ProductListingDetails.UPC',
-            'ItemArray.Item.PrimaryCategory.CategoryID',
-            'ItemArray.Item.SellingStatus.QuantitySold',
-            'ItemArray.Item.SellingStatus.CurrentPrice',
-            'ItemArray.Item.SellingStatus.ListingStatus',
-            // Pagination
-            'PaginationResult',
-            'HasMoreItems',
-        ];
-
-        $items = new Collection;
-
-        $this->info('Fetching Items from eBay');
-
-        $bar = $this->output->createProgressBar();
-
-        do {
-            $response = $account->trading()->getSellerList($request);
-
-            if ($response->Ack !== 'Success') {
-                throw new TradingApiException($request, $response);
-            }
-
-            $items = $items->concat(collect($response->ItemArray->Item));
-
-            $bar->setBarWidth($response->PaginationResult->TotalNumberOfPages);
-            $bar->advance();
-
-            # UPDATE PAGINATION PAGE NUMBER
-            $request->Pagination->PageNumber++;
-        } while ($response->HasMoreItems);
-
-        $bar->finish();
-
-        $items = $items->map(function (ItemType $item) use ($account) : Item {
-
-            $attrs = Item::extractItemAttributes($item, [
-                'item_id',
-                'title',
-                'price',
-                'quantity',
-                'quantity_sold',
-                'primary_category_id',
-                'start_time',
-                'status',
-                //
-                'sku',
-                'upc',
-            ]);
-
-            try {
-                return $account->saveItem($attrs);
-            } catch (ItemExistedException $exception) {
-                $itemModel = Item::find($item->ItemID);
-
-                $itemModel->update($attrs);
-
-                return $itemModel;
-            }
-        });
-
-        $this->line("");
-        $this->info("Found {$items->count()} items and synced with database.");
-        $this->info("Current Active: {$account->activeItems()->count()}. Completed: {$account->completedItems()->count()}");
+        $account->syncItemsByStartTimeRange(
+            Carbon::now()->subMonths(3),
+            Carbon::now()
+        );
     }
 
     private function syncOrders(Account $account): void
     {
-        $account->syncOrdersByTimeRange(
+        $account->syncOrdersByCreatedTimeRange(
             Carbon::now()->subMonths(12),
             Carbon::now()
         );

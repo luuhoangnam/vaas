@@ -15,7 +15,7 @@ class TriggerSyncNewlyOrders implements ShouldQueue
     public function handle(FixedPriceTransaction $event): void
     {
         Account::find($event->payload->RecipientUserID)
-               ->syncOrdersByTimeRange(
+               ->syncOrdersByCreatedTimeRange(
                    Carbon::now()->subMinutes(15),
                    Carbon::now()
                );

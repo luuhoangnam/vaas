@@ -27,16 +27,20 @@ if ( ! function_exists('dt')) {
     /**
      * Make \DateTime instance from string or \Carbon\Carbon instance
      *
-     * @param string|Carbon|null $time
+     * @param string|Carbon|null       $time
+     *
+     * @param DateTimeZone|string|null $tz
      *
      * @return DateTime
      */
-    function dt($time = null): \DateTime
+    function dt($time = null, $tz = null): \DateTime
     {
         if (is_string($time)) {
             $time = new Carbon($time);
         }
 
-        return new DateTime($time);
+        $time->setTimezone($tz);
+
+        return new DateTime($time, $time->timezone);
     }
 }
