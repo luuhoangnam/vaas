@@ -2,7 +2,6 @@
 
 namespace App\Console;
 
-use App\Console\Commands\FindItemByProduct;
 use App\Console\Commands\ItemResearch;
 use App\Console\Commands\LowPerformanceListing;
 use App\Console\Commands\PeriodicRefreshRank;
