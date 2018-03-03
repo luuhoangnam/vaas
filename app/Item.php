@@ -87,7 +87,7 @@ class Item extends Model
         return $attrs;
     }
 
-    public function refillQuantity($displayQuantity = 1, ItemType $item = null): ReviseItemResponseType
+    public function refillQuantity($displayQuantity = 1, ItemType $item = null)
     {
         /** @var \App\Account $account */
         $account = $this['account'];
@@ -96,14 +96,31 @@ class Item extends Model
 
         $request->Item = new ItemType;
 
+        $quantitySold = $item->SellingStatus->QuantitySold;
+
         // NewQuantity = CurrentQuantity + DisplayQuantity
-        $request->Item->Quantity = ($item ? $item->Quantity : $this['quantity']) + $displayQuantity;
+        if ($item->Quantity - $quantitySold === $displayQuantity) {
+            return null;
+        }
+
+        if ($item) {
+            $newQuantity = $quantitySold + $displayQuantity;
+        } else {
+            $newQuantity = $this['quantity'] + $displayQuantity;
+        }
+
+        $request->Item->Quantity = $newQuantity;
 
         $response = $account->trading()->reviseItem($request);
 
         if ($response->Ack === AckCodeType::C_FAILURE) {
             throw new TradingApiException($request, $response);
         }
+
+        $this->update([
+            'quantity'      => $newQuantity,
+            'quantity_sold' => $quantitySold,
+        ]);
 
         return $response;
     }
