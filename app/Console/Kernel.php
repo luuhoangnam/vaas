@@ -5,8 +5,10 @@ namespace App\Console;
 use App\Console\Commands\FindItemByProduct;
 use App\Console\Commands\ItemResearch;
 use App\Console\Commands\LowPerformanceListing;
+use App\Console\Commands\PeriodicRefreshRank;
 use App\Console\Commands\SubscribePlatformNotification;
 use App\Console\Commands\SynceBayAccount;
+use App\Console\Commands\TrackRankingForItem;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -22,6 +24,8 @@ class Kernel extends ConsoleKernel
         LowPerformanceListing::class,
         SubscribePlatformNotification::class,
         ItemResearch::class,
+        TrackRankingForItem::class,
+        PeriodicRefreshRank::class,
     ];
 
     /**
@@ -33,8 +37,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->command('ranking:refresh')->daily();
     }
 
     /**

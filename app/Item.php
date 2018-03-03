@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Ranking\Tracker;
 use App\Services\Ebay;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use Illuminate\Database\Eloquent\Model;
@@ -43,11 +44,6 @@ class Item extends Model
         );
     }
 
-    public function account()
-    {
-        return $this->belongsTo(Account::class);
-    }
-
     public static function find($itemID)
     {
         return static::query()->where('item_id', $itemID)->firstOrFail();
@@ -56,6 +52,21 @@ class Item extends Model
     public static function exists($itemID)
     {
         return static::query()->where('item_id', $itemID)->exists();
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
+
+    public function trackers()
+    {
+        return $this->morphMany(Tracker::class, 'trackable');
+    }
+
+    public function track($keyword): Tracker
+    {
+        return $this->trackers()->create(compact('keyword'));
     }
 
     public function getQuantityAvailableAttribute()
