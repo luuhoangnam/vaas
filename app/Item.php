@@ -44,7 +44,7 @@ class Item extends Model
         );
     }
 
-    public static function find($itemID)
+    public static function find($itemID): Item
     {
         return static::query()->where('item_id', $itemID)->firstOrFail();
     }

@@ -30,7 +30,7 @@ class Tracker extends Model
 
     public function current()
     {
-        return $this->records()->latest()->limit(1);
+        return $this->hasOne(Record::class, 'tracker_id', 'id');
     }
 
     public function refresh(): Record
