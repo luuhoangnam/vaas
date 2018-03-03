@@ -29,12 +29,15 @@ use DTS\eBaySDK\Trading\Types\GetCategoryFeaturesRequestType;
 use DTS\eBaySDK\Trading\Types\GetItemRequestType;
 use DTS\eBaySDK\Trading\Types\GetItemTransactionsRequestType;
 use DTS\eBaySDK\Trading\Types\GetNotificationPreferencesRequestType;
+use DTS\eBaySDK\Trading\Types\GetOrdersRequestType;
 use DTS\eBaySDK\Trading\Types\GetSellerListRequestType;
 use DTS\eBaySDK\Trading\Types\GetSuggestedCategoriesRequestType;
 use DTS\eBaySDK\Trading\Types\GetUserPreferencesRequestType;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use DTS\eBaySDK\Trading\Types\NotificationEnableArrayType;
 use DTS\eBaySDK\Trading\Types\NotificationEnableType;
+use DTS\eBaySDK\Trading\Types\OrderType;
+use DTS\eBaySDK\Trading\Types\PaginationType;
 use DTS\eBaySDK\Trading\Types\PictureDetailsType;
 use DTS\eBaySDK\Trading\Types\ProductListingDetailsType;
 use DTS\eBaySDK\Trading\Types\ReviseItemRequestType;
@@ -47,6 +50,7 @@ use DTS\eBaySDK\Trading\Types\VerifyAddItemRequestType;
 use DTS\eBaySDK\Trading\Types\VerifyAddItemResponseType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 class Account extends Model
 {
@@ -67,13 +71,18 @@ class Account extends Model
         return $this->hasMany(Item::class);
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
     public function activeItems()
     {
         return $this->hasMany(Item::class, 'account_id')
                     ->where('status', 'Active');
     }
 
-    public function completedItems()
+    public function completedItems(): Account
     {
         return $this->hasMany(Item::class, 'account_id')
                     ->where('status', 'Completed');
@@ -313,6 +322,7 @@ class Account extends Model
         }
 
         $response = $this->trading()->verifyAddItem($request);
+
 //        $response = $this->trading()->addItem($request);
 
         return $response;
@@ -376,5 +386,70 @@ class Account extends Model
         }
 
         return $response->Category[0]->ConditionValues->toArray()['Condition'];
+    }
+
+    public function getOrdersRequest(): GetOrdersRequestType
+    {
+        return $this->prepareAuthRequiredRequest(new GetOrdersRequestType);
+    }
+
+    public function syncOrdersByTimeRange(Carbon $from = null, Carbon $until = null)
+    {
+        $request = $this->getOrdersRequest();
+
+        # CREATED TIME RAGE WITHIN LAST 15 MINUTES
+        $request->CreateTimeFrom = dt($from); // Last 15 Minutes
+        $request->CreateTimeTo   = dt($until);
+
+        # Final Value Fee
+        $request->IncludeFinalValueFee = true;
+
+        # PAGINATION
+        $request->Pagination = new PaginationType;
+
+        $request->Pagination->EntriesPerPage = 100;
+        $request->Pagination->PageNumber     = 1;
+
+        # OUTPUT SELECTOR
+        $request->DetailLevel = [DetailLevelCodeType::C_RETURN_ALL];
+
+        $request->OutputSelector = [
+            'HasMoreOrders',
+            'PaginationResult',
+            'OrderArray.Order.OrderID',
+            'OrderArray.Order.OrderStatus',
+            'OrderArray.Order.Total',
+            'OrderArray.Order.BuyerUserID',
+            'OrderArray.Order.PaymentHoldStatus',
+            'OrderArray.Order.CancelStatus',
+            'OrderArray.Order.CreatedTime',
+            'OrderArray.Order.TransactionArray.Transaction.FinalValueFee',
+            'OrderArray.Order.ExternalTransaction.FeeOrCreditAmount',
+            'OrderArray.Order.ShippingDetails.SellingManagerSalesRecordNumber',
+        ];
+
+        $orders = new Collection;
+
+        do {
+            $response = $this->trading()->getOrders($request);
+
+            if ($response->Ack === AckCodeType::C_FAILURE) {
+                throw new TradingApiException($request, $response);
+            }
+
+            $orders = $orders->concat(collect($response->OrderArray->Order));
+
+            # UPDATE PAGINATION PAGE NUMBER
+            $request->Pagination->PageNumber++;
+        } while ($response->HasMoreOrders);
+
+        // Save Orders
+        $orders->each(function (OrderType $data) {
+
+            $this->orders()->updateOrCreate(
+                ['order_id' => $data->OrderID],
+                Order::extractAttribute($data)
+            );
+        });
     }
 }

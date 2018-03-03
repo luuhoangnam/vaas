@@ -6,7 +6,7 @@ use App\Console\Commands\FindItemByProduct;
 use App\Console\Commands\ItemResearch;
 use App\Console\Commands\LowPerformanceListing;
 use App\Console\Commands\SubscribePlatformNotification;
-use App\Console\Commands\SyncItems;
+use App\Console\Commands\SynceBayAccount;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -18,7 +18,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        SyncItems::class,
+        SynceBayAccount::class,
         LowPerformanceListing::class,
         SubscribePlatformNotification::class,
         ItemResearch::class,

@@ -6,28 +6,31 @@ use App\Account;
 use App\Exceptions\ItemExistedException;
 use App\Exceptions\TradingApiException;
 use App\Item;
+use App\Order;
+use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Enums\DetailLevelCodeType;
 use DTS\eBaySDK\Trading\Types\ItemType;
+use DTS\eBaySDK\Trading\Types\OrderType;
 use DTS\eBaySDK\Trading\Types\PaginationType;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
-class SyncItems extends Command
+class SynceBayAccount extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'ebay:sync:items {username}';
+    protected $signature = 'ebay:sync {username} {--only_orders} {--only_items}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Sync All eBay Items';
+    protected $description = 'Sync All eBay Items & Orders';
 
     /**
      * Create a new command instance.
@@ -49,13 +52,40 @@ class SyncItems extends Command
     {
         $username = $this->argument('username');
 
-        $account = $this->getAccount($username);
+        $account = Account::find($username);
 
+        // 1. Sync Items
+        if ($this->option('only_items')) {
+            $this->syncItems($account);
+
+            return 0;
+        }
+
+        // 2. Sync Orders
+        if ($this->option('only_orders')) {
+            $this->syncOrders($account);
+
+            return 0;
+        }
+
+        $this->syncAll($account);
+
+        return 0;
+    }
+
+    protected function syncAll(Account $account): void
+    {
+        $this->syncItems($account);
+        $this->syncOrders($account);
+    }
+
+    protected function syncItems(Account $account): void
+    {
         $request = $account->getSellerListRequest();
 
         # START TIME RAGE WITHIN LAST 3 MONTHS
-        $request->StartTimeFrom = new \DateTime(Carbon::now()->subMonths(3));
-        $request->StartTimeTo   = new \DateTime(Carbon::now());
+        $request->StartTimeFrom = dt(Carbon::now()->subMonths(3));
+        $request->StartTimeTo   = dt(Carbon::now());
 
         # PAGINATION
         $request->Pagination = new PaginationType;
@@ -138,8 +168,11 @@ class SyncItems extends Command
         $this->info("Current Active: {$account->activeItems()->count()}. Completed: {$account->completedItems()->count()}");
     }
 
-    protected function getAccount($username): Account
+    private function syncOrders(Account $account): void
     {
-        return Account::query()->where('username', $username)->firstOrFail();
+        $account->syncOrdersByTimeRange(
+            Carbon::now()->subMonths(12),
+            Carbon::now()
+        );
     }
 }

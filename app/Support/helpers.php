@@ -22,3 +22,21 @@ if ( ! function_exists('app_carbon')) {
         return $carbon->timezone(config('app.timezone'));
     }
 }
+
+if ( ! function_exists('dt')) {
+    /**
+     * Make \DateTime instance from string or \Carbon\Carbon instance
+     *
+     * @param string|Carbon|null $time
+     *
+     * @return DateTime
+     */
+    function dt($time = null): \DateTime
+    {
+        if (is_string($time)) {
+            $time = new Carbon($time);
+        }
+
+        return new DateTime($time);
+    }
+}

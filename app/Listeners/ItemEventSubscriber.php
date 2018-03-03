@@ -16,25 +16,6 @@ class ItemEventSubscriber implements ShouldQueue
 {
     use InteractsWithQueue;
 
-    public function newOrder(FixedPriceTransaction $event): void
-    {
-        $responsePayload = $event->payload;
-
-        $account = Account::find($responsePayload->RecipientUserID);
-
-        // Update Quantity on eBay
-//        $request = $account->reviseItemRequest();
-//
-//        $request->Item           = new ItemType;
-//        $request->Item->Quantity = $responsePayload->Item->Quantity++; // Plus 1
-//
-//        $response = $account->trading()->reviseItem($request);
-//
-//        if ($response->Ack !== 'Success') {
-//            throw new TradingApiException($request, $response);
-//        }
-    }
-
     public function listed(ItemListed $event): void
     {
         $itemPayload     = $event->payload->Item;
@@ -86,11 +67,6 @@ class ItemEventSubscriber implements ShouldQueue
         $events->listen(
             ItemClosed::class,
             [$this, 'closed']
-        );
-
-        $events->listen(
-            FixedPriceTransaction::class,
-            [$this, 'newOrder']
         );
     }
 

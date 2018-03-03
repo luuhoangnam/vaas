@@ -2,8 +2,11 @@
 
 namespace App;
 
+use App\Exceptions\TradingApiException;
 use App\Services\Ebay;
+use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Types\ItemType;
+use DTS\eBaySDK\Trading\Types\ReviseItemResponseType;
 use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
@@ -24,6 +27,11 @@ class Item extends Model
     protected $casts = [
         'start_time' => 'datetime',
     ];
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
 
     public static function find($itemID)
     {
@@ -77,5 +85,26 @@ class Item extends Model
         }
 
         return $attrs;
+    }
+
+    public function refillQuantity($displayQuantity = 1, ItemType $item = null): ReviseItemResponseType
+    {
+        /** @var \App\Account $account */
+        $account = $this['account'];
+
+        $request = $account->reviseItemRequest();
+
+        $request->Item = new ItemType;
+
+        // NewQuantity = CurrentQuantity + DisplayQuantity
+        $request->Item->Quantity = ($item ? $item->Quantity : $this['quantity']) + $displayQuantity;
+
+        $response = $account->trading()->reviseItem($request);
+
+        if ($response->Ack === AckCodeType::C_FAILURE) {
+            throw new TradingApiException($request, $response);
+        }
+
+        return $response;
     }
 }
