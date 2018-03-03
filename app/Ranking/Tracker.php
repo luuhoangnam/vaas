@@ -13,7 +13,6 @@ use DTS\eBaySDK\Finding\Types\FindItemsByKeywordsRequest;
 use DTS\eBaySDK\Finding\Types\FindItemsByKeywordsResponse;
 use DTS\eBaySDK\Finding\Types\SearchItem;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 
 class Tracker extends Model
 {
@@ -49,7 +48,7 @@ class Tracker extends Model
     {
         $dates      = date_range($from, $until); // Default: Daily Retention
         $whereDates = $dates->toDateStringCollection()->implode("','");
-        
+
         return $this->records()
                     ->whereRaw("DATE(`records`.`created_at`) IN ('{$whereDates}')")
                     ->groupBy('date')
