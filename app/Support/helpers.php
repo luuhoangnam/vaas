@@ -1,6 +1,8 @@
 <?php
 
+use App\Support\DateRange;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 if ( ! function_exists('app_carbon')) {
     /**
@@ -42,5 +44,31 @@ if ( ! function_exists('dt')) {
         $time->setTimezone($tz);
 
         return new DateTime($time, $time->timezone);
+    }
+}
+
+if ( ! function_exists('date_range')) {
+    /**
+     * @param \Carbon\Carbon $from
+     * @param \Carbon\Carbon $until
+     *
+     * @return DateRange
+     */
+    function date_range(\Carbon\Carbon $from, \Carbon\Carbon $until = null): DateRange
+    {
+        $from  = $from->startOfDay();
+        $until = $until ?: Carbon::today();
+
+        $dates = new DateRange;
+
+        $current = clone $from;
+
+        while ($current->lessThanOrEqualTo($until)) {
+            $dates->push(clone $current);
+
+            $current->addDay();
+        }
+
+        return $dates;
     }
 }
