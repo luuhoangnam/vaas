@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Account;
 use App\Account;
 use App\Exceptions\CanNotFetchProductInformation;
 use App\Sourcing\AmazonProduct;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
@@ -63,7 +64,13 @@ class ItemsController extends Controller
         ]);
 
         try {
-            return (new AmazonProduct($request['product_id']))->fetch();
+            $asin = $request['product_id'];
+
+            $amazonProduct = new AmazonProduct($asin);
+
+            $fields = $amazonProduct->fetch();
+
+            return array_merge($fields, ['listed_on' => $amazonProduct->listedOnAccountsOfUser($request->user())]);
         } catch (CanNotFetchProductInformation $exception) {
             return response()->json([
                 'message' => 'Can not fetch information for this product id',

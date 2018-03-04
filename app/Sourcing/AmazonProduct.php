@@ -2,7 +2,11 @@
 
 namespace App\Sourcing;
 
+use App\Account;
 use App\Exceptions\CanNotFetchProductInformation;
+use App\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class AmazonProduct implements SourceProduct
 {
@@ -36,5 +40,20 @@ class AmazonProduct implements SourceProduct
         }
 
         throw new CanNotFetchProductInformation($this);
+    }
+
+    public function listedOnAccountsOfUser(User $user = null): Collection
+    {
+        $query = Account::query();
+
+        if ($user instanceof User) {
+            $query->where('user_id', $user['id']);
+        }
+
+        $query->whereHas('items', function (Builder $query) {
+            $query->where('sku', $this->getProductId());
+        });
+
+        return $query->get(['id', 'username']);
     }
 }
