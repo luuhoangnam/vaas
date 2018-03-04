@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Console\Commands\BulkImportTrackersByAccount;
+use App\Console\Commands\ForceRefreshRanking;
 use App\Console\Commands\ItemResearch;
 use App\Console\Commands\LowPerformanceListing;
 use App\Console\Commands\PeriodicRefreshRank;
@@ -29,6 +31,8 @@ class Kernel extends ConsoleKernel
         TrackRankingForAccount::class,
         PeriodicRefreshRank::class,
         ViewRankingOfItem::class,
+        ForceRefreshRanking::class,
+        BulkImportTrackersByAccount::class,
     ];
 
     /**

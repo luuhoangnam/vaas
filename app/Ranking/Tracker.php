@@ -18,6 +18,11 @@ class Tracker extends Model
 {
     protected $fillable = ['keyword'];
 
+    public static function find($id): Tracker
+    {
+        return static::query()->where('id', $id)->firstOrFail();
+    }
+
     public function trackable()
     {
         return $this->morphTo();
@@ -37,7 +42,7 @@ class Tracker extends Model
     {
         $response = $this->performSearch();
 
-        $this->detectRankFromSearchResponse($response);
+        $rank = $this->detectRankFromSearchResponse($response);
 
         $total = $response->paginationOutput->totalEntries ?: 0;
 
