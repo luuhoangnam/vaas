@@ -98,8 +98,15 @@ class Repricer extends Model
         $paypalRate        = $rule['paypal_rate'];
         $finalValueFeeRate = $rule['final_value_fee'];
         $profitRate        = $rule['profit'];
+        $minimumPrice      = $rule['minimum_price'];
 
-        return ($cog + $paypalUsd) / (1 - $paypalRate - $finalValueFeeRate - $profitRate);
+        $calculatedPrice = ($cog + $paypalUsd) / (1 - $paypalRate - $finalValueFeeRate - $profitRate);
+
+        if ($calculatedPrice < $minimumPrice) {
+            return $minimumPrice;
+        }
+
+        return $calculatedPrice;
     }
 
     protected function rule($field = null)
