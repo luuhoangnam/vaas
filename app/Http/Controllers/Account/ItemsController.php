@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Account;
 
 use App\Account;
+use App\Exceptions\CanNotFetchProductInformation;
+use App\Sourcing\AmazonProduct;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Response;
 
 class ItemsController extends Controller
 {
@@ -50,5 +53,24 @@ class ItemsController extends Controller
     public function allowedConditions(Request $request, Account $account, $categoryId)
     {
         return $account->categoryFeatures($categoryId);
+    }
+
+    public function inspectSourceProduct(Request $request)
+    {
+        $this->validate($request, [
+            'source'     => 'required|in:amazon.com',
+            'product_id' => 'required',
+        ]);
+
+        try {
+            return (new AmazonProduct($request['product_id']))->fetch();
+        } catch (CanNotFetchProductInformation $exception) {
+            return response()->json([
+                'message' => 'Can not fetch information for this product id',
+                'errors'  => [
+                    'product_id' => 'Invalid Product ID',
+                ],
+            ], 422);
+        }
     }
 }

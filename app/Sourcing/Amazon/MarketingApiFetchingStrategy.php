@@ -143,6 +143,10 @@ class MarketingApiFetchingStrategy implements FetchingStrategy
 
     protected function rescursiveGetTopCategory($browseNode): array
     {
+        if (@$browseNode[0]) {
+            $browseNode = $browseNode[0];
+        }
+
         if (@$browseNode['Ancestors']) {
             return $this->rescursiveGetTopCategory($browseNode['Ancestors']['BrowseNode']);
         }
