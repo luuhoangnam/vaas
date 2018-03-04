@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\ApiUsage;
 use App\Console\Commands\BulkImportTrackersByAccount;
 use App\Console\Commands\ForceRefreshRanking;
 use App\Console\Commands\ItemResearch;
@@ -33,6 +34,7 @@ class Kernel extends ConsoleKernel
         ViewRankingOfItem::class,
         ForceRefreshRanking::class,
         BulkImportTrackersByAccount::class,
+        ApiUsage::class,
     ];
 
     /**

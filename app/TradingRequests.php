@@ -4,10 +4,12 @@ namespace App;
 
 use DTS\eBaySDK\Trading\Types\AbstractRequestType;
 use DTS\eBaySDK\Trading\Types\EndItemsRequestType;
+use DTS\eBaySDK\Trading\Types\GetApiAccessRulesRequestType;
 use DTS\eBaySDK\Trading\Types\GetCategoryFeaturesRequestType;
 use DTS\eBaySDK\Trading\Types\GetItemRequestType;
 use DTS\eBaySDK\Trading\Types\GetItemTransactionsRequestType;
 use DTS\eBaySDK\Trading\Types\GetNotificationPreferencesRequestType;
+use DTS\eBaySDK\Trading\Types\GetNotificationsUsageRequestType;
 use DTS\eBaySDK\Trading\Types\GetOrdersRequestType;
 use DTS\eBaySDK\Trading\Types\GetSellerListRequestType;
 use DTS\eBaySDK\Trading\Types\GetSuggestedCategoriesRequestType;
@@ -25,6 +27,16 @@ use DTS\eBaySDK\Trading\Types\VerifyAddItemRequestType;
  */
 trait TradingRequests
 {
+    public function getApiAccessRulesRequest(): GetApiAccessRulesRequestType
+    {
+        return $this->prepareAuthRequiredRequest(new GetApiAccessRulesRequestType);
+    }
+
+    public function getNotificationsUsageRequest(): GetNotificationsUsageRequestType
+    {
+        return $this->prepareAuthRequiredRequest(new GetNotificationsUsageRequestType);
+    }
+
     public function endItemsRequest(): EndItemsRequestType
     {
         return $this->prepareAuthRequiredRequest(new EndItemsRequestType);

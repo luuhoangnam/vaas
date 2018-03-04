@@ -53,6 +53,11 @@ class Account extends Model
         return static::query()->where('username', $username)->exists();
     }
 
+    public static function random(): Account
+    {
+        return Account::query()->inRandomOrder()->firstOrFail();
+    }
+
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
