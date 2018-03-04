@@ -51,7 +51,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('ranking:refresh')->daily();
-//        $schedule->command('repricer:periodic')->everyFifteenMinutes();
+        $schedule->command('repricer:periodic')->everyFifteenMinutes();
     }
 
     /**
