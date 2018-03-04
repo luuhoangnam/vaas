@@ -29,7 +29,7 @@ return [
 
             'strategies' => [
                 MarketingApiFetchingStrategy::class,
-                BasicCrawlFetchingStrategy::class,
+                // BasicCrawlFetchingStrategy::class,
             ],
         ],
     ],
