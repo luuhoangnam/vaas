@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Account;
 
 use App\Account;
 use App\Exceptions\CanNotFetchProductInformation;
+use App\Http\Requests\ListAnItemRequest;
 use App\Sourcing\AmazonProduct;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -12,26 +13,8 @@ use Illuminate\Http\Response;
 
 class ItemsController extends Controller
 {
-    public function addItem(Request $request, Account $account)
+    public function addItem(ListAnItemRequest $request, Account $account)
     {
-        $this->validate($request, [
-            'title'               => 'required',
-            'description'         => 'required|max:500000',
-            'condition_id'        => 'required|integer',
-            'quantity'            => 'required|integer',
-            'sku'                 => '',
-            'price'               => 'required|numeric',
-            'category_id'         => 'required|string',
-            'payment_profile_id'  => 'required|integer',
-            'shipping_profile_id' => 'required|integer',
-            'return_profile_id'   => 'required|integer',
-            'pictures'            => 'required|array|min:1',
-            'pictures.*'          => 'url',
-            // Attrs
-            'upc'                 => '',
-            'mpn'                 => '',
-        ]);
-
         $response = $account->addItem($request->all());
 
         return $response->toArray();
