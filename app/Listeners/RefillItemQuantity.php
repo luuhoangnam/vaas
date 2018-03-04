@@ -24,9 +24,12 @@ class RefillItemQuantity implements ShouldQueue
             return;
         }
 
+        $displayQuantity = config('ebay.quantityManager.autoRefillQuantity', 1);
+
         $this->reviseItem(
             Account::find($event->payload->RecipientUserID),
-            $event->payload->Item
+            $event->payload->Item,
+            $displayQuantity
         );
     }
 

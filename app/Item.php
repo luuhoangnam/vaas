@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Ranking\Trackable;
+use App\Repricing\Repricer;
 use App\Services\Ebay;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use Illuminate\Database\Eloquent\Model;
@@ -54,9 +55,19 @@ class Item extends Model
         return static::query()->where('item_id', $itemID)->exists();
     }
 
+    public function itemType(): ItemType
+    {
+        return new ItemType(['ItemID' => $this['item_id']]);
+    }
+
     public function account()
     {
         return $this->belongsTo(Account::class);
+    }
+
+    public function repricer()
+    {
+        return $this->hasOne(Repricer::class);
     }
 
     public function getQuantityAvailableAttribute()

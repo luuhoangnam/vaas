@@ -7,7 +7,9 @@ use App\Console\Commands\BulkImportTrackersByAccount;
 use App\Console\Commands\ForceRefreshRanking;
 use App\Console\Commands\ItemResearch;
 use App\Console\Commands\LowPerformanceListing;
+use App\Console\Commands\MakeRepricer;
 use App\Console\Commands\PeriodicRefreshRank;
+use App\Console\Commands\RunRepricerPeriodically;
 use App\Console\Commands\SubscribePlatformNotification;
 use App\Console\Commands\SynceBayAccount;
 use App\Console\Commands\TrackRankingForAccount;
@@ -35,6 +37,8 @@ class Kernel extends ConsoleKernel
         ForceRefreshRanking::class,
         BulkImportTrackersByAccount::class,
         ApiUsage::class,
+        MakeRepricer::class,
+        RunRepricerPeriodically::class,
     ];
 
     /**
@@ -47,6 +51,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('ranking:refresh')->daily();
+//        $schedule->command('repricer:periodic')->everyFifteenMinutes();
     }
 
     /**
@@ -59,5 +64,10 @@ class Kernel extends ConsoleKernel
         $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
+
+        // Require debug command if exists
+        if (file_exists(base_path('routes/debug.php'))) {
+            require base_path('routes/debug.php');
+        }
     }
 }
