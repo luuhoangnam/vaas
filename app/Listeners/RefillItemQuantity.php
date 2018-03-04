@@ -14,9 +14,7 @@ class RefillItemQuantity implements ShouldQueue
 {
     use InteractsWithQueue;
 
-    protected $ignore = [
-        'goodie.depot',
-    ];
+    public $queue = 'quantity_manager';
 
     public function handle(FixedPriceTransaction $event)
     {
@@ -33,9 +31,9 @@ class RefillItemQuantity implements ShouldQueue
         );
     }
 
-    protected function ignoreAccount($username)
+    protected function ignoreAccount($username): bool
     {
-        return in_array($username, $this->ignore);
+        return in_array($username, config('ebay.quantityManager.ignore', []));
     }
 
     protected function reviseItem(Account $account, ItemType $item, $displayQuantity = 1): void

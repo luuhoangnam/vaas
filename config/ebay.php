@@ -8,6 +8,9 @@ return [
         //
     ],
     'quantityManager' => [
+        'ignore'             => [
+            'goodie.depot',
+        ],
         'autoRefillQuantity' => 1,
     ],
     'repricer'        => [

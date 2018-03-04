@@ -74,9 +74,9 @@ return [
         'production' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue'      => ['default'],
+                'queue'      => ['default', 'repricer', 'quantity_manager'],
                 'balance'    => 'simple',
-                'processes'  => 10,
+                'processes'  => 25,
                 'tries'      => 3,
             ],
         ],

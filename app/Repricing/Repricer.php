@@ -124,11 +124,11 @@ class Repricer extends Model
 
     protected function reviseItemQuantityToZero()
     {
-        ReviseItemQuantityToZero::dispatch($this['item']);
+        ReviseItemQuantityToZero::dispatch($this['item'])->onQueue('repricer');
     }
 
     protected function reviseItemPrice($newPrice)
     {
-        ReviseItemPrice::dispatch($this['item'], $newPrice);
+        ReviseItemPrice::dispatch($this['item'], $newPrice)->onQueue('repricer');
     }
 }
