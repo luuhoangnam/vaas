@@ -8,13 +8,7 @@ class ListAnItemRequest extends FormRequest
 {
     public function authorize()
     {
-        if ($this->user()->isDeveloper()) {
-            return true;
-        }
-
-        $account = $this->route()->parameter('account');
-
-        return $account && $account['user_id'] === $this->user()['id'];
+        return true; // Using controller level
     }
 
     public function rules()

@@ -15,6 +15,8 @@ class ItemsController extends Controller
 {
     public function addItem(ListAnItemRequest $request, Account $account)
     {
+        $this->authorize('listing', $account);
+
         $response = $account->addItem($request->all());
 
         return $response->toArray();

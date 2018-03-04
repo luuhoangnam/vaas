@@ -17,6 +17,11 @@ class Account
         }
     }
 
+    public function listing(User $user, AccountModel $account)
+    {
+        return $this->view($user, $account);
+    }
+
     public function view(User $user, AccountModel $account)
     {
         return $user['id'] === $account['owner']['id'];
