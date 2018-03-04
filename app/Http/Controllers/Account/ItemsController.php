@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Account;
 
 use App\Account;
 use App\Exceptions\CanNotFetchProductInformation;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ListAnItemRequest;
 use App\Sourcing\AmazonProduct;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Response;
 
 class ItemsController extends Controller
 {
