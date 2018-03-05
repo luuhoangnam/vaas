@@ -84,13 +84,15 @@
                                                 Place Order
                                             </a>
                                         @else
-                                            <a href="#" class="btn btn-disabled">Can Not Fetch</a>
+                                            <span class="text-muted">Can Not Fetch</span>
                                         @endif
                                     </td>
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
+
+                        {{ $orders->links('pagination::bootstrap-4') }}
                     </div>
                 </div>
             </div>
