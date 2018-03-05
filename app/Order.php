@@ -7,9 +7,22 @@ use DTS\eBaySDK\Trading\Types\TransactionType;
 use DTS\eBaySDK\Types\RepeatableType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Laravel\Scout\Searchable;
 
 class Order extends Model
 {
+    use Searchable;
+
+    public function searchableAs()
+    {
+        return 'orders';
+    }
+
+    public function toSearchableArray()
+    {
+        return $this->toArray();
+    }
+
     protected $fillable = [
         'order_id',
         'record',
