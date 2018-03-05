@@ -37,15 +37,17 @@
                     <div class="table-responsive-xl">
                         <table class="table table-hover">
                             <thead>
-                            <th scope="col">Record <i class="fa fa-caret-down"></i></th>
-                            <th scope="col">Item</th>
-                            <th scope="col">Buyer</th>
-                            <th scope="col">Total</th>
-                            <th scope="col">FVF</th>
-                            <th scope="col">PPF</th>
-                            <th scope="col">COG</th>
-                            <th scope="col">Profit</th>
-                            <th scope="col"></th>
+                            <tr>
+                                <th scope="col">Record <i class="fa fa-caret-down"></i></th>
+                                <th scope="col">Item</th>
+                                <th scope="col">Buyer</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">FVF</th>
+                                <th scope="col">PPF</th>
+                                <th scope="col">COG</th>
+                                <th scope="col">Profit</th>
+                                <th scope="col"></th>
+                            </tr>
                             </thead>
 
                             <tbody>
