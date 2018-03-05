@@ -2,10 +2,13 @@
 
 namespace App;
 
+use App\Exceptions\CanNotFetchProductInformation;
 use App\Ranking\Trackable;
 use App\Repricing\Repricer;
 use App\Services\Ebay;
+use App\Sourcing\AmazonProduct;
 use DTS\eBaySDK\Trading\Types\ItemType;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 
@@ -65,9 +68,30 @@ class Item extends Model
         return $this->belongsTo(Account::class);
     }
 
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'order_line_items');
+    }
+
     public function repricer()
     {
         return $this->hasOne(Repricer::class);
+    }
+
+    public function getEbayLinkAttribute()
+    {
+        return "https://www.ebay.com/itm/{$this['item_id']}";
+    }
+
+    public function getCashbackLinkAttribute()
+    {
+        try {
+            return (new AmazonProduct($this['sku']))->getCashbackLink();
+        } catch (CanNotFetchProductInformation $exception) {
+            return null;
+        } catch (RequestException $exception) {
+            return null;
+        }
     }
 
     public function getQuantityAvailableAttribute()

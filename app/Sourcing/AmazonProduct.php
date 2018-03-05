@@ -3,6 +3,8 @@
 namespace App\Sourcing;
 
 use App\Account;
+use App\Cashback\AmazonAssociates;
+use App\Cashback\Engine;
 use App\Exceptions\CanNotFetchProductInformation;
 use App\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,6 +13,8 @@ use Illuminate\Support\Collection;
 class AmazonProduct implements SourceProduct
 {
     protected $asin;
+
+    protected $cachedProducts = [];
 
     public function __construct($asin)
     {
@@ -24,6 +28,10 @@ class AmazonProduct implements SourceProduct
 
     public function fetch(): array
     {
+        if (key_exists($this->getProductId(), $this->cachedProducts)) {
+            return $this->cachedProducts[$this->getProductId()];
+        }
+
         // Using Marketing API Strategy
         $strategies = config('ebay.sourcing.amazon.strategies');
 
@@ -32,7 +40,9 @@ class AmazonProduct implements SourceProduct
                 /** @var FetchingStrategy $strategy */
                 $strategy = new $strategyClass($this);
 
-                return $strategy->fetch();
+                $this->cachedProducts[$this->getProductId()] = $strategy->fetch();
+
+                return $this->cachedProducts[$this->getProductId()];
             } catch (\Exception $exception) {
                 // Can't use this strategy to fetch product information
                 continue;
@@ -55,5 +65,26 @@ class AmazonProduct implements SourceProduct
         });
 
         return $query->get(['id', 'username']);
+    }
+
+    public function getCashbackLink(): string
+    {
+        $cacheKey  = md5("cashback.amazon(asin:{$this->getProductId()}).link");
+        $cacheTime = config('cashback.cache_time', 24 * 60); // 1 Day
+
+        return cache()->remember($cacheKey, $cacheTime, function () {
+            $bestCashbackProgram = (new Engine)->bestCashbackProgram($this);
+
+            if ($bestCashbackProgram instanceof AmazonAssociates) {
+                return AmazonAssociates::redirectToAmazon($this->getProductId());
+            }
+
+            return $bestCashbackProgram->link($this->getProductId());
+        });
+    }
+
+    public function belongingCategories()
+    {
+        return $this->fetch()['categories'];
     }
 }

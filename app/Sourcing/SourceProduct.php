@@ -13,4 +13,6 @@ interface SourceProduct
     public function getProductId();
 
     public function listedOnAccountsOfUser(User $user = null): Collection;
+
+    public function belongingCategories();
 }

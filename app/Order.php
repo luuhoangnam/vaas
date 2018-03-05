@@ -4,7 +4,9 @@ namespace App;
 
 use DTS\eBaySDK\Trading\Types\OrderType;
 use DTS\eBaySDK\Trading\Types\TransactionType;
+use DTS\eBaySDK\Types\RepeatableType;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Order extends Model
 {
@@ -42,6 +44,64 @@ class Order extends Model
         return $this->belongsTo(Account::class);
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function getBuyerEbayLinkAttribute()
+    {
+        return "https://www.ebay.com/usr/{$this['buyer_username']}";
+    }
+
+    public function getEbayLinkAttribute()
+    {
+        $transaction = $this['transactions'][0];
+
+        $transactionID = $transaction['transaction_id'];
+        $itemID        = $transaction['item_id'];
+
+        $rootUrl = 'https://k2b-bulk.ebay.com/ws/eBayISAPI.dll?EditSalesRecord&urlstack=5508||';
+
+        return "{$rootUrl}&transid={$transactionID}&itemid={$itemID}";
+    }
+
+    /**
+     * @param RepeatableType|TransactionType[] $transactionTypes
+     *
+     * @return Collection
+     */
+    public function saveTransactions(RepeatableType $transactionTypes): Collection
+    {
+        return collect($transactionTypes)->each(function (TransactionType $transactionType) {
+            $this->saveTransaction($transactionType);
+        });
+    }
+
+    public function saveTransaction(TransactionType $transactionType): Transaction
+    {
+        return $this->transactions()->updateOrCreate(
+            ['transaction_id' => $transactionType->TransactionID],
+            [
+                'transaction_id' => $transactionType->TransactionID,
+                'quantity'       => $transactionType->QuantityPurchased,
+                'item_id'        => $transactionType->Item->ItemID,
+                'item_site'      => $transactionType->Item->Site,
+                'item_title'     => $transactionType->Item->Title,
+                'item_sku'       => $transactionType->Item->SKU,
+            ]
+        );
+    }
+
+    public function getProfitAttribute()
+    {
+        if (is_null($this['cog'])) {
+            return null;
+        }
+
+        return $this['total'] - $this['final_value_fee'] - $this['paypal_fee'] - $this['cog'];
+    }
+
     public static function extractAttribute(OrderType $data)
     {
         return [
@@ -59,24 +119,24 @@ class Order extends Model
         ];
     }
 
-    public function getPaypalFeeAttribute(): double
+    public function getPaypalFeeAttribute()
     {
         return $this->attributes['paypal_fee'] ?: $this->defaultPayPalFee();
     }
 
-    protected function defaultPayPalFee(): double
+    protected function defaultPayPalFee()
     {
         $rate = 3.9 / 100;
 
         return $this['total'] * $rate + 0.3;
     }
 
-    public function getFinalValueFeeAttribute(): double
+    public function getFinalValueFeeAttribute()
     {
         return $this->attributes['final_value_fee'] ?: $this->defaultFinalValueFee();
     }
 
-    protected function defaultFinalValueFee(): double
+    protected function defaultFinalValueFee()
     {
         $rate = 9.15 / 100;
 

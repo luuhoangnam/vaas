@@ -11,6 +11,7 @@ use App\Console\Commands\MakeRepricer;
 use App\Console\Commands\PeriodicRefreshRank;
 use App\Console\Commands\RunRepricerPeriodically;
 use App\Console\Commands\SubscribePlatformNotification;
+use App\Console\Commands\SyncAlleBayAccounts;
 use App\Console\Commands\SynceBayAccount;
 use App\Console\Commands\TrackRankingForAccount;
 use App\Console\Commands\TrackRankingForItem;
@@ -27,6 +28,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         SynceBayAccount::class,
+        SyncAlleBayAccounts::class,
         LowPerformanceListing::class,
         SubscribePlatformNotification::class,
         ItemResearch::class,

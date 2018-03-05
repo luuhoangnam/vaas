@@ -32,6 +32,7 @@ use DTS\eBaySDK\Trading\Types\SellerPaymentProfileType;
 use DTS\eBaySDK\Trading\Types\SellerProfilesType;
 use DTS\eBaySDK\Trading\Types\SellerReturnProfileType;
 use DTS\eBaySDK\Trading\Types\SellerShippingProfileType;
+use DTS\eBaySDK\Trading\Types\TransactionType;
 use DTS\eBaySDK\Trading\Types\VerifyAddItemResponseType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -98,7 +99,7 @@ class Account extends Model
         return $query;
     }
 
-    public function updateOrCreateOrder(OrderType $order)
+    public function updateOrCreateOrder(OrderType $order): Order
     {
         return $this->orders()->updateOrCreate(
             ['order_id' => $order->OrderID],
@@ -369,8 +370,10 @@ class Account extends Model
         $request->DetailLevel = [DetailLevelCodeType::C_RETURN_ALL];
 
         $request->OutputSelector = [
+            // Pagination Stuffs
             'HasMoreOrders',
             'PaginationResult',
+            // Order Details
             'OrderArray.Order.OrderID',
             'OrderArray.Order.OrderStatus',
             'OrderArray.Order.Total',
@@ -378,12 +381,17 @@ class Account extends Model
             'OrderArray.Order.PaymentHoldStatus',
             'OrderArray.Order.CancelStatus',
             'OrderArray.Order.CreatedTime',
-            'OrderArray.Order.TransactionArray.Transaction.FinalValueFee',
-            'OrderArray.Order.ExternalTransaction.FeeOrCreditAmount',
+            // Record Number
             'OrderArray.Order.ShippingDetails.SellingManagerSalesRecordNumber',
+            // PayPal Fee
+            'OrderArray.Order.ExternalTransaction.FeeOrCreditAmount',
+            // Final Value Fee
+            'OrderArray.Order.TransactionArray.Transaction.FinalValueFee',
+            // Transaction Details
+            'OrderArray.Order.TransactionArray.Transaction.TransactionID',
+            'OrderArray.Order.TransactionArray.Transaction.QuantityPurchased',
+            'OrderArray.Order.TransactionArray.Transaction.Item',
         ];
-
-        $orders = new Collection;
 
         do {
             $response = $this->trading()->getOrders($request);
@@ -392,16 +400,19 @@ class Account extends Model
                 throw new TradingApiException($request, $response);
             }
 
-            $orders = $orders->concat(collect($response->OrderArray->Order));
+            $orders = $response->OrderArray->Order;
+
+            collect($orders)->each(function (OrderType $orderType) {
+                // Save Orders
+                $order = $this->updateOrCreateOrder($orderType);
+
+                // Save Order Transactions
+                $order->saveTransactions($orderType->TransactionArray->Transaction);
+            });
 
             # UPDATE PAGINATION PAGE NUMBER
             $request->Pagination->PageNumber++;
         } while ($response->HasMoreOrders);
-
-        // Save Orders
-        $orders->each(function (OrderType $data) {
-            $this->updateOrCreateOrder($data);
-        });
     }
 
     protected function enableEvent(string $event): NotificationEnableType

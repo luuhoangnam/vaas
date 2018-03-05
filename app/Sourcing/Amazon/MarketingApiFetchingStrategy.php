@@ -2,6 +2,8 @@
 
 namespace App\Sourcing\Amazon;
 
+use App\Exceptions\InvalidAmazonAssociatesItemException;
+use App\Exceptions\NonAffiliatableException;
 use App\Exceptions\UnableFetchAmazonItemUsingMarketingApiException;
 use App\Sourcing\FetchingStrategy;
 use App\Sourcing\SourceProduct;
@@ -27,16 +29,19 @@ class MarketingApiFetchingStrategy implements FetchingStrategy
         $buyboxPrice = (int)$buyboxOffer['OfferListing']['Price']['Amount'] / 100;
         $attributes  = $item['ItemAttributes'];
 
-        $affiliatable = true;
-        $title        = $attributes['Title'];
-        $upc          = $attributes['UPC'];
-        $price        = $buyboxPrice;
-        $available    = $this->isAvailable($response);
-        $images       = $this->getImages($item['ImageSets']['ImageSet']);
-        $attributes   = $this->attributes($item);
-        $category     = $this->topLevelCategory($item);
+        $categoryTraversal = new AmazonCategoryTraversal($item['BrowseNodes']['BrowseNode']);
 
-        return compact('affiliatable', 'price', 'available', 'title', 'upc', 'images', 'attributes', 'category');
+        return [
+            'affiliatable'       => true,
+            'price'              => $buyboxPrice,
+            'available'          => $this->isAvailable($response),
+            'title'              => $attributes['Title'],
+            'upc'                => $attributes['UPC'],
+            'images'             => $this->getImages($item['ImageSets']['ImageSet']),
+            'attributes'         => $this->attributes($item),
+            'categories'         => $categoryTraversal->getFlatCategories(),
+            'top_level_category' => $this->topLevelCategory($item),
+        ];
     }
 
     protected function amazon(): AmazonClient
@@ -51,11 +56,30 @@ class MarketingApiFetchingStrategy implements FetchingStrategy
 
         return cache()->remember($cacheKey, $cacheTime, function () {
             try {
-                return $this->amazon()->item($this->asin());
+                $response = $this->amazon()->item($this->asin());
+
+                if ($this->hasError($response, 'AWS.InvalidParameterValue')) {
+                    throw new InvalidAmazonAssociatesItemException($this->asin());
+                }
+
+                if ($this->hasError($response, 'AWS.ECommerceService.ItemNotAccessible')) {
+                    throw new NonAffiliatableException($this->asin());
+                }
+
+                return $response;
             } catch (ClientException $exception) {
                 throw new UnableFetchAmazonItemUsingMarketingApiException($this->asin(), $exception);
             }
         });
+    }
+
+    protected function hasError($response, $code = null): bool
+    {
+        if ($code) {
+            return @$response['Items']['Request']['Errors']['Error']['Code'] == $code;
+        }
+
+        return (bool)@$response['Items']['Request']['Errors']['Error'];
     }
 
     protected function getImages($imageSet): Collection
@@ -133,25 +157,7 @@ class MarketingApiFetchingStrategy implements FetchingStrategy
 
     protected function topLevelCategory($item): array
     {
-        $topCat = $this->rescursiveGetTopCategory($item['BrowseNodes']['BrowseNode']);
-
-        return [
-            'id'   => (int)$topCat['BrowseNodeId'],
-            'name' => $topCat['Name'],
-        ];
-    }
-
-    protected function rescursiveGetTopCategory($browseNode): array
-    {
-        if (@$browseNode[0]) {
-            $browseNode = $browseNode[0];
-        }
-
-        if (@$browseNode['Ancestors']) {
-            return $this->rescursiveGetTopCategory($browseNode['Ancestors']['BrowseNode']);
-        }
-
-        return $browseNode;
+        return (new AmazonCategoryTraversal($item['BrowseNodes']['BrowseNode']))->topLevelCategory();
     }
 
     /**

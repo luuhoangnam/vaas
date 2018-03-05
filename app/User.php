@@ -27,6 +27,11 @@ class User extends Authenticatable
         return $this->hasMany(Account::class);
     }
 
+    public function orders()
+    {
+        return $this->hasManyThrough(Order::class, Account::class);
+    }
+
     public function addAccount($username, $token): Account
     {
         if (Account::exists($username)) {

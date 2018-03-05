@@ -3,6 +3,10 @@
 use App\Support\DateRange;
 use App\Support\Retention;
 use Illuminate\Support\Carbon;
+use Money\Currencies\ISOCurrencies;
+use Money\Currency;
+use Money\Formatter\IntlMoneyFormatter;
+use Money\Money;
 
 if ( ! function_exists('app_carbon')) {
     /**
@@ -92,3 +96,17 @@ if ( ! function_exists('date_range')) {
         return $dates;
     }
 }
+
+if ( ! function_exists('usd')) {
+    /**
+     * @param int|string|double|float $amount
+     *
+     * @return string
+     */
+    function usd($amount)
+    {
+        return money_format('$%.2n' ,$amount);
+    }
+}
+
+

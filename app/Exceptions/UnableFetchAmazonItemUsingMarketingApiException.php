@@ -22,10 +22,11 @@ class UnableFetchAmazonItemUsingMarketingApiException extends \Exception
      * @param string     $asin
      * @param Throwable $previous
      */
-    public function __construct($asin, Throwable $previous)
+    public function __construct($asin, Throwable $previous = null)
     {
         $this->asin = $asin;
-        $this->previous = $previous;
+
+        parent::__construct('', 0, $previous);
     }
 
     /**
