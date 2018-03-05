@@ -44,7 +44,7 @@ class ReviseItemPrice implements ShouldQueue
         $request->Item = $this->item->itemType();
 
         $request->Item->StartPrice             = new AmountType;
-        $request->Item->StartPrice->value      = $this->newPrice;
+        $request->Item->StartPrice->value      = (float)$this->newPrice;
         $request->Item->StartPrice->currencyID = CurrencyCodeType::C_USD;
 
         $response = $this->account()->trading()->reviseItem($request);
