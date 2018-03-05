@@ -8,12 +8,12 @@ use Revolution\Amazon\ProductAdvertising\AmazonClient;
 
 class AmazonAssociates implements CashbackProgram
 {
-    public static function redirectToAmazon($asin)
+    public function link($asin)
     {
         return route('redirect.amazon', $asin);
     }
 
-    public function link($asin)
+    public function getAssociateLink($asin)
     {
         $response = $this->queryItem($asin);
 

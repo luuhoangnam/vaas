@@ -75,10 +75,6 @@ class AmazonProduct implements SourceProduct
         return cache()->remember($cacheKey, $cacheTime, function () {
             $bestCashbackProgram = (new Engine)->bestCashbackProgram($this);
 
-            if ($bestCashbackProgram instanceof AmazonAssociates) {
-                return AmazonAssociates::redirectToAmazon($this->getProductId());
-            }
-
             return $bestCashbackProgram->link($this->getProductId());
         });
     }

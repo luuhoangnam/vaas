@@ -14,7 +14,7 @@ class RedirectController extends Controller
     public function redirect(Request $request, $asin)
     {
         try {
-            $url = (new AmazonAssociates)->link($asin);
+            $url = (new AmazonAssociates)->getAssociateLink($asin);
 
             return view('intermediates.amazon', compact('asin', 'url'));
         } catch (InvalidAmazonAssociatesItemException $exception) {
