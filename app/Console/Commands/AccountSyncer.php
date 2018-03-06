@@ -16,44 +16,57 @@ abstract class AccountSyncer extends Command
             $query->where('username', $this->argument('username'));
         }
 
-        $query->get()->shuffle()->each(function (Account $account) {
+        $since = null;
+        if ($this->hasOption('since')) {
+            try {
+                $since = new Carbon($this->option('since'));
+            } catch (\Exception $exception) {
+                $this->error('Don\'t understand the `since` value. Try again!');
+
+                return;
+            }
+        }
+
+        $query->get()->shuffle()->each(function (Account $account) use ($since) {
             // 1. Sync Items
             if ($this->option('only_items')) {
-                $this->syncItems($account);
+                $this->syncItems($account, $since);
 
                 return;
             }
 
             // 2. Sync Orders
             if ($this->option('only_orders')) {
-                $this->syncOrders($account);
+                $this->syncOrders($account, $since);
 
                 return;
             }
 
             // 3. Sync both orders & items
-            $this->syncAllAspects($account);
+            $this->syncAllAspects($account, $since);
         });
     }
 
-    protected function syncAllAspects(Account $account): void
+    protected function syncAllAspects(Account $account, $since = null): void
     {
-        $this->syncItems($account);
-        $this->syncOrders($account);
+        $this->syncItems($account, $since);
+        $this->syncOrders($account, $since);
     }
 
-    protected function syncItems(Account $account): void
+    protected function syncItems(Account $account, $since = null): void
     {
         $account->syncItemsByStartTimeRange(
-            Carbon::now()->subMonths(3),
+            $since ?: Carbon::now()->subMonths(3),
             Carbon::now()
         );
     }
 
-    protected function syncOrders(Account $account): void
+    protected function syncOrders(Account $account, $since = null): void
     {
+        dd($since ?: Carbon::now()->subMonths(12));
+
         $account->syncOrdersByCreatedTimeRange(
-            Carbon::now()->subMonths(12),
+            $since ?: Carbon::now()->subMonths(12),
             Carbon::now()
         );
     }
