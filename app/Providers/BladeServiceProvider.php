@@ -17,6 +17,10 @@ class BladeServiceProvider extends ServiceProvider
         Blade::if ('env', function ($environment) {
             return app()->environment($environment);
         });
+
+        Blade::if ('beta', function () {
+            return app()->environment('local') || request()->user()->isDeveloper();
+        });
     }
 
     /**

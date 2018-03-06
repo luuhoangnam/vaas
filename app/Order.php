@@ -13,16 +13,6 @@ class Order extends Model
 {
     use Searchable;
 
-    public function searchableAs()
-    {
-        return 'orders';
-    }
-
-    public function toSearchableArray()
-    {
-        return $this->toArray();
-    }
-
     protected $fillable = [
         'order_id',
         'record',
@@ -41,6 +31,16 @@ class Order extends Model
     ];
 
     protected $casts = ['created_time' => 'datetime'];
+
+    public function searchableAs()
+    {
+        return 'orders';
+    }
+
+    public function toSearchableArray()
+    {
+        return $this->toArray();
+    }
 
     public static function exists($orderID): bool
     {

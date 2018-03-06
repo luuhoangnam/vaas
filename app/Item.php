@@ -84,7 +84,7 @@ class Item extends Model
         return "https://www.ebay.com/itm/{$this['item_id']}";
     }
 
-    public function getAssociateLink()
+    public function getAssociateLinkAttribute()
     {
         return (new AmazonAssociates)->link($this['sku']);
     }
@@ -119,6 +119,15 @@ class Item extends Model
         $total = $result['total'];
 
         return compact('rank', 'total');
+    }
+
+    public function getSourcePriceAttribute()
+    {
+        try {
+            return optional(new AmazonProduct($this['sku']))->price;
+        } catch (CanNotFetchProductInformation $exception) {
+            return null;
+        }
     }
 
     public static function extractItemAttributes(ItemType $item, $fields = []): array

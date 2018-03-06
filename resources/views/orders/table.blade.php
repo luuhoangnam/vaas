@@ -27,7 +27,9 @@
             <td>
                 <a href="{{ $order['ebay_link'] }}"> {{ $order['record'] }}</a>
                 @unless(request('seller'))
-                    (<a href="{{ route('orders') }}?seller={{ $order['account']['username'] }}">{{ $order['account']['username'] }}</a>)
+                    (<a href="{{ route('orders') }}?seller={{ $order['account']['username'] }}">
+                        {{ $order['account']['username'] }}
+                    </a>)
                 @endif
             </td>
             <td>
@@ -35,7 +37,10 @@
                 <a href="{{ $item['ebay_link'] }}">{{ $transaction['item_title'] }}</a>
             </td>
             <td><a href="{{ $order['buyer_ebay_link'] }}">{{ $order['buyer_username'] }}</a></td>
-            <td><i class="fa fa-amazon"></i>&nbsp;<a href="{{ $item['link'] }}">{{ $item['sku'] }}</a></td>
+            <td>
+                <i class="fa fa-amazon"></i>
+                <a target="_blank" href="{{ $item['associate_link'] }}">{{ $item['sku'] }}</a>
+            </td>
             <td>{{ usd($order['total']) }}</td>
             <td>{{ usd($order['final_value_fee']) }}</td>
             <td>{{ usd($order['paypal_fee']) }}</td>

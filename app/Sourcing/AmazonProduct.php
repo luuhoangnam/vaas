@@ -3,18 +3,20 @@
 namespace App\Sourcing;
 
 use App\Account;
-use App\Cashback\AmazonAssociates;
 use App\Cashback\Engine;
 use App\Exceptions\CanNotFetchProductInformation;
 use App\User;
+use ArrayAccess;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
-class AmazonProduct implements SourceProduct
+class AmazonProduct implements SourceProduct, ArrayAccess
 {
     protected $asin;
 
     protected $cachedProducts = [];
+
+    protected $attributes = [];
 
     public function __construct($asin)
     {
@@ -42,7 +44,7 @@ class AmazonProduct implements SourceProduct
 
                 $this->cachedProducts[$this->getProductId()] = $strategy->fetch();
 
-                return $this->cachedProducts[$this->getProductId()];
+                return $this->attributes = $this->cachedProducts[$this->getProductId()];
             } catch (\Exception $exception) {
                 // Can't use this strategy to fetch product information
                 continue;
@@ -69,7 +71,7 @@ class AmazonProduct implements SourceProduct
 
     public function getCashbackLink(): string
     {
-        $cacheKey  = md5("cashback.amazon(asin:{$this->getProductId()}).link");
+        $cacheKey = md5("cashback.amazon(asin:{$this->getProductId()}).link");
         $cacheTime = config('cashback.cache_time', 24 * 60); // 1 Day
 
         return cache()->remember($cacheKey, $cacheTime, function () {
@@ -82,5 +84,46 @@ class AmazonProduct implements SourceProduct
     public function belongingCategories()
     {
         return $this->fetch()['categories'];
+    }
+
+    public function __get($name)
+    {
+        $attrs = $this->fetch();
+
+        if (key_exists($name, $attrs)) {
+            return $attrs[$name];
+        }
+
+        return;
+    }
+
+    public function offsetExists($offset)
+    {
+        $attrs = $this->fetch();
+
+        return key_exists($offset, $attrs);
+    }
+
+    public function offsetGet($offset)
+    {
+        $attrs = $this->fetch();
+
+        return $attrs[$offset];
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        return $this->unsupportedAction();
+    }
+
+    public function offsetUnset($offset)
+    {
+        return $this->unsupportedAction();
+    }
+
+    protected function unsupportedAction(
+        $message = 'This is just a mapped object of an amazon product. You can not change value on it'
+    ) {
+        throw new \Exception($message);
     }
 }
