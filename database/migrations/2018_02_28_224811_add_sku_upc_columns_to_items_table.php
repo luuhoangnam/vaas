@@ -13,7 +13,7 @@ class AddSkuUpcColumnsToItemsTable extends Migration
      */
     public function up()
     {
-        Schema::table('items', function (Blueprint $table) {
+        Schema::table('item', function (Blueprint $table) {
             $table->string('sku')->after('primary_category_id')->nullable();
             $table->string('upc')->after('sku')->nullable();
         });
@@ -26,7 +26,7 @@ class AddSkuUpcColumnsToItemsTable extends Migration
      */
     public function down()
     {
-        Schema::table('items', function (Blueprint $table) {
+        Schema::table('item', function (Blueprint $table) {
             $table->dropColumn('sku');
             $table->dropColumn('upc');
         });

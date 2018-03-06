@@ -42,4 +42,9 @@ class User extends Authenticatable
             compact('username', 'token')
         );
     }
+
+    public function items()
+    {
+        return $this->hasManyThrough(Item::class, Account::class);
+    }
 }

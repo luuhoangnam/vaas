@@ -31,3 +31,7 @@ Route::get('orders', 'OrdersController@index')->name('orders');
 # INTERMEDIATE
 Route::get('redirect/amazon/{asin}', 'RedirectController@redirect')->name('redirect.amazon');
 # END INTERMEDIATE
+
+# LISTINGS
+Route::get('listings', 'ItemsController@index')->name('items');
+# END LISTINGS

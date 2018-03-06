@@ -35,7 +35,7 @@ class ItemListed
      */
     public function broadcastOn()
     {
-        return new PrivateChannel("ebay.items");
+        return new PrivateChannel("ebay.item");
     }
 
     public function broadcastAs()

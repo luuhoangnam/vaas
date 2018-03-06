@@ -62,7 +62,7 @@ class AmazonProduct implements SourceProduct, ArrayAccess
             $query->where('user_id', $user['id']);
         }
 
-        $query->whereHas('items', function (Builder $query) {
+        $query->whereHas('item', function (Builder $query) {
             $query->where('sku', $this->getProductId());
         });
 

@@ -24,7 +24,7 @@ Route::middleware('auth:api')->group(function () {
     });
 
     # TRACKING
-    Route::group(['prefix' => 'items/{item}'], function () {
+    Route::group(['prefix' => 'item/{item}'], function () {
         Route::get('trackers', 'TrackersController@itemTrackers');
         Route::post('trackers', 'TrackersController@addTrackerForItem');
     });

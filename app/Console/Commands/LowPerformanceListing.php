@@ -134,9 +134,9 @@ class LowPerformanceListing extends Command
 
             if ($response->Ack !== 'Success') {
                 if ($response->Errors[0]->ErrorCode === "400") {
-                    $this->error('Error happens in several items (may be items already ended).');
+                    $this->error('Error happens in several item (may be item already ended).');
 
-                    return; // Move to next chunk of items
+                    return; // Move to next chunk of item
                 } else {
                     throw new CanNotEndItemsException($request, $response);
                 }

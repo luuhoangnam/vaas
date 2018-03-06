@@ -8,11 +8,20 @@ use App\Ranking\Trackable;
 use App\Repricing\Repricer;
 use App\Services\Ebay;
 use App\Sourcing\AmazonProduct;
+use DTS\eBaySDK\Trading\Enums\ListingStatusCodeType;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 
+/**
+ * Class Item
+ *
+ * @method active():Item
+ *
+ * @package App
+ */
 class Item extends Model
 {
     use Searchable, Trackable;
@@ -36,7 +45,7 @@ class Item extends Model
 
     public function searchableAs()
     {
-        return 'items';
+        return 'item';
     }
 
     public function toSearchableArray()
@@ -71,12 +80,29 @@ class Item extends Model
 
     public function orders()
     {
-        return $this->belongsToMany(Order::class, 'order_line_items');
+        return $this->hasManyThrough(
+            Order::class,
+            Transaction::class,
+            'item_id',
+            'id',
+            'item_id',
+            'order_id'
+        );
+    }
+
+    public function getEarningAttribute()
+    {
+        return $this->orders()->sum('total');
     }
 
     public function repricer()
     {
         return $this->hasOne(Repricer::class);
+    }
+
+    public function scopeActive(Builder $builder)
+    {
+        return $builder->where('status', ListingStatusCodeType::C_ACTIVE);
     }
 
     public function getEbayLinkAttribute()

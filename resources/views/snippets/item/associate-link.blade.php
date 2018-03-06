@@ -1,0 +1,1 @@
+<i class="fa fa-amazon"></i>&nbsp;<a target="_blank" href="{{ $item['associate_link'] }}">{{ $item['sku'] }}</a>

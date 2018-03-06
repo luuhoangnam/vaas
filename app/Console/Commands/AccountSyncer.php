@@ -42,7 +42,7 @@ abstract class AccountSyncer extends Command
                 return;
             }
 
-            // 3. Sync both orders & items
+            // 3. Sync both orders & item
             $this->syncAllAspects($account, $since);
         });
     }
