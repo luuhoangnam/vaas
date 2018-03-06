@@ -167,7 +167,7 @@ class Item extends Model
         return $firstOrder['created_time']->diffForHumans($this['start_time']);
     }
 
-    public static function extractItemAttributes(ItemType $item, $fields = [], $except = []): array
+    public static function extractItemAttributes(ItemType $item, $only = [], $except = []): array
     {
         $attrs = [
             'item_id'             => $item->ItemID,
@@ -183,8 +183,8 @@ class Item extends Model
             'upc'                 => optional($item->ProductListingDetails)->UPC,
         ];
 
-        if ($fields) {
-            return array_only($attrs, $fields);
+        if ($only) {
+            return array_only($attrs, $only);
         }
 
         if ($except) {

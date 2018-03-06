@@ -18,7 +18,7 @@ class ItemEventSubscriber implements ShouldQueue
 
     public function fixedPriceTransaction(FixedPriceTransaction $event): void
     {
-        $this->syncDownItem($event);
+        $this->syncDownItemWithoutUpdateStartTime($event);
     }
 
     public function listed(ItemListed $event): void
@@ -28,12 +28,12 @@ class ItemEventSubscriber implements ShouldQueue
 
     public function revised(ItemRevised $event): void
     {
-        $this->syncDownItem($event);
+        $this->syncDownItemWithoutUpdateStartTime($event);
     }
 
     public function closed(ItemClosed $event): void
     {
-        $this->syncDownItem($event);
+        $this->syncDownItemWithoutUpdateStartTime($event);
     }
 
     public function subscribe(Dispatcher $events): void
@@ -59,13 +59,14 @@ class ItemEventSubscriber implements ShouldQueue
         );
     }
 
-    /**
-     * @param FixedPriceTransaction|ItemListed|ItemRevised|ItemClosed $event
-     *
-     * @return Item
-     */
-    protected function syncDownItem($event): Item
+    protected function syncDownItem($event, $only = [], $except = []): Item
     {
-        return Account::find($event->payload->RecipientUserID)->updateOrCreateItem($event->payload->Item);
+        return Account::find($event->payload->RecipientUserID)
+                      ->updateOrCreateItem($event->payload->Item, $only, $except);
+    }
+
+    protected function syncDownItemWithoutUpdateStartTime($event): Item
+    {
+        return $this->syncDownItem($event, ['start_time']);
     }
 }

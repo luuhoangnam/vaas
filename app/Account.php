@@ -341,11 +341,11 @@ class Account extends Model
         } while ($response->HasMoreItems);
     }
 
-    public function updateOrCreateItem(ItemType $item)
+    public function updateOrCreateItem(ItemType $item, $only = [], $except = [])
     {
         return $this->items()->updateOrCreate(
             ['item_id' => $item->ItemID],
-            Item::extractItemAttributes($item)
+            Item::extractItemAttributes($item, $only, $except)
         );
     }
 
