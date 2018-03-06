@@ -28,6 +28,8 @@ class Order extends Model
         'other_fee',
         // Fulfillment
         'cog',
+        // Cashback
+        'cashback',
     ];
 
     protected $casts = ['created_time' => 'datetime'];
