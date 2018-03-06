@@ -63,8 +63,6 @@ abstract class AccountSyncer extends Command
 
     protected function syncOrders(Account $account, $since = null): void
     {
-        dd($since ?: Carbon::now()->subMonths(12));
-
         $account->syncOrdersByCreatedTimeRange(
             $since ?: Carbon::now()->subMonths(12),
             Carbon::now()
