@@ -18,45 +18,22 @@ class ItemEventSubscriber implements ShouldQueue
 
     public function fixedPriceTransaction(FixedPriceTransaction $event): void
     {
-        Item::find($event->payload->Item->ItemID)->update(
-            Item::extractItemAttributes($event->payload->Item)
-        );
+        $this->syncDownItem($event);
     }
 
     public function listed(ItemListed $event): void
     {
-        $itemPayload     = $event->payload->Item;
-        $responsePayload = $event->payload;
-
-        $account = Account::find($responsePayload->RecipientUserID);
-
-        $attributes = Item::extractItemAttributes($itemPayload);
-
-        $account->saveItem(
-            array_only($attributes, [
-                'item_id',
-                'title',
-                'price',
-                'quantity',
-                'quantity_sold',
-                'primary_category_id',
-                'start_time',
-                'status',
-                //
-                'sku',
-                'upc',
-            ])
-        );
+        $this->syncDownItem($event);
     }
 
     public function revised(ItemRevised $event): void
     {
-        $this->updateItem($event);
+        $this->syncDownItem($event);
     }
 
     public function closed(ItemClosed $event): void
     {
-        $this->updateItem($event);
+        $this->syncDownItem($event);
     }
 
     public function subscribe(Dispatcher $events): void
@@ -82,26 +59,13 @@ class ItemEventSubscriber implements ShouldQueue
         );
     }
 
-    protected function updateItem($event): void
+    /**
+     * @param FixedPriceTransaction|ItemListed|ItemRevised|ItemClosed $event
+     *
+     * @return Item
+     */
+    protected function syncDownItem($event): Item
     {
-        /** @var ItemRevised|ItemClosed $event */
-        $itemPayload = $event->payload->Item;
-
-        $attributes = Item::extractItemAttributes($itemPayload);
-
-        Item::find($itemPayload->ItemID)->update(
-            array_only($attributes, [
-                'title',
-                'price',
-                'quantity',
-                'quantity_sold',
-                'primary_category_id',
-                'start_time',
-                'status',
-                //
-                'sku',
-                'upc',
-            ])
-        );
+        return Account::find($event->payload->RecipientUserID)->updateOrCreateItem($event->payload->Item);
     }
 }

@@ -10,7 +10,11 @@
             <div class="col-xl-10 col-lg-9 col-md-8">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        @if(request()->has('account') || request()->has('status') || request()->has('has_sale'))
+                        @php
+                            $filtered = request()->has('account') || request()->has('status') || request()->has('has_sale');
+                        @endphp
+
+                        @if($filtered)
                             <span>Filtered Items ({{ $items->total() }})</span>
                         @else
                             <span>Items ({{ $items->total() }})</span>

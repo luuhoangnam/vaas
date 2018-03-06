@@ -13,10 +13,6 @@
 
     <tbody>
     @foreach($items as $item)
-        @php
-            //
-        @endphp
-
         <tr>
             <td scope="row" class="text-right">{{ $item['start_time']->diffForHumans() }}</td>
             <td>(<a href="{{ $item['ebay_link'] }}">{{ $item['item_id'] }}</a>)&nbsp;{{ $item['title'] }}</td>

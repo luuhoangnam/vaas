@@ -25,3 +25,7 @@ body {
   border-bottom-left-radius: 0.25rem;
   border-bottom-right-radius: 0.25rem;
 }
+
+.table-hover tbody tr.selected {
+  background-color: rgba(0, 0, 0, 0.075);
+}
