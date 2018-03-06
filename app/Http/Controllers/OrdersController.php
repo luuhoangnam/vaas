@@ -31,7 +31,7 @@ class OrdersController extends Controller
             $activeSeller = $request['seller'];
         }
 
-        $orders = $orderQuery->with('account', 'transactions')->latest()->paginate(50);
+        $orders = $orderQuery->with('account', 'transactions')->latest('created_time')->paginate(50);
 
         return view('orders.index', compact('orders', 'user', 'activeSeller'));
     }
