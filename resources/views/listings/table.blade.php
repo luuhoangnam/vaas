@@ -1,4 +1,7 @@
 <table class="table table-hover">
+    <caption>
+        &nbsp;Legend: TTFFS = Time Took for First Sale (Since start time of an item until it has its first order)
+    </caption>
     <thead>
     <tr>
         <th scope="col"></th>
@@ -7,6 +10,7 @@
         <th scope="col">Price</th>
         <th scope="col">Orders</th>
         <th scope="col">Earning</th>
+        <th scope="col">TTFFS</th>
         <th scope="col"></th>
     </tr>
     </thead>
@@ -24,6 +28,7 @@
             <td>{{ usd($item['price']) }}</td>
             <td>{{ $item['orders_count'] }}</td>
             <td>{{ usd($item['earning']) }}</td>
+            <td>{{ $item['time_took_for_first_sale'] }}</td>
             <td class="text-right">
                 {{--Actions--}}
             </td>

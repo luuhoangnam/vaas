@@ -156,7 +156,18 @@ class Item extends Model
         }
     }
 
-    public static function extractItemAttributes(ItemType $item, $fields = []): array
+    public function getTimeTookForFirstSaleAttribute()
+    {
+        $firstOrder = $this->orders()->oldest('created_time')->first();
+
+        if ( ! $firstOrder instanceof Order) {
+            return null;
+        }
+
+        return $firstOrder['created_time']->diffForHumans($this['start_time']);
+    }
+
+    public static function extractItemAttributes(ItemType $item, $fields = [], $except = []): array
     {
         $attrs = [
             'item_id'             => $item->ItemID,
@@ -174,6 +185,10 @@ class Item extends Model
 
         if ($fields) {
             return array_only($attrs, $fields);
+        }
+
+        if ($except) {
+            return array_except($attrs, $except);
         }
 
         return $attrs;
