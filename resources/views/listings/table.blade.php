@@ -6,7 +6,7 @@
     <tr>
         <th scope="col"></th>
         <th scope="col">Title</th>
-        <th scope="col">AMZ</th>
+        <th scope="col">Source</th>
         <th scope="col">Price</th>
         <th scope="col">Orders</th>
         <th scope="col">Earning</th>
