@@ -353,6 +353,10 @@ class Account extends Model
     {
         $request = $this->getOrdersRequest();
 
+        # DEFAULT FOR TIME RANGE IF NOT SETTED
+        $from  = $from ?: Carbon::now()->subMonths(3);
+        $until = $until ?: Carbon::now();
+
         # CREATED TIME RAGE
         $request->CreateTimeFrom = dt($from, 'GMT');
         $request->CreateTimeTo   = dt($until, 'GMT');

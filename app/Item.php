@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Cashback\AmazonAssociates;
 use App\Exceptions\CanNotFetchProductInformation;
 use App\Ranking\Trackable;
 use App\Repricing\Repricer;
@@ -81,6 +82,11 @@ class Item extends Model
     public function getEbayLinkAttribute()
     {
         return "https://www.ebay.com/itm/{$this['item_id']}";
+    }
+
+    public function getAssociateLink()
+    {
+        return (new AmazonAssociates)->link($this['sku']);
     }
 
     public function getCashbackLinkAttribute()

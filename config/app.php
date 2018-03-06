@@ -160,6 +160,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\EbayServiceProvider::class,
+        App\Providers\BladeServiceProvider::class,
 
     ],
 
