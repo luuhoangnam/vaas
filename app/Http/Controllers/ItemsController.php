@@ -22,8 +22,7 @@ class ItemsController extends Controller
 
         $accounts = $this->buildAccountsQueryBasedOnCurrentRequest($request)->get();
 
-        $items = $this->buildItemsQueryBasedOnCurrentRequestAndAccounts($request, $accounts)
-                      ->paginate(20);
+        $items = $this->buildItemsQueryBasedOnCurrentRequestAndAccounts($request, $accounts)->paginate(20);
 
         return view('listings.index', compact('user', 'accounts', 'items'));
     }
