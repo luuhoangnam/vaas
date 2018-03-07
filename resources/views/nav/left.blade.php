@@ -1,8 +1,8 @@
 @beta
-<li><a class="nav-link {{ request()->is('research*') ? 'active' : '' }}" href="#">Research</a></li>
-<li><a class="nav-link {{ request()->is('listings*') ? 'active' : '' }}" href="{{ route('items') }}">Listings</a></li>
-<li><a class="nav-link {{ request()->is('orders*') ? 'active' : '' }}" href="{{ route('orders') }}">Orders</a></li>
-<li><a class="nav-link {{ request()->is('feedbacks*') ? 'active' : '' }}" href="#">Feedbacks</a></li>
-<li><a class="nav-link {{ request()->is('returns*') ? 'active' : '' }}" href="#">Returns</a></li>
-<li><a class="nav-link {{ request()->is('automation*') ? 'active' : '' }}" href="#">Automation</a></li>
+<li><a class="nav-link {{ active_on('research*') }}" href="#">Research</a></li>
+<li><a class="nav-link {{ active_on('listings*') }}" href="{{ route('items') }}">Listings</a></li>
+<li><a class="nav-link {{ active_on('orders*') }}" href="{{ route('orders') }}">Orders</a></li>
+<li><a class="nav-link {{ active_on('feedbacks*') }}" href="#">Feedbacks</a></li>
+<li><a class="nav-link {{ active_on('returns*') }}" href="#">Returns</a></li>
+<li><a class="nav-link {{ active_on('automation*') }}" href="#">Automation</a></li>
 @endbeta

@@ -218,3 +218,18 @@ if ( ! function_exists('item_url')) {
         return eBay::itemUrl($item);
     }
 }
+
+if ( ! function_exists('active_on')) {
+    /**
+     * Helper function for display active navigation item on particular route path matching
+     *
+     * @param string $path
+     * @param string $activeClass
+     *
+     * @return string|null
+     */
+    function active_on($path, $activeClass = 'active')
+    {
+        return request()->is($path) ? $activeClass : null;
+    }
+}
