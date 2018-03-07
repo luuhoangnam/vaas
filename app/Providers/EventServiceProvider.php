@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\PlatformNotificationReceived;
 use App\Events\PlatformNotifications\FixedPriceTransaction;
 use App\Listeners\ItemEventSubscriber;
+use App\Listeners\LogPlatformNotificationPayload;
 use App\Listeners\RefillItemQuantity;
 use App\Listeners\TriggerSyncNewlyOrders;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -16,6 +18,10 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        PlatformNotificationReceived::class => [
+            LogPlatformNotificationPayload::class,
+        ],
+
         FixedPriceTransaction::class => [
             TriggerSyncNewlyOrders::class,
             RefillItemQuantity::class,
