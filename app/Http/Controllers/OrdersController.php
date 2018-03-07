@@ -7,7 +7,6 @@ use App\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Sabre\Xml\Service as XmlService;
 
 class OrdersController extends Controller
 {
