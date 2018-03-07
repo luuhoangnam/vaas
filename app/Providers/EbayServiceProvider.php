@@ -5,7 +5,9 @@ namespace App\Providers;
 use DTS\eBaySDK\BusinessPoliciesManagement\Services\BusinessPoliciesManagementService;
 use DTS\eBaySDK\Constants\GlobalIds;
 use DTS\eBaySDK\Constants\SiteIds;
+use DTS\eBaySDK\Feedback\Services\FeedbackService;
 use DTS\eBaySDK\Finding\Services\FindingService;
+use DTS\eBaySDK\ReturnManagement\Services\ReturnManagementService;
 use DTS\eBaySDK\Sdk;
 use DTS\eBaySDK\Shopping\Services\ShoppingService;
 use DTS\eBaySDK\Trading\Services\TradingService;
@@ -63,6 +65,18 @@ class EbayServiceProvider extends ServiceProvider
             $sdk = $this->app->make(Sdk::class);
 
             return $sdk->createBusinessPoliciesManagement();
+        });
+
+        $this->app->bind(ReturnManagementService::class, function () {
+            $sdk = $this->app->make(Sdk::class);
+
+            return $sdk->createReturnManagement();
+        });
+
+        $this->app->bind(FeedbackService::class, function () {
+            $sdk = $this->app->make(Sdk::class);
+
+            return $sdk->createFeedback();
         });
     }
 }
