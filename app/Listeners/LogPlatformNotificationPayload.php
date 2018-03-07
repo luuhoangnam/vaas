@@ -25,10 +25,8 @@ class LogPlatformNotificationPayload
 
         $timestamp = time();
 
-        $random = rand(1, 999999);
-
-        $fileName = "{$payload->NotificationEventName}.{$timestamp}.{$random}.xml";
-        $filePath = storage_path("app/notifications/{$fileName}");
+        $fileName = "{$payload->RecipientUserID}.{$payload->NotificationEventName}.{$timestamp}.xml";
+        $filePath = "notifications/{$fileName}";
 
         $xmlContent = $event->request->getContent();
 
