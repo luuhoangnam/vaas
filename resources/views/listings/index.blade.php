@@ -8,32 +8,51 @@
             </div>
 
             <div class="col-xl-10 col-lg-9 col-md-8">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        @php
-                            $filtered = request()->has('account') || request()->has('status') || request()->has('has_sale');
-                        @endphp
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12">
 
-                        @if($filtered)
-                            <span>Filtered Items ({{ $items->total() }})</span>
-                        @else
-                            <span>Items ({{ $items->total() }})</span>
-                        @endif
-
-                        <a href="#" class="btn btn-sm"><i class="fa fa-refresh"></i> Refresh</a>
-                    </div>
-
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
+                        <div class="card">
+                            <div class="card-header">Performance</div>
+                            <div class="card-body">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad adipisci aperiam debitis,
+                                ea esse fugit harum, hic illo impedit iusto laborum nam officiis quia sapiente soluta
+                                totam ullam unde vitae.
+                            </div>
                         </div>
-                    @endif
 
-                    <div class="table-responsive-xl">
+                    </div>
+                </div>
 
-                        @include('listings.table')
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                @php
+                                    $filtered = request()->has('account') || request()->has('status') || request()->has('has_sale');
+                                @endphp
 
-                        {{ $items->links('pagination::bootstrap-4') }}
+                                @if($filtered)
+                                    <span>Filtered Items ({{ $items->total() }})</span>
+                                @else
+                                    <span>Items ({{ $items->total() }})</span>
+                                @endif
+
+                                <a href="#" class="btn btn-sm"><i class="fa fa-refresh"></i> Refresh</a>
+                            </div>
+
+                            @if (session('status'))
+                                <div class="alert alert-success">
+                                    {{ session('status') }}
+                                </div>
+                            @endif
+
+                            <div class="table-responsive-xl">
+
+                                @include('listings.table')
+
+                                {{ $items->links('pagination::bootstrap-4') }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

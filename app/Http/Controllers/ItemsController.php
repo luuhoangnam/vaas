@@ -17,7 +17,7 @@ class ItemsController extends AuthRequiredController
 
         $accounts = $this->buildAccountsQueryBasedOnCurrentRequest($request)->get();
 
-        $items = $this->buildItemsQueryBasedOnCurrentRequestAndAccounts($request, $accounts)->paginate(20);
+        $items = $this->buildItemsQueryBasedOnCurrentRequestAndAccounts($request, $accounts)->paginate();
 
         return view('listings.index', compact('user', 'accounts', 'items'));
     }
