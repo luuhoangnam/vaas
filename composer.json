@@ -1,7 +1,11 @@
 {
     "name": "luuhoangnam/vaas",
     "description": "The App to Interact with eBay.",
-    "keywords": ["framework", "laravel", "ebay"],
+    "keywords": [
+        "framework",
+        "laravel",
+        "ebay"
+    ],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -15,6 +19,7 @@
         "laravel/scout": "^4.0",
         "laravel/tinker": "~1.0",
         "moneyphp/money": "^3.1",
+        "mustache/mustache": "^2.12",
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "~3.0",
         "revolution/laravel-amazon-product-api": "^0.4.0",

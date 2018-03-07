@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@php
+    $filtered = request()->has('account') || request()->has('status') || request()->has('has_sale');
+@endphp
+
 @section('content')
     <div class="container-fluid">
         <div class="row">
@@ -13,7 +17,7 @@
 
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
-                                <span>Performance</span>
+                                <span>Performance {{ $filtered ? ' on Filtered Items' : '' }}</span>
                                 <span class="text-muted text-right">
                                     EPI: <strong>E</strong>arning <strong>P</strong>er <strong>I</strong>tem
                                     |
@@ -86,10 +90,6 @@
                     <div class="col-xl-12 col-lg-12 col-md-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
-                                @php
-                                    $filtered = request()->has('account') || request()->has('status') || request()->has('has_sale');
-                                @endphp
-
                                 @if($filtered)
                                     <span>Filtered Items ({{ $items->total() }})</span>
                                 @else

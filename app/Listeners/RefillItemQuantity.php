@@ -48,7 +48,7 @@ class RefillItemQuantity implements ShouldQueue
         $response = $account->trading()->reviseItem($request);
 
         if ($response->Ack === AckCodeType::C_FAILURE) {
-            throw new TradingApiException($request, $response);
+            $this->fail(new TradingApiException($request, $response));
         }
     }
 }
