@@ -28,7 +28,7 @@
                             <tr>
                                 <td scope="col"></td>
                                 @foreach($items as $index => $item)
-                                    <th scope="col">Item #{{ $index++ }}</th>
+                                    <th scope="col">Item #{{ $index+1 }}</th>
                                 @endforeach
                             </tr>
                             </thead>

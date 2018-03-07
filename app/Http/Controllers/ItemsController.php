@@ -17,9 +17,25 @@ class ItemsController extends AuthRequiredController
 
         $accounts = $this->buildAccountsQueryBasedOnCurrentRequest($request)->get();
 
-        $items = $this->buildItemsQueryBasedOnCurrentRequestAndAccounts($request, $accounts)->paginate();
+        $itemsQuery = $this->buildItemsQueryBasedOnCurrentRequestAndAccounts($request, $accounts);
 
-        return view('listings.index', compact('user', 'accounts', 'items'));
+        $allItems = (clone $itemsQuery)->get();
+
+        $totalOrders     = $allItems->sum('orders_count');
+        $totalEarning    = $allItems->sum('earning');
+        $totalItemsValue = $allItems->sum('price');
+        $earningPerItem  = $allItems->count() ? $totalEarning / $allItems->count() : 0;
+        $hasSaleItems    = $allItems->filter(function ($item) {
+            return $item['orders_count'] > 0;
+        });
+        $saleThroughRate = $allItems->count() ? $hasSaleItems->count() / $allItems->count() : 0;
+
+        $items = $itemsQuery->paginate();
+
+        return view(
+            'listings.index',
+            compact('user', 'accounts', 'items', 'totalOrders', 'totalEarning', 'totalItemsValue', 'saleThroughRate', 'earningPerItem')
+        );
     }
 
     protected function resolveCurrentUser(Request $request = null): User

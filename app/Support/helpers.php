@@ -106,13 +106,33 @@ if ( ! function_exists('date_range')) {
 
 if ( ! function_exists('usd')) {
     /**
-     * @param int|string|double|float $amount
+     * @param mixed  $amount
+     * @param int    $decimals
+     * @param string $dec_point
+     * @param string $thousands_sep
      *
      * @return string
      */
-    function usd($amount)
+    function usd($amount, $decimals = 2, $dec_point = '.', $thousands_sep = ',')
     {
-        return money_format('$%.2n', $amount);
+        return '$' . number_format($amount, $decimals, $dec_point, $thousands_sep);
+    }
+}
+
+if ( ! function_exists('percent')) {
+    /**
+     * Display percentage in correct formating
+     *
+     * @param mixed  $amount
+     * @param int    $decimals
+     * @param string $dec_point
+     * @param string $thousands_sep
+     *
+     * @return string
+     */
+    function percent($amount, $decimals = 2, $dec_point = '.', $thousands_sep = ',')
+    {
+        return number_format($amount * 100, $decimals, $dec_point, $thousands_sep) . '%';
     }
 }
 
