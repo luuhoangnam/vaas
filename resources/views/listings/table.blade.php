@@ -8,9 +8,11 @@
         <th scope="col">Title</th>
         <th scope="col">Source</th>
         <th scope="col">Price</th>
-        <th scope="col">Orders</th>
-        <th scope="col">Earning</th>
-        <th scope="col">TTFFS</th>
+        @unless(request('has_sale') == 'doesntHas')
+            <th scope="col">Orders</th>
+            <th scope="col">Earning</th>
+            <th scope="col">TTFFS</th>
+        @endunless
         <th scope="col"></th>
     </tr>
     </thead>
@@ -26,9 +28,11 @@
                 @endif
             </td>
             <td>{{ usd($item['price']) }}</td>
-            <td>{{ $item['orders_count'] }}</td>
-            <td>{{ usd($item['earning']) }}</td>
-            <td>{{ $item['time_took_for_first_sale'] }}</td>
+            @unless(request('has_sale') == 'doesntHas')
+                <td>{{ $item['orders_count'] }}</td>
+                <td>{{ usd($item['earning']) }}</td>
+                <td>{{ $item['time_took_for_first_sale'] }}</td>
+            @endunless
             <td class="text-right">
                 {{--Actions--}}
             </td>
