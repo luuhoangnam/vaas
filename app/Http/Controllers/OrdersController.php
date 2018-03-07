@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Sabre\Xml\Service as XmlService;
 
 class OrdersController extends Controller
 {
@@ -21,14 +22,17 @@ class OrdersController extends Controller
 
         $orderQuery = $user->orders();
 
+        # WHEN HAS SELLER FILTER
         if ($request->has('seller')) {
             $orderQuery->whereHas('account', function (Builder $query) use ($request) {
                 $query->where('username', $request['seller']);
             });
         }
 
-        $orders = $orderQuery->with('account', 'transactions')->latest('created_time')->paginate(50);
+        # PAGINATE ORDERS
+        $orders = $orderQuery->with('account', 'transactions')->latest('created_time')->paginate(20);
 
+        # REFRESHING
         if ($request['refresh']) {
             /** @noinspection PhpUndefinedMethodInspection */
             $user['accounts']->each(function (Account $account) {
@@ -38,6 +42,7 @@ class OrdersController extends Controller
             return redirect()->refresh();
         }
 
+        # RETURN VIEW
         return view('orders.index', compact('orders', 'user'));
     }
 
