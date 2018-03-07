@@ -1,7 +1,14 @@
 <?php
 
 use App\Support\DateRange;
+use App\Support\eBay;
 use App\Support\Retention;
+use DTS\eBaySDK\Finding\Types\SellerInfo;
+use DTS\eBaySDK\Shopping\Enums\SeverityCodeType as ShoppingSeverityCodeType;
+use DTS\eBaySDK\Shopping\Types\SimpleUserType;
+use DTS\eBaySDK\Trading\Enums\SeverityCodeType as TradingSeverityCodeType;
+use DTS\eBaySDK\Trading\Types\UserType;
+use DTS\eBaySDK\Types\RepeatableType;
 use Illuminate\Support\Carbon;
 use Money\Currencies\ISOCurrencies;
 use Money\Currency;
@@ -105,8 +112,89 @@ if ( ! function_exists('usd')) {
      */
     function usd($amount)
     {
-        return money_format('$%.2n' ,$amount);
+        return money_format('$%.2n', $amount);
     }
 }
 
+if ( ! function_exists('severity_code')) {
+    /**
+     * Transform severity code ebay to class name for bootstrap
+     *
+     * @param string $code
+     *
+     * @return null|string
+     */
+    function severity_code_to_class($code)
+    {
+        switch ($code) {
+            case ShoppingSeverityCodeType::C_ERROR:
+            case TradingSeverityCodeType::C_ERROR:
+                return 'danger';
+            case ShoppingSeverityCodeType::C_WARNING:
+            case TradingSeverityCodeType::C_WARNING:
+                return 'warning';
+        }
 
+        return null;
+    }
+}
+
+if ( ! function_exists('is_highest')) {
+    /**
+     * @param Iterator|array $items
+     * @param string         $field
+     * @param mixed          $value
+     *
+     * @return bool
+     */
+    function is_highest(Iterator $items, $field, $value): bool
+    {
+        $values = array_pluck($items, $field);
+
+        return max($values) == $value;
+    }
+}
+
+if ( ! function_exists('is_lowest')) {
+    /**
+     * @param Iterator|array $items
+     * @param string         $field
+     * @param mixed          $value
+     *
+     * @return bool
+     */
+    function is_lowest(Iterator $items, $field, $value): bool
+    {
+        $values = array_pluck($items, $field);
+
+        return min($values) == $value;
+    }
+}
+
+if ( ! function_exists('seller_url')) {
+    /**
+     * Transform seller into user url page on eBay
+     *
+     * @param UserType|SellerInfo|SimpleUserType|string $seller
+     *
+     * @return string
+     */
+    function seller_url($seller): string
+    {
+        return eBay::sellerUrl($seller);
+    }
+}
+
+if ( ! function_exists('item_url')) {
+    /**
+     * Return eBay full item URL
+     *
+     * @param mixed $item
+     *
+     * @return string
+     */
+    function item_url($item): string
+    {
+        return eBay::itemUrl($item);
+    }
+}

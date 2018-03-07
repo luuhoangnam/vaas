@@ -14,6 +14,10 @@ Route::middleware('auth:api')->group(function () {
 
     # EBAY INTERACTIONS
     Route::group(['prefix' => 'accounts/{account}'], function () {
+        # RAW REQUEST
+        Route::post('raw/{name}', 'RawController@send');
+
+        # ADD NEW ITEM
         Route::post('add_item', 'Account\ItemsController@addItem');
 
         // Supports

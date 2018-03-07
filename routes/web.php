@@ -35,3 +35,7 @@ Route::get('redirect/amazon/{asin}', 'RedirectController@redirect')->name('redir
 # LISTINGS
 Route::get('listings', 'ItemsController@index')->name('items');
 # END LISTINGS
+
+# RESEARCH
+Route::get('research/compare', 'ResearchController@compare')->name('research.compare');
+# END RESEARCH
