@@ -7,13 +7,8 @@ use DTS\eBaySDK\Trading\Types\FetchTokenRequestType;
 use DTS\eBaySDK\Trading\Types\GetSessionIDRequestType;
 use Illuminate\Http\Request;
 
-class AuthnAuthController extends Controller
+class AuthnAuthController extends AuthRequiredController
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function signIn(Request $request)
     {
         $ruName = env('EBAY_RUNAME');

@@ -8,13 +8,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
-class OrdersController extends Controller
+class OrdersController extends AuthRequiredController
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function index(Request $request)
     {
         $user = $this->resolveCurrentUser($request)->load('accounts');
