@@ -7,7 +7,6 @@ use App\Events\PlatformNotifications\FixedPriceTransaction;
 use App\Events\PlatformNotifications\ItemClosed;
 use App\Events\PlatformNotifications\ItemListed;
 use App\Events\PlatformNotifications\ItemRevised;
-use App\Item;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Queue\InteractsWithQueue;
@@ -18,22 +17,22 @@ class ItemEventSubscriber implements ShouldQueue
 
     public function fixedPriceTransaction(FixedPriceTransaction $event): void
     {
-        $this->syncDownItemWithoutUpdateStartTime($event);
+        Account::find($event->payload->RecipientUserID)->updateOrCreateItem($event->payload->Item);
     }
 
     public function listed(ItemListed $event): void
     {
-        $this->syncDownItem($event);
+        Account::find($event->payload->RecipientUserID)->updateOrCreateItem($event->payload->Item);
     }
 
     public function revised(ItemRevised $event): void
     {
-        $this->syncDownItemWithoutUpdateStartTime($event);
+        Account::find($event->payload->RecipientUserID)->updateOrCreateItem($event->payload->Item);
     }
 
     public function closed(ItemClosed $event): void
     {
-        $this->syncDownItemWithoutUpdateStartTime($event);
+        Account::find($event->payload->RecipientUserID)->updateOrCreateItem($event->payload->Item);
     }
 
     public function subscribe(Dispatcher $events): void
@@ -57,16 +56,5 @@ class ItemEventSubscriber implements ShouldQueue
             FixedPriceTransaction::class,
             [$this, 'fixedPriceTransaction']
         );
-    }
-
-    protected function syncDownItem($event, $only = [], $except = []): Item
-    {
-        return Account::find($event->payload->RecipientUserID)
-                      ->updateOrCreateItem($event->payload->Item, $only, $except);
-    }
-
-    protected function syncDownItemWithoutUpdateStartTime($event): Item
-    {
-        return $this->syncDownItem($event, ['start_time']);
     }
 }
