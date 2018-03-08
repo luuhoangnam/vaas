@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Item;
-use App\User;
 use DTS\eBaySDK\Trading\Enums\ListingStatusCodeType;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
@@ -36,11 +33,6 @@ class ItemsController extends AuthRequiredController
             'listings.index',
             compact('user', 'accounts', 'items', 'totalOrders', 'totalEarning', 'totalItemsValue', 'saleThroughRate', 'earningPerItem')
         );
-    }
-
-    protected function resolveCurrentUser(Request $request = null): User
-    {
-        return $request instanceof Request ? $request->user() : request()->user();
     }
 
     protected function buildAccountsQueryBasedOnCurrentRequest(Request $request)

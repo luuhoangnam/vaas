@@ -19,8 +19,20 @@ class HomeController extends AuthRequiredController
         ]);
 
         # DATE RANGE
-        $startDate = Carbon::now()->startOfWeek();
-        $endDate   = Carbon::now()->endOfWeek();
+        if ($request->has('end_date')) {
+            $endDate = new Carbon($request['end_date']);
+        } else {
+            $endDate = $this->defaultEndDate();
+        }
+
+        if ($request->has('start_date')) {
+            $startDate = new Carbon($request['start_date']);
+        } else {
+            $startDate = $this->defaultStartDate();
+        }
+
+        $previousPeriodEndDate   = $this->previousPeriodEndDate($startDate, $endDate);
+        $previousPeriodStartDate = $this->previousPeriodStartDate($startDate, $endDate);
 
         # USER
         $user = $this->resolveCurrentUser()->load([
@@ -32,44 +44,40 @@ class HomeController extends AuthRequiredController
         ]);
 
         # QUERY ORDERS & MAKE REPORTER
-        $orders = $this->buildOrdersQuery($request, $startDate, $endDate)->get();
+        $orders         = $this->buildOrdersQuery($request, $startDate, $endDate)->get();
+        $ordersLastWeek = $this->buildOrdersQuery($request, $previousPeriodStartDate, $previousPeriodEndDate)->get();
 
-        $ordersLastWeek = $this->buildOrdersQuery(
-            $request,
-            (clone $startDate)->subWeek(), (clone $endDate)->subWeek()
-        )->get();
-
-        $orderReports         = new OrderReports($orders);
-        $orderReportsLastWeek = new OrderReports($ordersLastWeek);
+        $orderReports               = new OrderReports($orders);
+        $orderReportsPreviousPeriod = new OrderReports($ordersLastWeek);
 
         # METRICS
         $revenue       = $orderReports->revenue();
-        $revenueChange = $revenue ? ($revenue - $orderReportsLastWeek->revenue()) / $revenue : null;
+        $revenueChange = $revenue ? ($revenue - $orderReportsPreviousPeriod->revenue()) / $revenue : null;
 
         $fees       = $orderReports->fees();
-        $feesChange = $fees ? ($fees - $orderReportsLastWeek->fees()) / $fees : null;
+        $feesChange = $fees ? ($fees - $orderReportsPreviousPeriod->fees()) / $fees : null;
 
         $cashback       = $orderReports->cashback();
-        $cashbackChange = $cashback ? ($cashback - $orderReportsLastWeek->cashback()) / $cashback : null;
+        $cashbackChange = $cashback ? ($cashback - $orderReportsPreviousPeriod->cashback()) / $cashback : null;
 
         $profit       = $orderReports->profit();
-        $profitChange = $profit ? ($profit / $orderReportsLastWeek->profit()) / $profit : null;
+        $profitChange = $profit ? ($profit / $orderReportsPreviousPeriod->profit()) / $profit : null;
 
         $margin       = $orderReports->margin();
-        $marginChange = $margin ? ($margin / $orderReportsLastWeek->margin()) / $margin : null;
+        $marginChange = $margin ? ($margin / $orderReportsPreviousPeriod->margin()) / $margin : null;
 
         # SALE CHART
         $saleChart = $this->generateSaleChart($orders, $startDate, $endDate);
 
         // RENDER DASHBOARD
         return view('dashboard', compact(
-            'user',
+            'user', 'orders',
             'revenue', 'revenueChange',
             'fees', 'feesChange',
             'cashback', 'cashbackChange',
             'profit', 'profitChange',
             'margin', 'marginChange',
-            'startDate', 'endDate',
+            'startDate', 'endDate', 'previousPeriodStartDate', 'previousPeriodEndDate',
             'saleChart'
         ));
     }
@@ -98,13 +106,23 @@ class HomeController extends AuthRequiredController
     {
         $dates = date_range($startDate, $endDate);
 
-        $data = $dates->map(function (Carbon $date) use ($orders) {
+        $revenueData = $dates->map(function (Carbon $date) use ($orders) {
+            $filtered = $orders->filter(function (Order $order) use ($date) {
+                return $date->isSameDay($order['created_time']);
+            });
+
+            return $filtered->sum('total');
+        })->toArray();
+
+        $ordersData = $dates->map(function (Carbon $date) use ($orders) {
             $filtered = $orders->filter(function (Order $order) use ($date) {
                 return $date->isSameDay($order['created_time']);
             });
 
             return $filtered->count();
         })->toArray();
+
+        $maxOrdersAxis = (round(max($ordersData) / 5) + 1) * 5;
 
         return [
             'type' => 'bar',
@@ -113,15 +131,81 @@ class HomeController extends AuthRequiredController
                 'labels'   => $dates->toDateStringCollection()->toArray(),
                 'datasets' => [
                     [
+                        'type'            => 'bar',
                         'label'           => 'Orders',
                         'backgroundColor' => 'rgba(6, 84, 186, 0.6)',
                         'borderColor'     => 'rgba(6, 84, 186, 1)',
-                        'data'            => $data,
+                        'data'            => $ordersData,
+                        'yAxisID'         => 'ordersCount',
+                    ],
+                    [
+                        'type'    => 'line',
+                        'label'   => 'Revenue',
+//                        'backgroundColor' => 'rgba(6, 84, 186, 0.6)',
+//                        'borderColor'     => 'rgba(6, 84, 186, 1)',
+                        'data'    => $revenueData,
+                        'yAxisID' => 'revenue',
                     ],
                 ],
             ],
 
-            'options' => [],
+            'options' => [
+                'scales' => [
+                    'xAxes' => [
+                        [
+                            'gridLines' => [
+                                'display' => false,
+                            ],
+                        ],
+                    ],
+                    'yAxes' => [
+                        [
+                            'id'        => 'ordersCount',
+                            'position'  => 'left',
+                            'ticks'     => [
+                                'beginAtZero' => true,
+                                'max'         => $maxOrdersAxis,
+                                'stepSize'    => 3,
+                            ],
+                            'gridLines' => [
+                                'display' => false,
+                            ],
+                        ],
+                        [
+                            'id'        => 'revenue',
+                            'position'  => 'right',
+                            'ticks'     => [
+                                'beginAtZero' => true,
+                                'max'         => 500,
+                                'stepSize'    => 50,
+                            ],
+                            'gridLines' => [
+                                'display' => false,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
+    }
+
+    protected function defaultEndDate(): \Carbon\Carbon
+    {
+        return Carbon::now()->endOfWeek();
+    }
+
+    protected function defaultStartDate(): \Carbon\Carbon
+    {
+        return Carbon::now()->startOfWeek();
+    }
+
+    protected function previousPeriodEndDate(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate): \Carbon\Carbon
+    {
+        return (clone $startDate)->subDay();
+    }
+
+    protected function previousPeriodStartDate(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate): \Carbon\Carbon
+    {
+        return (clone $this->previousPeriodEndDate($startDate, $endDate))->subDays($endDate->diffInDays($startDate));
     }
 }

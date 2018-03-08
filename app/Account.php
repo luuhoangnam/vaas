@@ -394,6 +394,7 @@ class Account extends Model
             // Transaction Details
             'OrderArray.Order.TransactionArray.Transaction.TransactionID',
             'OrderArray.Order.TransactionArray.Transaction.QuantityPurchased',
+            'OrderArray.Order.TransactionArray.Transaction.TransactionPrice',
             'OrderArray.Order.TransactionArray.Transaction.Item',
         ];
 

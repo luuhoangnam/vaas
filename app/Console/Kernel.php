@@ -13,6 +13,7 @@ use App\Console\Commands\RunRepricerPeriodically;
 use App\Console\Commands\SubscribePlatformNotification;
 use App\Console\Commands\SyncAlleBayAccounts;
 use App\Console\Commands\SynceBayAccount;
+use App\Console\Commands\SyncGoogleSheet;
 use App\Console\Commands\TrackRankingForAccount;
 use App\Console\Commands\TrackRankingForItem;
 use App\Console\Commands\ViewRankingOfItem;

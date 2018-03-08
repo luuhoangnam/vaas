@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Account;
 use App\Sourcing\AmazonProduct;
-use App\User;
 use Illuminate\Http\Request;
 
 class ListingBuilderController extends AuthRequiredController
@@ -45,10 +44,5 @@ class ListingBuilderController extends AuthRequiredController
             'builder.customize',
             compact('account', 'product', 'suggestedCategories', 'templates')
         );
-    }
-
-    protected function resolveCurrentUser(Request $request = null): User
-    {
-        return $request instanceof Request ? $request->user() : request()->user();
     }
 }

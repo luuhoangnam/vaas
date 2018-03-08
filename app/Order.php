@@ -64,6 +64,16 @@ class Order extends Model
         return $this->hasMany(Transaction::class);
     }
 
+    public function getFeesAttribute()
+    {
+        return $this['final_value_fee'] + $this['paypal_fee'];
+    }
+
+    public function getMarginAttribute()
+    {
+        return $this['profit'] / $this['total'];
+    }
+
     public function getBuyerEbayLinkAttribute()
     {
         return "https://www.ebay.com/usr/{$this['buyer_username']}";
@@ -119,17 +129,20 @@ class Order extends Model
 
     public static function extractAttribute(OrderType $data)
     {
+        /** @var TransactionType $transaction */
+        $transaction = $data->TransactionArray->Transaction[0];
+
         return [
             'order_id'            => $data->OrderID,
             'record'              => $data->ShippingDetails->SellingManagerSalesRecordNumber,
             'status'              => $data->OrderStatus,
-            'total'               => (double)$data->Total->value,
+            'total'               => (double)$transaction->TransactionPrice->value,
             'buyer_username'      => $data->BuyerUserID,
             'payment_hold_status' => $data->PaymentHoldStatus,
             'cancel_status'       => $data->CancelStatus,
             'created_time'        => app_carbon($data->CreatedTime),
             // Fees
-            'final_value_fee'     => $data->TransactionArray->Transaction[0]->FinalValueFee->value,
+            'final_value_fee'     => $transaction->FinalValueFee->value,
             'paypal_fee'          => $data->ExternalTransaction[0]->FeeOrCreditAmount->value,
         ];
     }
