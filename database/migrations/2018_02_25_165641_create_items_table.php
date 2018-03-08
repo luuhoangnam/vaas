@@ -13,7 +13,7 @@ class CreateItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('item', function (Blueprint $table) {
+        Schema::create('items', function (Blueprint $table) {
             $table->increments('id');
             $table->string('item_id')->unique();
             $table->string('title');
@@ -21,7 +21,9 @@ class CreateItemsTable extends Migration
             $table->unsignedInteger('quantity_sold');
             $table->double('price');
             $table->unsignedBigInteger('primary_category_id');
-            $table->timestamp('start_time');
+            $table->string('sku')->nullable();
+            $table->string('upc')->nullable();
+            $table->timestamp('start_time')->nullable();
             $table->string('status');
             $table->timestamps();
 
@@ -37,6 +39,6 @@ class CreateItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('item');
+        Schema::dropIfExists('items');
     }
 }

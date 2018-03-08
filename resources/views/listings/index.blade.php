@@ -31,49 +31,49 @@
                             <div class="card-body">
 
                                 <div class="row">
-                                    <div class="col-xl-2">
+                                    <div class="col">
                                         <div class="card-text align-content-center">
                                             <h6 class="text-center text-uppercase">Earning</h6>
                                             <h2 class="text-center">{{ usd($totalEarning) }}</h2>
                                         </div>
                                     </div>
-                                    <div class="col-xl-1">
+                                    <div class="col">
                                         <div class="card-text align-content-center">
                                             <h6 class="text-center text-uppercase">Items</h6>
                                             <h2 class="text-center">{{ number_format($items->total()) }}</h2>
                                         </div>
                                     </div>
-                                    <div class="col-xl-1">
+                                    <div class="col">
                                         <div class="card-text align-content-center">
                                             <h6 class="text-center text-uppercase">Orders</h6>
                                             <h2 class="text-center">{{ number_format($totalOrders) }}</h2>
                                         </div>
                                     </div>
-                                    <div class="col-xl-1">
+                                    <div class="col">
                                         <div class="card-text align-content-center">
                                             <h6 class="text-center text-uppercase">EPI</h6>
                                             <h2 class="text-center">{{ usd($earningPerItem) }}</h2>
                                         </div>
                                     </div>
-                                    <div class="col-xl-1">
+                                    <div class="col">
                                         <div class="card-text align-content-center">
                                             <h6 class="text-center text-uppercase">AOV</h6>
                                             <h2 class="text-center">{{ usd($totalOrders ? $totalEarning / $totalOrders : 0) }}</h2>
                                         </div>
                                     </div>
-                                    <div class="col-xl-1">
+                                    <div class="col">
                                         <div class="card-text align-content-center">
                                             <h6 class="text-center text-uppercase">OPI</h6>
                                             <h2 class="text-center">{{ number_format($items->total() ? $totalOrders / $items->total() : 0, 2) }}</h2>
                                         </div>
                                     </div>
-                                    <div class="col-xl-1">
+                                    <div class="col">
                                         <div class="card-text align-content-center">
                                             <h6 class="text-center text-uppercase">AIV</h6>
                                             <h2 class="text-center">{{ usd($items->total() ? $totalItemsValue / $items->total() : 0) }}</h2>
                                         </div>
                                     </div>
-                                    <div class="col-xl-1">
+                                    <div class="col">
                                         <div class="card-text align-content-center">
                                             <h6 class="text-center text-uppercase">STR</h6>
                                             <h2 class="text-center">{{ percent($saleThroughRate) }}</h2>

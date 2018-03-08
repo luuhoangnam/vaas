@@ -21,6 +21,9 @@ class BladeServiceProvider extends ServiceProvider
         Blade::if ('beta', function () {
             return app()->environment('local') || request()->user()->isDeveloper();
         });
+
+        # COMPONENTS
+        Blade::component('components.statistic', 'statistic');
     }
 
     /**

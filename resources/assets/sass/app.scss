@@ -1,10 +1,8 @@
 // Fonts
 //@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
 @import url(https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css);
-
 // Variables
 @import "variables";
-
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
@@ -12,7 +10,7 @@ body {
   font-variant-ligatures: contextual !important;
 }
 
-.row+.row {
+.row + .row {
   margin-top: 2rem;
 }
 
@@ -32,4 +30,9 @@ body {
 
 .table-hover tbody tr.selected {
   background-color: rgba(0, 0, 0, 0.075);
+}
+
+// STATISTICS
+.statistic .statistic-change {
+  font-size: 0.75rem;
 }

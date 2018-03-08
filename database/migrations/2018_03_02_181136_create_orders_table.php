@@ -23,13 +23,15 @@ class CreateOrdersTable extends Migration
             $table->string('buyer_username');
             $table->string('payment_hold_status');
             $table->string('cancel_status');
-            $table->timestamp('created_time');
+            $table->timestamp('created_time')->nullable();
             // Fees
             $table->double('final_value_fee')->nullable();
             $table->double('paypal_fee')->nullable();
             $table->double('other_fee')->nullable();
             // Fulfillment
             $table->double('cog')->nullable();
+            $table->double('cashback')->nullable();
+            // Default
             $table->timestamps();
 
             $table->unsignedInteger('account_id');

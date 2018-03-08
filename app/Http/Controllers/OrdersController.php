@@ -39,9 +39,4 @@ class OrdersController extends AuthRequiredController
         # RETURN VIEW
         return view('orders.index', compact('orders', 'user'));
     }
-
-    private function resolveCurrentUser(Request $request = null): User
-    {
-        return $request ? $request->user() : request()->user();
-    }
 }

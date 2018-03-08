@@ -10022,3 +10022,7 @@ body {
   background-color: rgba(0, 0, 0, 0.075);
 }
 
+.statistic .statistic-change {
+  font-size: 0.75rem;
+}
+
