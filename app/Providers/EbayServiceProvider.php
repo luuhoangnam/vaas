@@ -3,9 +3,7 @@
 namespace App\Providers;
 
 use DTS\eBaySDK\BusinessPoliciesManagement\Services\BusinessPoliciesManagementService;
-use DTS\eBaySDK\Constants\GlobalIds;
 use DTS\eBaySDK\Constants\SiteIds;
-use DTS\eBaySDK\Credentials\Credentials;
 use DTS\eBaySDK\Feedback\Services\FeedbackService;
 use DTS\eBaySDK\Finding\Services\FindingService;
 use DTS\eBaySDK\ReturnManagement\Services\ReturnManagementService;

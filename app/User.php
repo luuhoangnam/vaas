@@ -3,13 +3,14 @@
 namespace App;
 
 use App\Exceptions\AccountAlreadyLinkedException;
-use Illuminate\Notifications\Notifiable;
+use App\Support\TemplateType;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, notifiable;
+    use HasApiTokens, Notifiable;
 
     protected $fillable = ['name', 'email', 'password'];
 
@@ -32,6 +33,21 @@ class User extends Authenticatable
         return $this->hasManyThrough(Order::class, Account::class);
     }
 
+    public function items()
+    {
+        return $this->hasManyThrough(Item::class, Account::class);
+    }
+
+    public function templates()
+    {
+        return $this->hasMany(Template::class);
+    }
+
+    public function itemDescriptionTemplates()
+    {
+        return $this->templates()->where('type', TemplateType::ITEM_DESCRIPTION);
+    }
+
     public function addAccount($username, $token): Account
     {
         if (Account::exists($username)) {
@@ -43,8 +59,8 @@ class User extends Authenticatable
         );
     }
 
-    public function items()
+    public function addTemplate($name, $type, $content): Template
     {
-        return $this->hasManyThrough(Item::class, Account::class);
+        return $this->templates()->create(compact('name', 'type', 'content'));
     }
 }
