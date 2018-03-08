@@ -5,6 +5,7 @@ namespace App\Providers;
 use DTS\eBaySDK\BusinessPoliciesManagement\Services\BusinessPoliciesManagementService;
 use DTS\eBaySDK\Constants\GlobalIds;
 use DTS\eBaySDK\Constants\SiteIds;
+use DTS\eBaySDK\Credentials\Credentials;
 use DTS\eBaySDK\Feedback\Services\FeedbackService;
 use DTS\eBaySDK\Finding\Services\FindingService;
 use DTS\eBaySDK\ReturnManagement\Services\ReturnManagementService;
@@ -39,6 +40,15 @@ class EbayServiceProvider extends ServiceProvider
                     'appId'  => env('EBAY_APP_ID'),
                     'certId' => env('EBAY_CERT_ID'),
                     'devId'  => env('EBAY_DEV_ID'),
+                ],
+                'Finding'     => [
+                    'apiVersion' => '1.13.0', // Release: 2014-10-21
+                ],
+                'Shopping'    => [
+                    'apiVersion' => '1027', // Release: 2017-Aug-04
+                ],
+                'Trading'     => [
+                    'apiVersion' => '1047', // Release: 2018-Feb-02
                 ],
             ]);
         });

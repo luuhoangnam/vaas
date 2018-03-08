@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Account;
 use App\Events\PlatformNotifications\FixedPriceTransaction;
 use App\Exceptions\TradingApiException;
+use Carbon\Carbon;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -48,7 +49,9 @@ class RefillItemQuantity implements ShouldQueue
         $response = $account->trading()->reviseItem($request);
 
         if ($response->Ack === AckCodeType::C_FAILURE) {
-            $this->fail(new TradingApiException($request, $response));
+            $this->release(now()->addMinutes(15));
+
+            throw new TradingApiException($request, $response);
         }
     }
 }
