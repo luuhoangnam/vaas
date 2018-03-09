@@ -86,7 +86,7 @@ class HomeController extends AuthRequiredController
     {
         $user = $this->resolveCurrentUser($request);
 
-        $query = $user->orders()->with('transactions');
+        $query = $user->orders()->with('account', 'transactions');
 
         # DATE RANGE
         $query->whereDate('created_time', '>=', $startDate)
@@ -122,7 +122,8 @@ class HomeController extends AuthRequiredController
             return $filtered->count();
         })->toArray();
 
-        $maxOrdersAxis = (round(max($ordersData) / 5) + 1) * 5;
+        $maxOrdersAxis  = (round(max($ordersData) / 5) + 1) * 5;
+        $maxRevenueAxis = (round(max($revenueData) / 50) + 1) * 50;
 
         return [
             'type' => 'bar',
@@ -176,7 +177,7 @@ class HomeController extends AuthRequiredController
                             'position'  => 'right',
                             'ticks'     => [
                                 'beginAtZero' => true,
-                                'max'         => 500,
+                                'max'         => $maxRevenueAxis,
                                 'stepSize'    => 50,
                             ],
                             'gridLines' => [
@@ -191,12 +192,12 @@ class HomeController extends AuthRequiredController
 
     protected function defaultEndDate(): \Carbon\Carbon
     {
-        return Carbon::now()->endOfWeek();
+        return Carbon::today();
     }
 
     protected function defaultStartDate(): \Carbon\Carbon
     {
-        return Carbon::now()->startOfWeek();
+        return Carbon::today()->subDays(7);
     }
 
     protected function previousPeriodEndDate(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate): \Carbon\Carbon

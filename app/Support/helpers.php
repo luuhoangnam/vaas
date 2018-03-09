@@ -228,3 +228,16 @@ if ( ! function_exists('active_on')) {
         return request()->is($path) ? $activeClass : null;
     }
 }
+
+if ( ! function_exists('carbon')) {
+    /**
+     * @param string|null               $time
+     * @param \DateTimeZone|string|null $tz
+     *
+     * @return Carbon
+     */
+    function carbon($time = null, $tz = null)
+    {
+        return new Carbon($time, $tz);
+    }
+}

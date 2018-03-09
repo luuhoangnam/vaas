@@ -1,3 +1,7 @@
+@php
+    $startBefore = carbon(old('start_before', request('start_before')))->toDateString();
+@endphp
+
 <div class="card">
     <div class="card-header">Filters</div>
 
@@ -41,6 +45,12 @@
                            value="doesntHas" {{ request('has_sale') == 'doesntHas' ? 'checked' : ''}}>
                     <label class="form-check-label">No</label>
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>Start Before</label>
+                <input type="date" class="form-control" name="start_before"
+                       value="{{ $startBefore }}"/>
             </div>
 
             <div class="form-group">

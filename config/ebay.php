@@ -4,6 +4,9 @@ use App\Sourcing\Amazon\BasicCrawlFetchingStrategy;
 use App\Sourcing\Amazon\MarketingApiFetchingStrategy;
 
 return [
+    'reporting'       => [
+
+    ],
     'ranking'         => [
         //
     ],

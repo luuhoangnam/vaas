@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use DTS\eBaySDK\Trading\Enums\ListingStatusCodeType;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -31,7 +32,8 @@ class ItemsController extends AuthRequiredController
 
         return view(
             'listings.index',
-            compact('user', 'accounts', 'items', 'totalOrders', 'totalEarning', 'totalItemsValue', 'saleThroughRate', 'earningPerItem')
+            compact('user', 'accounts', 'items', 'totalOrders', 'totalEarning', 'totalItemsValue', 'saleThroughRate',
+                'earningPerItem')
         );
     }
 
@@ -81,6 +83,11 @@ class ItemsController extends AuthRequiredController
             case 'any':
             default:
                 break;
+        }
+
+        # START BEFORE
+        if ($request['start_before']) {
+            $query->whereDate('start_time', '<', new Carbon($request['start_before']));
         }
 
         return $query;
