@@ -11,6 +11,7 @@
         <th scope="col">PPF</th>
         <th scope="col">COG</th>
         <th scope="col">Profit</th>
+        <th scope="col">Margin</th>
         <th scope="col"></th>
     </tr>
     </thead>
@@ -50,6 +51,7 @@
                     {{ $order['profit'] ? usd($order['profit']) : 'N/A' }}
                 </span>
             </td>
+            <td>{{ percent($order['margin']) }}</td>
             <td class="text-right">
                 @if ($item['cashback_link'])
                     <a class="btn btn-primary btn-sm" target="_blank" href="{{ $item['cashback_link'] }}">

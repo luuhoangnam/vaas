@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Cashback\AmazonAssociates;
+use App\Events\ItemCreated;
 use App\Exceptions\CanNotFetchProductInformation;
 use App\Ranking\Trackable;
 use App\Ranking\Tracker;
@@ -44,6 +45,8 @@ class Item extends Model
     protected $casts = [
         'start_time' => 'datetime',
     ];
+
+    protected $dispatchesEvents = ['created' => ItemCreated::class];
 
     public function searchableAs()
     {
@@ -191,7 +194,7 @@ class Item extends Model
             'start_time'          => app_carbon($item->ListingDetails->StartTime),
             'status'              => $item->SellingStatus->ListingStatus,
             // pictures
-            'picture_url'         => array_first($item->PictureDetails->PictureURL) ?: null,
+            'picture_url'         => array_first(optional($item->PictureDetails)->PictureURL) ?: null,
             //
             'sku'                 => $item->SKU,
             'upc'                 => optional($item->ProductListingDetails)->UPC,

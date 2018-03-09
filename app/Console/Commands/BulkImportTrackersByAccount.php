@@ -16,7 +16,7 @@ class BulkImportTrackersByAccount extends Command
     {
         $items = Account::find($this->argument('username'))
                         ->items()
-                        ->has('trackers', '=', 0)
+                        ->has('trackers', '=', 0) // Void the already tracked item
                         ->get(['id', 'item_id', 'title']);
 
         $items->shuffle()->each(function (Item $item) {

@@ -6,6 +6,7 @@
     <tr>
         <th scope="col"></th>
         <th scope="col">Title</th>
+        <th scope="col">Status</th>
         <th scope="col">Source</th>
         <th scope="col">Price</th>
         @unless(request('has_sale') == 'doesntHas')
@@ -22,6 +23,7 @@
         <tr>
             <td scope="row" class="text-right">{{ $item['start_time']->diffForHumans() }}</td>
             <td>(<a href="{{ $item['ebay_link'] }}">{{ $item['item_id'] }}</a>)&nbsp;{{ $item['title'] }}</td>
+            <td><span class="badge badge-{{ $item['status'] == 'Active' ? 'success' : 'secondary' }}">{{ $item['status'] }}</span></td>
             <td>
                 @if($item['sku'])
                     @include('snippets.item.associate-link', compact('item'))

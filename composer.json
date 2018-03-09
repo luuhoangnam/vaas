@@ -25,7 +25,8 @@
         "pusher/pusher-php-server": "~3.0",
         "revolution/laravel-amazon-product-api": "^0.4.0",
         "rtconner/laravel-tagging": "~2.2",
-        "sabre/xml": "^2.1"
+        "sabre/xml": "^2.1",
+        "venturecraft/revisionable": "^1.28"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

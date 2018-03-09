@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\ItemCreated;
 use App\Events\PlatformNotificationReceived;
 use App\Events\PlatformNotifications\FixedPriceTransaction;
+use App\Listeners\AttachTracker;
 use App\Listeners\ItemEventSubscriber;
 use App\Listeners\LogPlatformNotificationPayload;
 use App\Listeners\RefillItemQuantity;
@@ -25,6 +27,10 @@ class EventServiceProvider extends ServiceProvider
         FixedPriceTransaction::class => [
             TriggerSyncNewlyOrders::class,
             RefillItemQuantity::class,
+        ],
+
+        ItemCreated::class => [
+            AttachTracker::class,
         ],
     ];
 
