@@ -1,5 +1,5 @@
 @php
-    $startBefore = carbon(old('start_before', request('start_before')))->toDateString();
+    $startBefore = old('start_before', request('start_before'));
 @endphp
 
 <div class="card">
@@ -50,7 +50,7 @@
             <div class="form-group">
                 <label>Start Before</label>
                 <input type="date" class="form-control" name="start_before"
-                       value="{{ $startBefore }}"/>
+                       value="{{ $startBefore ? carbon($startBefore)->toDateString() : null }}"/>
             </div>
 
             <div class="form-group">
