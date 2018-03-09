@@ -58,6 +58,11 @@ class Item extends Model
         );
     }
 
+    public function getRouteKeyName()
+    {
+        return 'item_id';
+    }
+
     public static function find($itemID): Item
     {
         return static::query()->where('item_id', $itemID)->firstOrFail();
