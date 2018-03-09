@@ -218,13 +218,23 @@ if ( ! function_exists('active_on')) {
     /**
      * Helper function for display active navigation item on particular route path matching
      *
-     * @param string $path
-     * @param string $activeClass
+     * @param string|array $path
+     * @param string       $activeClass
      *
      * @return string|null
      */
     function active_on($path, $activeClass = 'active')
     {
+        if (is_array($path)) {
+            foreach ($path as $singlePath) {
+                if (request()->is($singlePath)) {
+                    return $activeClass;
+                }
+            }
+
+            return null;
+        }
+
         return request()->is($path) ? $activeClass : null;
     }
 }
