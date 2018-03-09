@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Reporting\ItemReports;
 use Carbon\Carbon;
 use DTS\eBaySDK\Trading\Enums\ListingStatusCodeType;
 use Illuminate\Database\Eloquent\Collection;
@@ -17,24 +18,13 @@ class ItemsController extends AuthRequiredController
 
         $itemsQuery = $this->buildItemsQueryBasedOnCurrentRequestAndAccounts($request, $accounts);
 
-        $allItems = (clone $itemsQuery)->get();
+        $allItems = $itemsQuery->get();
 
-        $totalOrders     = $allItems->sum('orders_count');
-        $totalEarning    = $allItems->sum('earning');
-        $totalItemsValue = $allItems->sum('price');
-        $earningPerItem  = $allItems->count() ? $totalEarning / $allItems->count() : 0;
-        $hasSaleItems    = $allItems->filter(function ($item) {
-            return $item['orders_count'] > 0;
-        });
-        $saleThroughRate = $allItems->count() ? $hasSaleItems->count() / $allItems->count() : 0;
+        $reporter = new ItemReports($allItems);
 
         $items = $itemsQuery->paginate();
 
-        return view(
-            'listings.index',
-            compact('user', 'accounts', 'items', 'totalOrders', 'totalEarning', 'totalItemsValue', 'saleThroughRate',
-                'earningPerItem')
-        );
+        return view('listings.index', compact('user', 'accounts', 'allItems', 'items', 'reporter'));
     }
 
     protected function buildAccountsQueryBasedOnCurrentRequest(Request $request)

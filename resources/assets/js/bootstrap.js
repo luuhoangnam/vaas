@@ -11,6 +11,7 @@ window.Popper = require('popper.js').default;
 try {
     window.$ = window.jQuery = require('jquery');
     window.Chart = require('chart.js');
+    // window.ClipboardJS = require('clipboard');
 
     require('bootstrap');
 } catch (e) {}
