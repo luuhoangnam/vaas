@@ -18,6 +18,7 @@ window.Vue = require('vue');
 
 require('./components/SaleChart');
 require('./components/ItemsTable');
+require('./components/item/ItemChart');
 
 const app = new Vue({
     el: '#app'

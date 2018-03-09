@@ -5,6 +5,7 @@ namespace App;
 use App\Cashback\AmazonAssociates;
 use App\Exceptions\CanNotFetchProductInformation;
 use App\Ranking\Trackable;
+use App\Ranking\Tracker;
 use App\Repricing\Repricer;
 use App\Services\Ebay;
 use App\Sourcing\AmazonProduct;
@@ -30,6 +31,7 @@ class Item extends Model
         'item_id',
         'title',
         'price',
+        'picture_url',
         'quantity',
         'quantity_sold',
         'primary_category_id',
@@ -103,6 +105,11 @@ class Item extends Model
     public function repricer()
     {
         return $this->hasOne(Repricer::class);
+    }
+
+    public function trackers()
+    {
+        return $this->morphMany(Tracker::class, 'trackable');
     }
 
     public function scopeActive(Builder $builder)
@@ -183,6 +190,8 @@ class Item extends Model
             'primary_category_id' => $item->PrimaryCategory->CategoryID,
             'start_time'          => app_carbon($item->ListingDetails->StartTime),
             'status'              => $item->SellingStatus->ListingStatus,
+            // pictures
+            'picture_url'         => array_first($item->PictureDetails->PictureURL) ?: null,
             //
             'sku'                 => $item->SKU,
             'upc'                 => optional($item->ProductListingDetails)->UPC,

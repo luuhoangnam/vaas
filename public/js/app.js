@@ -32340,6 +32340,7 @@ window.Vue = __webpack_require__(217);
 
 __webpack_require__(232);
 __webpack_require__(225);
+__webpack_require__(234);
 
 var app = new Vue({
   el: '#app'
@@ -78991,6 +78992,24 @@ Vue.component('sale-chart', {
     },
     mounted: function mounted() {
         var chart = new Chart('sale-chart', this.config);
+    }
+});
+
+/***/ }),
+/* 233 */,
+/* 234 */
+/***/ (function(module, exports) {
+
+Vue.component('item-chart', {
+    props: ['config'],
+
+    data: function data() {
+        return {
+            //
+        };
+    },
+    mounted: function mounted() {
+        var chart = new Chart('item-chart', this.config);
     }
 });
 

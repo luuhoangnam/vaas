@@ -291,7 +291,7 @@ class Account extends Model
         return $response->Category[0]->ConditionValues->toArray()['Condition'];
     }
 
-    public function syncItemsByStartTimeRange(Carbon $from = null, Carbon $until = null)
+    public function syncItemsByStartTimeRange(\Carbon\Carbon $from = null, \Carbon\Carbon $until = null)
     {
         $request = $this->getSellerListRequest();
 
@@ -319,6 +319,8 @@ class Account extends Model
             'ItemArray.Item.SellingStatus.QuantitySold',
             'ItemArray.Item.SellingStatus.CurrentPrice',
             'ItemArray.Item.SellingStatus.ListingStatus',
+            // Pictures
+            'ItemArray.Item.PictureDetails.PictureURL',
             // Pagination
             'PaginationResult',
             'HasMoreItems',
@@ -349,7 +351,7 @@ class Account extends Model
         );
     }
 
-    public function syncOrdersByCreatedTimeRange(Carbon $from = null, Carbon $until = null)
+    public function syncOrdersByCreatedTimeRange(\Carbon\Carbon $from = null, \Carbon\Carbon $until = null)
     {
         $request = $this->getOrdersRequest();
 

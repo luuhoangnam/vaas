@@ -20,7 +20,8 @@ Route::get('redirect/amazon/{asin}', 'RedirectController@redirect')->name('redir
 # END INTERMEDIATE
 
 # LISTINGS
-Route::get('listings', 'ItemsController@index')->name('items');
+Route::get('items', 'ItemsController@index')->name('items');
+Route::get('items/{item}', 'ItemsController@show')->name('items.show');
 # END LISTINGS
 
 # RESEARCH

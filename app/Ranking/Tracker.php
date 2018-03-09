@@ -49,6 +49,13 @@ class Tracker extends Model
         return $this->records()->create(compact('rank', 'total'));
     }
 
+    public function recordOnDate(Carbon $date)
+    {
+        return $this->records()
+                    ->whereDate('created_at', $date)
+                    ->latest();
+    }
+
     public function report(Carbon $from, Carbon $until)
     {
         $dates      = date_range($from, $until); // Default: Daily Retention

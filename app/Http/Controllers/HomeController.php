@@ -69,8 +69,11 @@ class HomeController extends AuthRequiredController
         # SALE CHART
         $saleChart = $this->generateSaleChart($orders, $startDate, $endDate);
 
+        $pageTitle = 'Dashboard';
+
         // RENDER DASHBOARD
         return view('dashboard', compact(
+            'pageTitle',
             'user', 'orders',
             'revenue', 'revenueChange',
             'fees', 'feesChange',
