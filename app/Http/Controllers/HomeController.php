@@ -51,6 +51,9 @@ class HomeController extends AuthRequiredController
         $orderReportsPreviousPeriod = new OrderReports($ordersLastWeek);
 
         # METRICS
+        $ordersCount       = $orderReports->count();
+        $ordersCountChange = $ordersCount ? ($ordersCount - $orderReportsPreviousPeriod->count()) / $ordersCount : null;
+
         $revenue       = $orderReports->revenue();
         $revenueChange = $revenue ? ($revenue - $orderReportsPreviousPeriod->revenue()) / $revenue : null;
 
@@ -65,6 +68,12 @@ class HomeController extends AuthRequiredController
 
         $margin       = $orderReports->margin();
         $marginChange = $margin ? ($margin / $orderReportsPreviousPeriod->margin()) / $margin : null;
+
+        $aov       = $orderReports->averageOrderValue();
+        $aovChange = $aov ? ($aov / $orderReportsPreviousPeriod->averageOrderValue()) / $aov : null;
+
+        $cog       = $orderReports->costOfGoods();
+        $cogChange = $cog ? ($cog / $orderReportsPreviousPeriod->costOfGoods()) / $cog : null;
 
         # SALE CHART
         $saleChart = $this->generateSaleChart($orders, $startDate, $endDate);
@@ -85,8 +94,11 @@ class HomeController extends AuthRequiredController
             'pageTitle',
             'user', 'orders', 'newItems',
             'revenue', 'revenueChange',
+            'ordersCount', 'ordersCountChange',
             'fees', 'feesChange',
             'cashback', 'cashbackChange',
+            'aov', 'aovChange',
+            'cog', 'cogChange',
             'profit', 'profitChange',
             'margin', 'marginChange',
             'startDate', 'endDate', 'previousPeriodStartDate', 'previousPeriodEndDate',
@@ -118,24 +130,25 @@ class HomeController extends AuthRequiredController
     {
         $dates = date_range($startDate, $endDate);
 
-        $revenueData = $dates->map(function (Carbon $date) use ($orders) {
+        $data = $dates->map(function (Carbon $date) use ($orders) {
             $filtered = $orders->filter(function (Order $order) use ($date) {
                 return $date->isSameDay($order['created_time']);
             });
 
-            return $filtered->sum('total');
-        })->toArray();
+            return [
+                'revenue' => round($filtered->sum('total'), 2),
+                'count'   => $filtered->count(),
+            ];
+        });
 
-        $ordersData = $dates->map(function (Carbon $date) use ($orders) {
-            $filtered = $orders->filter(function (Order $order) use ($date) {
-                return $date->isSameDay($order['created_time']);
-            });
+        $counts   = $data->pluck('count');
+        $revenues = $data->pluck('revenue');
 
-            return $filtered->count();
-        })->toArray();
+        $maxOrdersAxis  = (round($counts->max() / 5) + 1) * 5;
+        $maxRevenueAxis = (round($revenues->max() / 50) + 1) * 50;
 
-        $maxOrdersAxis  = (round(max($ordersData) / 5) + 1) * 5;
-        $maxRevenueAxis = (round(max($revenueData) / 50) + 1) * 50;
+        $revenueData = $revenues->toArray();
+        $countData   = $counts->toArray();
 
         return [
             'type' => 'bar',
@@ -148,7 +161,7 @@ class HomeController extends AuthRequiredController
                         'label'           => 'Orders',
                         'backgroundColor' => 'rgba(6, 84, 186, 0.6)',
                         'borderColor'     => 'rgba(6, 84, 186, 1)',
-                        'data'            => $ordersData,
+                        'data'            => $countData,
                         'yAxisID'         => 'ordersCount',
                     ],
                     [

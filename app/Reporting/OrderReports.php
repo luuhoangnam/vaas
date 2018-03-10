@@ -66,4 +66,9 @@ class OrderReports
     {
         return $this->revenue() / $this->numberOfOrders();
     }
+
+    public function count()
+    {
+        return $this->orders->count();
+    }
 }
