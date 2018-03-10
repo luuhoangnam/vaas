@@ -1,4 +1,4 @@
-Vue.component('sale-chart', {
+Vue.component('dashboard-sale-chart', {
     props: ['config'],
 
     data() {

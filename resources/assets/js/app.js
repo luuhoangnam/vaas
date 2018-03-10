@@ -16,9 +16,13 @@ window.Vue = require('vue');
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
-require('./components/SaleChart');
 require('./components/ItemsTable');
 require('./components/item/ItemChart');
+
+// Dashboard
+require('./components/dashboard/OrdersTable');
+require('./components/dashboard/SaleChart');
+require('./components/dashboard/CategoryChart');
 
 const app = new Vue({
     el: '#app'

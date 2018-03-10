@@ -32313,7 +32313,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(147);
-module.exports = __webpack_require__(226);
+module.exports = __webpack_require__(224);
 
 
 /***/ }),
@@ -32338,9 +32338,13 @@ window.Vue = __webpack_require__(217);
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
+__webpack_require__(221);
+__webpack_require__(223);
+
+// Dashboard
+__webpack_require__(230);
+__webpack_require__(231);
 __webpack_require__(232);
-__webpack_require__(225);
-__webpack_require__(234);
 
 var app = new Vue({
   el: '#app'
@@ -77982,15 +77986,10 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 /* 220 */,
-/* 221 */,
-/* 222 */,
-/* 223 */,
-/* 224 */,
-/* 225 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 221 */
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-var ClipboardJS = __webpack_require__(231);
+var ClipboardJS = __webpack_require__(222);
 
 Vue.component('items-table', {
     props: ['items'],
@@ -78025,17 +78024,7 @@ Vue.component('items-table', {
 });
 
 /***/ }),
-/* 226 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 227 */,
-/* 228 */,
-/* 229 */,
-/* 230 */,
-/* 231 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -78979,10 +78968,64 @@ module.exports = select;
 });
 
 /***/ }),
-/* 232 */
+/* 223 */
 /***/ (function(module, exports) {
 
-Vue.component('sale-chart', {
+Vue.component('item-chart', {
+    props: ['config'],
+
+    data: function data() {
+        return {
+            //
+        };
+    },
+    mounted: function mounted() {
+        var chart = new Chart('item-chart', this.config);
+    }
+});
+
+/***/ }),
+/* 224 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 225 */,
+/* 226 */,
+/* 227 */,
+/* 228 */,
+/* 229 */,
+/* 230 */
+/***/ (function(module, exports) {
+
+Vue.component('dashboard-orders-table', {
+    props: ['orders'],
+
+    data: function data() {
+        return {
+            //
+        };
+    },
+    mounted: function mounted() {
+        //
+    },
+
+
+    computed: {
+        //
+    },
+
+    methods: {
+        //
+    }
+});
+
+/***/ }),
+/* 231 */
+/***/ (function(module, exports) {
+
+Vue.component('dashboard-sale-chart', {
     props: ['config'],
 
     data: function data() {
@@ -78996,11 +79039,10 @@ Vue.component('sale-chart', {
 });
 
 /***/ }),
-/* 233 */,
-/* 234 */
+/* 232 */
 /***/ (function(module, exports) {
 
-Vue.component('item-chart', {
+Vue.component('dashboard-category-chart', {
     props: ['config'],
 
     data: function data() {
@@ -79009,7 +79051,16 @@ Vue.component('item-chart', {
         };
     },
     mounted: function mounted() {
-        var chart = new Chart('item-chart', this.config);
+        var chart = new Chart('category-chart', this.config);
+    },
+
+
+    computed: {
+        //
+    },
+
+    methods: {
+        //
     }
 });
 

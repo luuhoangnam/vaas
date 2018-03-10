@@ -2,9 +2,11 @@
 
 namespace App;
 
+use DTS\eBaySDK\Trading\Enums\OrderStatusCodeType;
 use DTS\eBaySDK\Trading\Types\OrderType;
 use DTS\eBaySDK\Trading\Types\TransactionType;
 use DTS\eBaySDK\Types\RepeatableType;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Laravel\Scout\Searchable;
@@ -34,6 +36,11 @@ class Order extends Model
 
     protected $casts = ['created_time' => 'datetime'];
 
+    protected static function boot()
+    {
+        parent::boot();
+    }
+
     public function searchableAs()
     {
         return 'orders';
@@ -62,6 +69,16 @@ class Order extends Model
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function scopeEffective(Builder $query)
+    {
+        return $query->where('status', 'Completed');
+    }
+
+    public function getEffectiveAttribute()
+    {
+        return $this['status'] == OrderStatusCodeType::C_COMPLETED;
     }
 
     public function getFeesAttribute()

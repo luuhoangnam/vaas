@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Order;
 use App\Reporting\OrderReports;
+use DTS\eBaySDK\Trading\Enums\OrderStatusCodeType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
@@ -44,8 +45,11 @@ class HomeController extends AuthRequiredController
         ]);
 
         # QUERY ORDERS & MAKE REPORTER
-        $orders         = $this->buildOrdersQuery($request, $startDate, $endDate)->get();
-        $ordersLastWeek = $this->buildOrdersQuery($request, $previousPeriodStartDate, $previousPeriodEndDate)->get();
+        $ordersQuery = $this->buildOrdersQuery($request, $startDate, $endDate);
+
+        $orders          = $ordersQuery->get();
+        $ordersPaginated = $ordersQuery->paginate();
+        $ordersLastWeek  = $this->buildOrdersQuery($request, $previousPeriodStartDate, $previousPeriodEndDate)->get();
 
         $orderReports               = new OrderReports($orders);
         $orderReportsPreviousPeriod = new OrderReports($ordersLastWeek);
@@ -78,21 +82,26 @@ class HomeController extends AuthRequiredController
         # SALE CHART
         $saleChart = $this->generateSaleChart($orders, $startDate, $endDate);
 
+        # EBAY CATEGORY ANALYTICS
+        $categoryChart = $this->generateCategoryChart($orders);
+
         # NEW LISTINGS
-        $newItems = $this->resolveCurrentUser()
-                         ->items()
-                         ->with('account')
-                         ->whereDate('start_time', '>=', $startDate)
-                         ->whereDate('start_time', '<=', $endDate)
-                         ->orderByDesc('start_time')
-                         ->get();
+        $newItemsQuery = $this->resolveCurrentUser()
+                              ->items()
+                              ->with('account')
+                              ->whereDate('start_time', '>=', $startDate)
+                              ->whereDate('start_time', '<=', $endDate)
+                              ->orderByDesc('start_time');
+
+        $newItems          = $newItemsQuery->get();
+        $newItemsPaginated = $newItemsQuery->paginate();
 
         $pageTitle = 'Dashboard';
 
         // RENDER DASHBOARD
         return view('dashboard', compact(
             'pageTitle',
-            'user', 'orders', 'newItems',
+            'user', 'orders', 'ordersPaginated', 'newItems', 'newItemsPaginated',
             'revenue', 'revenueChange',
             'ordersCount', 'ordersCountChange',
             'fees', 'feesChange',
@@ -102,7 +111,7 @@ class HomeController extends AuthRequiredController
             'profit', 'profitChange',
             'margin', 'marginChange',
             'startDate', 'endDate', 'previousPeriodStartDate', 'previousPeriodEndDate',
-            'saleChart'
+            'saleChart', 'categoryChart'
         ));
     }
 
@@ -123,6 +132,8 @@ class HomeController extends AuthRequiredController
             });
         }
 
+        $query->latest('created_time');
+
         return $query;
     }
 
@@ -132,23 +143,32 @@ class HomeController extends AuthRequiredController
 
         $data = $dates->map(function (Carbon $date) use ($orders) {
             $filtered = $orders->filter(function (Order $order) use ($date) {
-                return $date->isSameDay($order['created_time']);
+                return $order['status'] == OrderStatusCodeType::C_COMPLETED && $date->isSameDay($order['created_time']);
             });
 
             return [
                 'revenue' => round($filtered->sum('total'), 2),
+                'profit'  => round($filtered->sum('profit'), 2),
                 'count'   => $filtered->count(),
             ];
         });
 
         $counts   = $data->pluck('count');
         $revenues = $data->pluck('revenue');
+        $profits  = $data->pluck('profit');
 
-        $maxOrdersAxis  = (round($counts->max() / 5) + 1) * 5;
-        $maxRevenueAxis = (round($revenues->max() / 50) + 1) * 50;
+        $orderAxisStep = 5;
+        $maxOrdersAxis = (round($counts->max() / $orderAxisStep) + 1) * $orderAxisStep;
 
-        $revenueData = $revenues->toArray();
+        $revenueAxisStep = 50;
+        $maxRevenueAxis  = (round($revenues->max() / $revenueAxisStep) + 1) * $revenueAxisStep;
+
+        $profitAxisStep = 10;
+        $maxProfitAxis  = (round($profits->max() / $profitAxisStep) + 1) * $profitAxisStep;
+
         $countData   = $counts->toArray();
+        $revenueData = $revenues->toArray();
+        $profitData  = $profits->toArray();
 
         return [
             'type' => 'bar',
@@ -172,6 +192,15 @@ class HomeController extends AuthRequiredController
                         'data'    => $revenueData,
                         'yAxisID' => 'revenue',
                     ],
+                    [
+                        'type'            => 'line',
+                        'label'           => 'Profit',
+                        'fill'            => false,
+                        'backgroundColor' => 'rgba(121, 250, 76, .6)',
+                        'borderColor'     => 'rgb(121, 250, 76)',
+                        'data'            => $profitData,
+                        'yAxisID'         => 'profit',
+                    ],
                 ],
             ],
 
@@ -191,7 +220,7 @@ class HomeController extends AuthRequiredController
                             'ticks'     => [
                                 'beginAtZero' => true,
                                 'max'         => $maxOrdersAxis,
-                                'stepSize'    => 3,
+                                'stepSize'    => $orderAxisStep,
                             ],
                             'gridLines' => [
                                 'display' => false,
@@ -203,7 +232,19 @@ class HomeController extends AuthRequiredController
                             'ticks'     => [
                                 'beginAtZero' => true,
                                 'max'         => $maxRevenueAxis,
-                                'stepSize'    => 50,
+                                'stepSize'    => $revenueAxisStep,
+                            ],
+                            'gridLines' => [
+                                'display' => false,
+                            ],
+                        ],
+                        [
+                            'id'        => 'profit',
+                            'position'  => 'right',
+                            'ticks'     => [
+                                'beginAtZero' => true,
+                                'max'         => $maxProfitAxis,
+                                'stepSize'    => $profitAxisStep,
                             ],
                             'gridLines' => [
                                 'display' => false,
@@ -233,5 +274,55 @@ class HomeController extends AuthRequiredController
     protected function previousPeriodStartDate(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate): \Carbon\Carbon
     {
         return (clone $this->previousPeriodEndDate($startDate, $endDate))->subDays($endDate->diffInDays($startDate));
+    }
+
+    protected function generateCategoryChart(\Illuminate\Database\Eloquent\Collection $orders)
+    {
+        $orders->load('transactions.item');
+
+        $categoryIds = $orders->pluck('transactions.item')->groupBy('primary_category_id');
+
+//        dd($orders->random()->transactions->random()->item);
+
+        $data = [
+            'count'   => [65, 59, 90, 81, 56, 55, 40],
+            'revenue' => [28, 48, 40, 19, 96, 27, 100],
+        ];
+
+        return [
+            'type' => 'radar',
+
+            'data' => [
+                'labels'   => ['Eating', 'Drinking', 'Sleeping', 'Designing', 'Coding', 'Cycling', 'Running'],
+                'datasets' => [
+                    [
+                        'label'                     => 'Orders',
+                        'fill'                      => true,
+                        'backgroundColor'           => 'rgba(255, 99, 132, 0.2)',
+                        'borderColor'               => 'rgb(255, 99, 132)',
+                        'pointBackgroundColor'      => 'rgb(255, 99, 132)',
+                        'pointBorderColor'          => '#fff',
+                        'pointHoverBackgroundColor' => '#fff',
+                        'pointHoverBorderColor'     => 'rgb(255, 99, 132)',
+                        'data'                      => [65, 59, 90, 81, 56, 55, 40],
+                    ],
+                    [
+                        'label'                     => 'Profit',
+                        'fill'                      => true,
+                        'backgroundColor'           => 'rgba(54, 162, 235, 0.2)',
+                        'borderColor'               => 'rgb(54, 162, 235)',
+                        'pointBackgroundColor'      => 'rgb(54, 162, 235)',
+                        'pointBorderColor'          => '#fff',
+                        'pointHoverBackgroundColor' => '#fff',
+                        'pointHoverBorderColor'     => 'rgb(54, 162, 235)',
+                        'data'                      => [28, 48, 40, 19, 96, 27, 100],
+                    ],
+                ],
+            ],
+
+            'options' => [
+                //
+            ],
+        ];
     }
 }

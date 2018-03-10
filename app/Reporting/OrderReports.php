@@ -2,15 +2,23 @@
 
 namespace App\Reporting;
 
+use App\Order;
+use DTS\eBaySDK\Trading\Enums\OrderStatusCodeType;
 use Illuminate\Support\Collection;
 
 class OrderReports
 {
     protected $orders;
 
-    public function __construct(Collection $orders)
+    public function __construct(Collection $orders, $effective = true)
     {
-        $this->orders = $orders;
+        $this->orders = $orders->filter(function (Order $order) use ($effective) {
+            if ($effective) {
+                return $order['status'] == OrderStatusCodeType::C_COMPLETED;
+            }
+
+            return true;
+        });
     }
 
     public function revenue()

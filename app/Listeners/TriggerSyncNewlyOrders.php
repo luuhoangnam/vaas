@@ -16,7 +16,7 @@ class TriggerSyncNewlyOrders implements ShouldQueue
     {
         Account::find($event->payload->RecipientUserID)
                ->syncOrdersByCreatedTimeRange(
-                   Carbon::now()->subMinutes(15),
+                   Carbon::now()->subHour(),
                    Carbon::now()
                );
     }
