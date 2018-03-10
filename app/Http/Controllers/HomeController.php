@@ -205,7 +205,10 @@ class HomeController extends AuthRequiredController
             ],
 
             'options' => [
-                'scales' => [
+                'tooltips' => [
+                    'titleFontFamily' => 'Fira Code',
+                ],
+                'scales'   => [
                     'xAxes' => [
                         [
                             'gridLines' => [

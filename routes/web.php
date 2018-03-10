@@ -28,6 +28,10 @@ Route::get('items/{item}', 'ItemsController@show')->name('items.show');
 Route::get('research/compare', 'ResearchController@compare')->name('research.compare');
 # END RESEARCH
 
+# REPORTS
+Route::get('reports', 'ResearchController@compare')->name('reports');
+# END REPORTS
+
 # LISTING BUILDER
 Route::get('listings/builder/start', 'ListingBuilderController@start')->name('listings.builder.start');
 Route::get('listings/builder', 'ListingBuilderController@build')->name('listings.builder');
