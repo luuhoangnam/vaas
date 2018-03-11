@@ -62,7 +62,7 @@ class OrderReports
             return 0.0;
         }
 
-        return $this->profit() / $this->revenue();
+        return $this->revenue() ? $this->profit() / $this->revenue() : null;
     }
 
     public function numberOfOrders()
@@ -72,7 +72,7 @@ class OrderReports
 
     public function averageOrderValue()
     {
-        return $this->revenue() / $this->numberOfOrders();
+        return $this->numberOfOrders() ? $this->revenue() / $this->numberOfOrders() : null;
     }
 
     public function count()

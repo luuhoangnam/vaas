@@ -79025,6 +79025,8 @@ Vue.component('dashboard-orders-table', {
 /* 231 */
 /***/ (function(module, exports) {
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 Vue.component('dashboard-sale-chart', {
     props: ['config'],
 
@@ -79034,7 +79036,24 @@ Vue.component('dashboard-sale-chart', {
         };
     },
     mounted: function mounted() {
-        var chart = new Chart('sale-chart', this.config);
+        var config = _extends({
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            // Include a dollar sign in the ticks
+                            callback: function callback(value, index, values) {
+                                return '$' + value;
+                            }
+                        }
+                    }]
+                }
+            }
+        }, this.config);
+
+        console.log(config);
+
+        var chart = new Chart('sale-chart', config);
     }
 });
 

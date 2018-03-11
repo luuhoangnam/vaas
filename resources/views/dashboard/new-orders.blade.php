@@ -34,10 +34,14 @@
                         @if ($order['effective'])
                             <td>{{ usd($order['final_value_fee']) }}</td>
                             <td>{{ usd($order['paypal_fee']) }}</td>
-                            <td>{{ usd($order['cog']) }}</td>
-                            <td class="{{ $order['cashback'] ? 'text-success' : ''}}">{{ usd($order['cashback']) }}</td>
-                            <td class="{{ $textClass }}">{{ usd($order['profit']) }}</td>
-                            <td>{{ percent($order['margin']) }}</td>
+                            @if ($order['cog'])
+                                <td>{{ usd($order['cog']) }}</td>
+                                <td class="{{ $order['cashback'] ? 'text-success' : ''}}">{{ usd($order['cashback']) }}</td>
+                                <td class="{{ $textClass }}">{{ usd($order['profit']) }}</td>
+                                <td>{{ percent($order['margin']) }}</td>
+                            @else
+                                <td colspan="4" class="text-muted text-center">Missing Cost of Goods</td>
+                            @endif
                         @else
                             <td colspan="6" class="text-muted text-center">Order Canceled</td>
                         @endif

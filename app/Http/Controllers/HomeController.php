@@ -68,16 +68,16 @@ class HomeController extends AuthRequiredController
         $cashbackChange = $cashback ? ($cashback - $orderReportsPreviousPeriod->cashback()) / $cashback : null;
 
         $profit       = $orderReports->profit();
-        $profitChange = $profit ? ($profit / $orderReportsPreviousPeriod->profit()) / $profit : null;
+        $profitChange = $profit ? ($profit - $orderReportsPreviousPeriod->profit()) / $profit : null;
 
         $margin       = $orderReports->margin();
-        $marginChange = $margin ? ($margin / $orderReportsPreviousPeriod->margin()) / $margin : null;
+        $marginChange = $margin ? ($margin - $orderReportsPreviousPeriod->margin()) / $margin : null;
 
         $aov       = $orderReports->averageOrderValue();
-        $aovChange = $aov ? ($aov / $orderReportsPreviousPeriod->averageOrderValue()) / $aov : null;
+        $aovChange = $aov ? ($aov - $orderReportsPreviousPeriod->averageOrderValue()) / $aov : null;
 
         $cog       = $orderReports->costOfGoods();
-        $cogChange = $cog ? ($cog / $orderReportsPreviousPeriod->costOfGoods()) / $cog : null;
+        $cogChange = $cog ? ($cog - $orderReportsPreviousPeriod->costOfGoods()) / $cog : null;
 
         # SALE CHART
         $saleChart = $this->generateSaleChart($orders, $startDate, $endDate);
