@@ -53,6 +53,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('ebay:sync:all --only_orders --since yesterday')->daily(); // Fix
         $schedule->command('ranking:refresh')->daily();
         $schedule->command('repricer:periodic')->everyFifteenMinutes();
     }

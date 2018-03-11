@@ -25,6 +25,11 @@
                 <tbody>
                 @foreach($ordersPaginated as $order)
                     @php
+                        $roundedFVF = round($order['total'] * 0.0915, 2, PHP_ROUND_HALF_DOWN);
+                        $goodFVFTextClass =  $order['final_value_fee'] < $roundedFVF ? 'text-success' : '';
+                        $roundedPPF = round($order['total'] * 0.039 + 0.3, 2, PHP_ROUND_HALF_DOWN);
+                        $goodPPFTextClass =  $order['final_value_fee'] < $roundedPPF ? 'text-success' : '';
+
                         $textClass = $order['profit'] > 0.5 ? 'text-success' : ($order['profit'] > 0 ? 'text-warning' :'text-danger');
                     @endphp
                     <tr>
@@ -32,8 +37,8 @@
                         <td><a href="{{ $order['ebay_link'] }}">{{ $order['record'] }}</a></td>
                         <td>{{ usd($order['total']) }}</td>
                         @if ($order['effective'])
-                            <td>{{ usd($order['final_value_fee']) }}</td>
-                            <td>{{ usd($order['paypal_fee']) }}</td>
+                            <td class="{{ $goodFVFTextClass }}">{{ usd($order['final_value_fee']) }}</td>
+                            <td class="{{ $goodPPFTextClass }}">{{ usd($order['paypal_fee']) }}</td>
                             @if ($order['cog'])
                                 <td>{{ usd($order['cog']) }}</td>
                                 <td class="{{ $order['cashback'] ? 'text-success' : ''}}">{{ usd($order['cashback']) }}</td>
