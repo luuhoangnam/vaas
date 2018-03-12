@@ -32346,6 +32346,9 @@ __webpack_require__(230);
 __webpack_require__(231);
 __webpack_require__(232);
 
+// Reports
+__webpack_require__(233);
+
 var app = new Vue({
   el: '#app'
 });
@@ -79080,6 +79083,29 @@ Vue.component('dashboard-category-chart', {
 
     methods: {
         //
+    }
+});
+
+/***/ }),
+/* 233 */
+/***/ (function(module, exports) {
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+Vue.component('reports-sale-chart', {
+    props: ['config'],
+
+    data: function data() {
+        return {
+            //
+        };
+    },
+    mounted: function mounted() {
+        var config = _extends({
+            options: {}
+        }, this.config);
+
+        var chart = new Chart('sale-chart', config);
     }
 });
 

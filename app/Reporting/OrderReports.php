@@ -3,6 +3,7 @@
 namespace App\Reporting;
 
 use App\Order;
+use Carbon\Carbon;
 use DTS\eBaySDK\Trading\Enums\OrderStatusCodeType;
 use Illuminate\Support\Collection;
 
@@ -19,6 +20,43 @@ class OrderReports
 
             return true;
         });
+    }
+
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function onDate($date): self
+    {
+        if ( ! $date instanceof Carbon) {
+            $date = new \Illuminate\Support\Carbon($date);
+        }
+
+        $orders = $this->orders->filter(function (Order $order) use ($date) {
+            return $date->isSameDay($order['created_time']);
+        });
+
+        return new self($orders);
+    }
+
+    public function onWeek($startDayOfWeek)
+    {
+        if ( ! $startDayOfWeek instanceof Carbon) {
+            $startDayOfWeek = new \Illuminate\Support\Carbon($startDayOfWeek);
+        }
+
+        $orders = $this->orders->filter(function (Order $order) use ($startDayOfWeek) {
+            /** @var Carbon $createdTime */
+            $createdTime = $order['created_time'];
+
+            return $createdTime->between(
+                $startDayOfWeek->startOfWeek(),
+                $startDayOfWeek->endOfWeek()
+            );
+        });
+
+        return new self($orders);
     }
 
     public function revenue()

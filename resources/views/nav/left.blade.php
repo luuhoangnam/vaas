@@ -6,6 +6,6 @@
     <li><a class="nav-link {{ active_on('feedbacks*') }}" href="#">Feedbacks</a></li>
     <li><a class="nav-link {{ active_on('returns*') }}" href="#">Returns</a></li>
     <li><a class="nav-link {{ active_on('automation*') }}" href="#">Automation</a></li>
-    <li><a class="nav-link {{ active_on('reports*') }}" href="{{ route('reports') }}">Reports</a></li>
+    <li><a class="nav-link {{ active_on('reports*') }}" href="{{ route('reports.by_days') }}">Reports</a></li>
     @endbeta
 @endauth

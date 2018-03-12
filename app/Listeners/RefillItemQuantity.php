@@ -51,6 +51,8 @@ class RefillItemQuantity implements ShouldQueue
         if ($response->Ack === AckCodeType::C_FAILURE) {
             $this->release(now()->addMinutes(15));
 
+            // Send notification if needed
+
             throw new TradingApiException($request, $response);
         }
     }

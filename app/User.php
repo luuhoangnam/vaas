@@ -28,6 +28,11 @@ class User extends Authenticatable
         return $this->hasMany(Account::class);
     }
 
+    public function googleAccounts()
+    {
+        return $this->hasMany(GoogleAccount::class);
+    }
+
     public function orders()
     {
         return $this->hasManyThrough(Order::class, Account::class);

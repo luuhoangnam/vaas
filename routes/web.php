@@ -29,10 +29,18 @@ Route::get('research/compare', 'ResearchController@compare')->name('research.com
 # END RESEARCH
 
 # REPORTS
-Route::get('reports', 'ResearchController@compare')->name('reports');
+Route::get('reports/by_days', 'ReportsController@byDays')->name('reports.by_days');
+Route::get('reports/by_weeks', 'ReportsController@byWeeks')->name('reports.by_weeks');
+Route::get('reports/by_months', 'ReportsController@byMonths')->name('reports.by_months');
+Route::get('reports/by_years', 'ReportsController@byYears')->name('reports.by_years');
 # END REPORTS
 
 # LISTING BUILDER
 Route::get('listings/builder/start', 'ListingBuilderController@start')->name('listings.builder.start');
 Route::get('listings/builder', 'ListingBuilderController@build')->name('listings.builder');
 # END LISTING BUILDER
+
+# OAUTH
+Route::get('oauth/google/redirect', 'OAuth\\GoogleController@redirect')->name('oauth.google.redirect');
+Route::get('oauth/google/callback', 'OAuth\\GoogleController@callback')->name('oauth.google.callback');
+# END OAUTH

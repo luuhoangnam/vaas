@@ -161,6 +161,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\EbayServiceProvider::class,
         App\Providers\BladeServiceProvider::class,
+        App\Providers\GoogleServiceProvider::class,
 
     ],
 

@@ -24,6 +24,9 @@ require('./components/dashboard/OrdersTable');
 require('./components/dashboard/SaleChart');
 require('./components/dashboard/CategoryChart');
 
+// Reports
+require('./components/reports/SaleChart');
+
 const app = new Vue({
     el: '#app'
 });
