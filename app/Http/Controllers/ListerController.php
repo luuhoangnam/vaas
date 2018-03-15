@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Account;
 use App\Sourcing\AmazonCom;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Revolution\Amazon\ProductAdvertising\AmazonClient;
 
 class ListerController extends AuthRequiredController
 {
@@ -31,7 +33,7 @@ class ListerController extends AuthRequiredController
         # Get necessary information to display
         $user                = $this->resolveCurrentUser($request);
         $account             = Account::find($request['account']);
-        $product             = AmazonCom::get($request['product_id']);
+        $product             = $this->product($request['product_id']);
         $suggestedCategories = $account->suggestCategory($product['title']);
         $previewUrl          = $this->previewUrl('vaas', $product);
         $profiles            = collect($account->sellerProfiles())->groupBy('ProfileType');
@@ -51,10 +53,10 @@ class ListerController extends AuthRequiredController
             $percentFound       = $category['PercentItemFound'];
 
             $categories[] = [
-                'id' => $categoryID,
-                'name' => $category['Category']['CategoryName'],
+                'id'         => $categoryID,
+                'name'       => $category['Category']['CategoryName'],
                 'breadcrumb' => $categoryBreadcrumb,
-                'percent' => $percentFound,
+                'percent'    => $percentFound,
             ];
         }
 
@@ -112,5 +114,111 @@ class ListerController extends AuthRequiredController
         ];
 
         return route('lister.preview', [$template]) . '?' . join('&', $params);
+    }
+
+    protected function product($id)
+    {
+        $cacheKey = md5(serialize([
+            'getProduct' => ['type' => 'amazon', 'id' => $id],
+        ]));
+
+        $cacheTime = 60; // 1 Hour
+
+        return cache()->remember($cacheKey, $cacheTime, function () use ($id) {
+            $api = $this->amazonProductAdvertisingApi();
+
+            $response = $api->item($id);
+
+            if (key_exists('Errors', $response['Items']['Request'])) {
+                $errors = $response['Items']['Request']['Errors'];
+                $error  = array_first($errors);
+
+                if ($error['Code'] === 'AWS.InvalidParameterValue') {
+                    throw new \InvalidArgumentException($error['Message']);
+                }
+            }
+
+            $item = $response['Items']['Item'];
+
+            if ( ! key_exists('Offer', $item['Offers'])) {
+                throw new \InvalidArgumentException($error['Message']);
+//            return AmazonCom::get($id); // Out of Stock
+            }
+
+            $offer   = $item['Offers']['Offer'];
+            $listing = $offer['OfferListing'];
+
+            $title       = $item['ItemAttributes']['Title'];
+            $description = $item['EditorialReviews']['EditorialReview']['Content'];
+            $price       = (double)$listing['Price']['Amount'] / 100;
+            $available   = $listing['AvailabilityAttributes']['AvailabilityType'] === 'now';
+            $images      = $this->getImagesForApi($item['ImageSets']['ImageSet'])->all();
+
+            $attributes = array_only($item['ItemAttributes'], [
+                'Brand',
+                'Color',
+                'EAN',
+                'Feature',
+                'PartNumber',
+                'Manufacturer',
+                'Label',
+                'PackageQuantity',
+                'MPN',
+                'Model',
+                'ProductGroup',
+                'ProductTypeName',
+                'Studio',
+                'Size',
+                'Publisher',
+            ]);
+
+            $features = $attributes['Feature'];
+
+            $prime = $listing['IsEligibleForPrime'];
+
+            return compact(
+                'id', 'title', 'description', 'price', 'available', 'images', 'features', 'attributes', 'prime'
+            );
+        });
+    }
+
+    protected function getImagesForApi($imageSet): Collection
+    {
+        return collect($imageSet)->map(function ($image) {
+            if (@$image['HiResImage']) {
+                return $image['HiResImage']['URL'];
+            }
+
+            if (@$image['LargeImage']) {
+                return $image['LargeImage']['URL'];
+            }
+
+            if (@$image['MediumImage']) {
+                return $image['MediumImage']['URL'];
+            }
+
+            if (@$image['TinyImage']) {
+                return ($image['TinyImage']['URL']);
+            }
+
+            if (@$image['ThumbnailImage']) {
+                return ($image['ThumbnailImage']['URL']);
+            }
+
+            if (@$image['SmallImage']) {
+                return ($image['SmallImage']['URL']);
+            }
+
+            if (@$image['SwatchImage']) {
+                return ($image['SwatchImage']['URL']);
+            }
+
+            return null;
+        });
+    }
+
+    protected function amazonProductAdvertisingApi(): AmazonClient
+    {
+        return app(AmazonClient::class);
     }
 }

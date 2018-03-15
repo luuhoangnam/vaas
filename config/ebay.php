@@ -4,6 +4,10 @@ use App\Sourcing\Amazon\BasicCrawlFetchingStrategy;
 use App\Sourcing\Amazon\MarketingApiFetchingStrategy;
 
 return [
+    'lister' => [
+        'tax_rate' => 9 / 100,
+    ],
+
     'reporting' => [
         'giftcard' => 1.0275,
     ],
