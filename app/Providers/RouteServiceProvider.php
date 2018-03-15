@@ -37,6 +37,8 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapApiRoutes();
 
+        $this->mapWebhooksRoutes();
+
         $this->mapWebRoutes();
 
         $this->mapTestRoutes();
@@ -71,6 +73,14 @@ class RouteServiceProvider extends ServiceProvider
              ->group(base_path('routes/api.php'));
     }
 
+    protected function mapWebhooksRoutes()
+    {
+        Route::prefix('webhooks')
+             ->middleware('api')
+             ->namespace($this->namespace)
+             ->group(base_path('routes/webhooks.php'));
+    }
+
     protected function mapTestRoutes()
     {
         if ($this->app->environment('local') && ! file_exists(base_path('routes/test.php'))) {
@@ -78,7 +88,7 @@ class RouteServiceProvider extends ServiceProvider
         }
 
         Route::middleware('web')
-               ->namespace($this->namespace)
-               ->group(base_path('routes/test.php'));
+             ->namespace($this->namespace)
+             ->group(base_path('routes/test.php'));
     }
 }

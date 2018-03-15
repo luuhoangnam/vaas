@@ -1,4 +1,3 @@
-
 window._ = require('lodash');
 window.Popper = require('popper.js').default;
 
@@ -10,9 +9,17 @@ window.Popper = require('popper.js').default;
 
 try {
     window.$ = window.jQuery = require('jquery');
+    window.Chart = require('chart.js');
+    window.frameResizer = (frame) => {
+        frame.style.height = 0;
+        frame.style.height = frame.contentWindow.document.body.scrollHeight + 'px';
+    };
+    // window.Mustache = require('mustache');
+    // window.ClipboardJS = require('clipboard');
 
     require('bootstrap');
-} catch (e) {}
+} catch (e) {
+}
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests

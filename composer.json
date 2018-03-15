@@ -1,17 +1,34 @@
 {
-    "name": "luuhoangna/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "luuhoangnam/vaas",
+    "description": "The App to Interact with eBay.",
+    "keywords": [
+        "framework",
+        "laravel",
+        "ebay"
+    ],
     "license": "MIT",
     "type": "project",
     "require": {
         "php": ">=7.1.3",
+        "algolia/algoliasearch-client-php": "^1.25",
+        "dts/ebay-sdk-php": "^14.0",
+        "fabpot/goutte": "^3.2",
         "fideloper/proxy": "~4.0",
+        "google/apiclient": "^2.2",
+        "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "5.6.*",
         "laravel/horizon": "^1.2",
         "laravel/passport": "^5.0",
+        "laravel/scout": "^4.0",
         "laravel/tinker": "~1.0",
-        "predis/predis": "^1.1"
+        "moneyphp/money": "^3.1",
+        "mustache/mustache": "^2.12",
+        "predis/predis": "^1.1",
+        "pusher/pusher-php-server": "~3.0",
+        "revolution/laravel-amazon-product-api": "^0.4.0",
+        "rtconner/laravel-tagging": "~2.2",
+        "sabre/xml": "^2.1",
+        "venturecraft/revisionable": "^1.28"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

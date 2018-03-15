@@ -2,17 +2,38 @@
 
 use Illuminate\Http\Request;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:api')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    # ACCOUNT
+    Route::get('/user/accounts', 'AccountsController@myAccounts');
+    # END ACCOUNT
+
+    # EBAY INTERACTIONS
+    Route::group(['prefix' => 'accounts/{account}'], function () {
+        # RAW REQUEST
+        Route::post('raw/{name}', 'RawController@send');
+
+        # ADD NEW ITEM
+        Route::post('add_item', 'Account\ItemsController@addItem');
+
+        // Supports
+        Route::get('inspect', 'Account\ItemsController@inspectSourceProduct');
+        Route::get('suggest_category', 'Account\ItemsController@suggestCategory');
+        Route::get('seller_profiles', 'Account\ItemsController@sellerProfiles');
+        Route::get('allowed_conditions/{category_id}', 'Account\ItemsController@allowedConditions');
+    });
+
+    # TRACKING
+    Route::group(['prefix' => 'item/{item}'], function () {
+        Route::get('trackers', 'TrackersController@itemTrackers');
+        Route::post('trackers', 'TrackersController@addTrackerForItem');
+    });
+
+    Route::delete('trackers/{tracker}', 'TrackersController@deleteTracker');
+    # END TRACKING
+# END EBAY INTERACTIONS
 });

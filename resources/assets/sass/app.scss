@@ -1,14 +1,42 @@
-
 // Fonts
-@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
-
+//@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+//@import url(https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css);
 // Variables
 @import "variables";
-
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+body {
+  font-variant-ligatures: contextual !important;
+}
+
+.row + .row {
+  margin-top: 2rem;
+}
+
+.trumbowyg {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
 
 .navbar-laravel {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.card > .nav .active {
+  border-radius: 0;
+}
+
+.card > .nav .nav-link:last-child.active {
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}
+
+.table-hover tbody tr.selected {
+  background-color: rgba(0, 0, 0, 0.075);
+}
+
+// STATISTICS
+.statistic .statistic-change {
+  font-size: 0.75rem;
 }
