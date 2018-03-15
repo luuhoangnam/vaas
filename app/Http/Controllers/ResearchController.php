@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Account;
+use App\Researching\CompetitorResearch;
+use DTS\eBaySDK\Finding\Services\FindingService;
 use DTS\eBaySDK\Shopping\Services\ShoppingService;
 use DTS\eBaySDK\Shopping\Types\GetMultipleItemsRequestType;
 use DTS\eBaySDK\Shopping\Types\GetMultipleItemsResponseType;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 
 class ResearchController extends AuthRequiredController
 {
@@ -41,5 +41,30 @@ class ResearchController extends AuthRequiredController
     protected function shopping(): ShoppingService
     {
         return app(ShoppingService::class);
+    }
+
+    protected function finding(): FindingService
+    {
+        return app(FindingService::class);
+    }
+
+    public function competitor(Request $request)
+    {
+        if ( ! $request->has('username')) {
+            return view('research.competitor');
+        }
+
+        $this->validate($request, [
+            'username'   => 'required',
+            'date_range' => 'required|in:7,14,21,30,60,90',
+        ]);
+
+        $research = new CompetitorResearch($request['username'], $request['date_range']);
+
+        $performance = $research->performance();
+
+        $items = $research->items();
+
+        return view('research.competitor', compact('performance', 'items'));
     }
 }
