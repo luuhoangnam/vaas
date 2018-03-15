@@ -83,7 +83,7 @@ class RouteServiceProvider extends ServiceProvider
 
     protected function mapTestRoutes()
     {
-        if ($this->app->environment('local') && ! file_exists(base_path('routes/test.php'))) {
+        if ($this->app->environment('production') && ! file_exists(base_path('routes/test.php'))) {
             return;
         }
 
