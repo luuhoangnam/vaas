@@ -6,6 +6,7 @@ use App\Order;
 use App\Reporting\OrderReports;
 use DTS\eBaySDK\Trading\Enums\OrderStatusCodeType;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -15,6 +16,10 @@ class HomeController extends AuthRequiredController
 {
     public function index(Request $request)
     {
+        if ( ! $this->resolveCurrentUser($request)->isDeveloper()) {
+            return view('home');
+        }
+
         $this->validate($request, [
             'accounts' => 'array',
         ]);
@@ -86,9 +91,13 @@ class HomeController extends AuthRequiredController
         $categoryChart = $this->generateCategoryChart($orders);
 
         # NEW LISTINGS
-        $newItemsQuery = $this->resolveCurrentUser()
-                              ->items()
+        $newItemsQuery = $user->items()
                               ->with('account')
+                              ->whereHas('account', function (Builder $query) use ($request) {
+                                  if ($request->has('accounts')) {
+                                      $query->whereIn('username', $request['accounts']);
+                                  }
+                              })
                               ->whereDate('start_time', '>=', $startDate)
                               ->whereDate('start_time', '<=', $endDate)
                               ->orderByDesc('start_time');
@@ -266,7 +275,7 @@ class HomeController extends AuthRequiredController
 
     protected function defaultStartDate(): \Carbon\Carbon
     {
-        return Carbon::today()->subDays(7);
+        return Carbon::today()->subDays(30);
     }
 
     protected function previousPeriodEndDate(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate): \Carbon\Carbon

@@ -5,7 +5,7 @@ namespace App\Sourcing;
 use App\User;
 use Illuminate\Support\Collection;
 
-interface SourceProduct
+interface SourceProductInterface
 {
 
     public function fetch();

@@ -6,7 +6,7 @@ use App\Exceptions\InvalidAmazonAssociatesItemException;
 use App\Exceptions\NonAffiliatableException;
 use App\Exceptions\UnableFetchAmazonItemUsingMarketingApiException;
 use App\Sourcing\FetchingStrategy;
-use App\Sourcing\SourceProduct;
+use App\Sourcing\SourceProductInterface;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Collection;
 use Revolution\Amazon\ProductAdvertising\AmazonClient;
@@ -15,7 +15,7 @@ class MarketingApiFetchingStrategy implements FetchingStrategy
 {
     protected $product;
 
-    public function __construct(SourceProduct $product)
+    public function __construct(SourceProductInterface $product)
     {
         $this->product = $product;
     }

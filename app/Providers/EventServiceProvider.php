@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Events\ItemCreated;
+use App\Events\ListerJobCreated;
 use App\Events\PlatformNotificationReceived;
 use App\Events\PlatformNotifications\FixedPriceTransaction;
 use App\Listeners\AttachTracker;
+use App\Listeners\CreateCompanionListerQueueJob;
 use App\Listeners\ItemEventSubscriber;
 use App\Listeners\LogPlatformNotificationPayload;
 use App\Listeners\RefillItemQuantity;
@@ -31,6 +33,10 @@ class EventServiceProvider extends ServiceProvider
 
         ItemCreated::class => [
             AttachTracker::class,
+        ],
+
+        ListerJobCreated::class => [
+            CreateCompanionListerQueueJob::class,
         ],
     ];
 

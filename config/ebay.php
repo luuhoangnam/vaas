@@ -4,19 +4,22 @@ use App\Sourcing\Amazon\BasicCrawlFetchingStrategy;
 use App\Sourcing\Amazon\MarketingApiFetchingStrategy;
 
 return [
-    'reporting'       => [
-
+    'reporting' => [
+        'giftcard' => 1.0275,
     ],
-    'ranking'         => [
+
+    'ranking' => [
         //
     ],
+
     'quantityManager' => [
         'ignore'             => [
             'goodie.depot',
         ],
         'autoRefillQuantity' => 1,
     ],
-    'repricer'        => [
+
+    'repricer' => [
         'default_rule' => [
             'profit'          => 5 / 100, // 5%
             'source_tax'      => 9 / 100, // 9%
@@ -26,7 +29,8 @@ return [
             'minimum_price'   => 0.0,
         ],
     ],
-    'sourcing'        => [
+
+    'sourcing' => [
         'amazon' => [
             'treatNonPrimeAsNotAvailable' => true,
 

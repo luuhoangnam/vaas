@@ -14,7 +14,7 @@
                             </div>
                         @endif
 
-                        <form method="get" action="{{ route('listings.builder') }}">
+                        <form method="get" action="{{ route('listings.builder.customize') }}">
                             <div class="form-group">
                                 <label class="">eBay Account</label>
                                 <select class="form-control" name="account" value="{{ old('account') }}">

@@ -13,3 +13,7 @@ let mix = require('laravel-mix');
 
 mix.js('resources/assets/js/app.js', 'public/js')
    .sass('resources/assets/sass/app.scss', 'public/css');
+
+// Trumbowyg Editor Assets
+mix.copy('node_modules/trumbowyg/dist/ui/trumbowyg.min.css', 'public/vendor/trumbowyg/trumbowyg.min.css');
+mix.copy('node_modules/trumbowyg/dist/ui/icons.svg', 'public/vendor/trumbowyg/icons.svg');

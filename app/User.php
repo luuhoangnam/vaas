@@ -3,6 +3,9 @@
 namespace App;
 
 use App\Exceptions\AccountAlreadyLinkedException;
+use App\Exceptions\SourceProductClassDoesNotExistsException;
+use App\Sourcing\Amazon;
+use App\Sourcing\AmazonCom;
 use App\Support\TemplateType;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -26,6 +29,11 @@ class User extends Authenticatable
     public function accounts()
     {
         return $this->hasMany(Account::class);
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'product_user', 'user_id', 'product_id');
     }
 
     public function googleAccounts()
@@ -67,5 +75,27 @@ class User extends Authenticatable
     public function addTemplate($name, $type, $content): Template
     {
         return $this->templates()->create(compact('name', 'type', 'content'));
+    }
+
+    public function updateOrCreateProduct(array $data): Product
+    {
+        return $this->products()->updateOrCreate(
+            ['type' => $data['type'], 'source_id' => $data['id']],
+            $data
+        );
+    }
+
+    public function trackProduct($id, $type = AmazonCom::class): Product
+    {
+        if ( ! class_exists($type)) {
+            throw new SourceProductClassDoesNotExistsException($type);
+        }
+
+        /** @var Amazon $scraper */
+        $scraper = new $type($id);
+        
+        $data = $scraper->scrape();
+
+        return $this->updateOrCreateProduct($data);
     }
 }

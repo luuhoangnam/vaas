@@ -141,7 +141,7 @@ class Order extends Model
             return null;
         }
 
-        return $this['total'] - $this['final_value_fee'] - $this['paypal_fee'] - $this['cog'] + $this['cashback'];
+        return $this['total'] - $this['final_value_fee'] - $this['paypal_fee'] - $this['cog'] * config('ebay.reporting.giftcard') + $this['cashback'];
     }
 
     public static function extractAttribute(OrderType $data)

@@ -4575,6 +4575,10 @@ multipipe@^0.1.2:
   dependencies:
     duplexer2 "0.0.2"
 
+mustache@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/mustache/-/mustache-2.3.0.tgz#4028f7778b17708a489930a6e52ac3bca0da41d0"
+
 nan-x@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/nan-x/-/nan-x-1.0.2.tgz#5f34e9d3115242486219eee3c8bc49fd2425b19a"
@@ -6874,6 +6878,10 @@ trim-x@^3.0.0:
   resolved "https://registry.yarnpkg.com/true-case-path/-/true-case-path-1.0.2.tgz#7ec91130924766c7f573be3020c34f8fdfd00d62"
   dependencies:
     glob "^6.0.4"
+
+trumbowyg@^2.9.4:
+  version "2.9.4"
+  resolved "https://registry.yarnpkg.com/trumbowyg/-/trumbowyg-2.9.4.tgz#1537c3a2eca0a02817a4c399670daed7fa36e411"
 
 tty-browserify@0.0.0:
   version "0.0.0"

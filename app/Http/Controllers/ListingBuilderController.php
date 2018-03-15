@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Account;
+use App\Sourcing\AmazonCom;
 use App\Sourcing\AmazonProduct;
 use Illuminate\Http\Request;
 
@@ -36,7 +37,7 @@ class ListingBuilderController extends AuthRequiredController
         ]);
 
         $account             = Account::find($request['account']);
-        $product             = (new AmazonProduct($request['product_id']))->fetch();
+        $product             = (new AmazonCom($request['product_id']))->scrape();
         $suggestedCategories = $account->suggestCategory($product['title']);
         $templates           = $user['itemDescriptionTemplates'];
 

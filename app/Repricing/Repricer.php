@@ -7,8 +7,9 @@ use App\Item;
 use App\Jobs\ReviseItemPrice;
 use App\Jobs\ReviseItemQuantityToZero;
 use App\Sourcing\AmazonProduct;
-use App\Sourcing\SourceProduct;
+use App\Sourcing\SourceProductInterface;
 use App\Support\ReviseCase;
+use App\Support\SellingPriceCalculator;
 use Illuminate\Database\Eloquent\Model;
 
 class Repricer extends Model
@@ -45,7 +46,7 @@ class Repricer extends Model
 
     }
 
-    protected function resolveSourceProduct(): SourceProduct
+    protected function resolveSourceProduct(): SourceProductInterface
     {
         try {
             // TODO Support more product source
@@ -84,11 +85,11 @@ class Repricer extends Model
     protected function calculatedPrice($sourcePrice)
     {
         // A. FORMULA
-        // 1. Price = Cog +             Fees                         +      Profit
-        // 2. Price = Cog + Price x (PayPalRate + finalValueFeeRate) + Price x ProfitRate
-        // 3. Price = (Cog + PayPalUsd) + Price x (PayPalRate + finalValueFeeRate + ProfitRate)
-        // 4. Cog + PayPalUsd = Price x (1 - PayPalRate - finalValueFeeRate - ProfitRate)
-        // 5. Price = (Cog + PayPalUsd) / (1 - PayPalRate - finalValueFeeRate - ProfitRate)
+        // 1. Price = Cog x Tax +             Fees                         +      Profit
+        // 2. Price = Cog x Tax + Price x (PayPalRate + finalValueFeeRate) + Price x ProfitRate
+        // 3. Price = (Cog x Tax + PayPalUsd) + Price x (PayPalRate + finalValueFeeRate + ProfitRate)
+        // 4. Cog x Tax + PayPalUsd = Price x (1 - PayPalRate - finalValueFeeRate - ProfitRate)
+        // 5. Price = (Cog x Tax + PayPalUsd) / (1 - PayPalRate - finalValueFeeRate - ProfitRate)
 
         // B. IMPLEMENT
         $rule = $this->rule();
@@ -100,13 +101,16 @@ class Repricer extends Model
         $profitRate        = $rule['profit'];
         $minimumPrice      = $rule['minimum_price'];
 
-        $calculatedPrice = ($cog + $paypalUsd) / (1 - $paypalRate - $finalValueFeeRate - $profitRate);
+//        $calculatedPrice = ($cog + $paypalUsd) / (1 - $paypalRate - $finalValueFeeRate - $profitRate);
+//
+//        if ($calculatedPrice < $minimumPrice) {
+//            return $minimumPrice;
+//        }
 
-        if ($calculatedPrice < $minimumPrice) {
-            return $minimumPrice;
-        }
-
-        return $calculatedPrice;
+        return SellingPriceCalculator::calculate(
+            $sourcePrice, $profitRate, (bool)$rule['source_tax'],
+            $finalValueFeeRate, $paypalRate, $paypalUsd, $minimumPrice
+        );
     }
 
     protected function rule($field = null)

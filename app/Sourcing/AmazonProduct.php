@@ -10,7 +10,7 @@ use ArrayAccess;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
-class AmazonProduct implements SourceProduct, ArrayAccess
+class AmazonProduct implements SourceProductInterface, ArrayAccess
 {
     protected $asin;
 

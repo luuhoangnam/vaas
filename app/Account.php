@@ -217,19 +217,19 @@ class Account extends Model
         // Condition
         $request->Item->ConditionID = $data['condition_id'];
 
-        // Product Details
-        $request->Item->ProductListingDetails = new ProductListingDetailsType;
-
         // Currency
         $request->Item->Currency = CurrencyCodeType::C_USD;
+
+        // Listing Type
+        $request->Item->ListingType = ListingTypeCodeType::C_FIXED_PRICE_ITEM;
+
+        // Product Details
+        $request->Item->ProductListingDetails = new ProductListingDetailsType;
 
         // UPC
         if (@$data['upc']) {
             $request->Item->ProductListingDetails->UPC = $data['upc'];
         }
-
-        // Listing Type
-        $request->Item->ListingType = ListingTypeCodeType::C_FIXED_PRICE_ITEM;
 
         // MPN
         if (@$data['mpn']) {
@@ -243,17 +243,22 @@ class Account extends Model
 
     public function suggestCategory(string $query): array
     {
-        $request = $this->getSuggestedCategoriesRequest();
+        $cacheKey  = md5("suggestCategory({$query})");
+        $cacheTime = 60 * 24 * 30; // Cache for 30 days
 
-        $request->Query = $query;
+        return cache()->remember($cacheKey, $cacheTime, function () use ($query) {
+            $request = $this->getSuggestedCategoriesRequest();
 
-        $response = $this->trading()->getSuggestedCategories($request);
+            $request->Query = $query;
 
-        if ($response->Ack !== AckCodeType::C_SUCCESS) {
-            throw new TradingApiException($request, $response);
-        }
+            $response = $this->trading()->getSuggestedCategories($request);
 
-        return $response->SuggestedCategoryArray->toArray()['SuggestedCategory'];
+            if ($response->Ack !== AckCodeType::C_SUCCESS) {
+                throw new TradingApiException($request, $response);
+            }
+
+            return $response->SuggestedCategoryArray->toArray()['SuggestedCategory'];
+        });
     }
 
     public function sellerProfiles(): array

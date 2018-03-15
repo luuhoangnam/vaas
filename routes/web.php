@@ -36,8 +36,11 @@ Route::get('reports/by_years', 'ReportsController@byYears')->name('reports.by_ye
 # END REPORTS
 
 # LISTING BUILDER
-Route::get('listings/builder/start', 'ListingBuilderController@start')->name('listings.builder.start');
-Route::get('listings/builder', 'ListingBuilderController@build')->name('listings.builder');
+Route::get('lister/jobs', 'ListerController@jobs')->name('lister.jobs');
+Route::get('lister/start', 'ListerController@start')->name('lister.start');
+Route::get('lister/customize', 'ListerController@customize')->name('lister.customize');
+Route::get('lister/preview/{template}', 'ListerController@preview')->name('lister.preview');
+Route::post('lister', 'ListerController@submit')->name('lister.submit');
 # END LISTING BUILDER
 
 # OAUTH

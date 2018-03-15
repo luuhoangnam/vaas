@@ -27,6 +27,12 @@ require('./components/dashboard/CategoryChart');
 // Reports
 require('./components/reports/SaleChart');
 
+// Listing Builder
+require('./components/listings/Builder');
+
+// Lister
+require('./components/Lister');
+
 const app = new Vue({
     el: '#app'
 });

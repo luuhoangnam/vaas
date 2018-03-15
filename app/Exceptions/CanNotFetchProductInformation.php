@@ -2,18 +2,18 @@
 
 namespace App\Exceptions;
 
-use App\Sourcing\SourceProduct;
+use App\Sourcing\SourceProductInterface;
 
 class CanNotFetchProductInformation extends \Exception
 {
     protected $product;
 
-    public function __construct(SourceProduct $product)
+    public function __construct(SourceProductInterface $product)
     {
         $this->product = $product;
     }
 
-    public function getProduct(): SourceProduct
+    public function getProduct(): SourceProductInterface
     {
         return $this->product;
     }

@@ -2,11 +2,11 @@
 
 namespace App\Cashback;
 
-use App\Sourcing\SourceProduct;
+use App\Sourcing\SourceProductInterface;
 
 class Engine
 {
-    public function bestCashbackProgram(SourceProduct $product): CashbackProgram
+    public function bestCashbackProgram(SourceProductInterface $product): CashbackProgram
     {
         $programs = config('cashback.programs');
 
