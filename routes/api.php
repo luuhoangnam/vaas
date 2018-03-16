@@ -8,6 +8,10 @@ Route::middleware('auth:api')->group(function () {
         return $request->user();
     });
 
+    # PRODUCT
+    Route::get('/products/amazon.com/{id}', 'API\\ProductController@inspect');
+    # END PRODUCT
+
     # ACCOUNT
     Route::get('/user/accounts', 'AccountsController@myAccounts');
     # END ACCOUNT

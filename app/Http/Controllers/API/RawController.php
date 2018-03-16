@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Account;
 use App\Http\Controllers\AuthRequiredController;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
+use DTS\eBaySDK\Trading\Types\AbstractRequestType;
 use DTS\eBaySDK\Trading\Types\AbstractResponseType;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -24,10 +25,24 @@ class RawController extends AuthRequiredController
         }
 
         try {
+            /** @var AbstractRequestType $payload */
             $payload = $account->prepareAuthRequiredRequest(new $requestClass($request->all()));
 
+            $cacheKey  = md5(serialize($payload->toArray()));
+            $cacheTime = $request->header('X-CACHE-TIME', 60);
+
+            if ($cacheTime === 'false' || $cacheTime === '0' || $cacheTime === 'no') {
+                cache()->forget($cacheKey);
+            }
+
+            $data = cache()->remember($cacheKey, $cacheTime, function () use ($payload, $account, $method) {
+                return $account->trading()->$method($payload)->toArray();
+            });
+
+            $responseClass = "DTS\\eBaySDK\\Trading\\Types\\" . studly_case($method) . "ResponseType";
+
             /** @var AbstractResponseType $response */
-            $response = $account->trading()->$method($payload);
+            $response = new $responseClass($data);
 
             if ($response->Ack !== AckCodeType::C_SUCCESS) {
                 return new Response($response->toArray(), Response::HTTP_UNPROCESSABLE_ENTITY);
