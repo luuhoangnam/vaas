@@ -39,6 +39,7 @@ class Kernel extends HttpKernel
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
         TrustProxies::class,
+        HandleCors::class,
     ];
 
     /**
@@ -55,13 +56,11 @@ class Kernel extends HttpKernel
             ShareErrorsFromSession::class,
             VerifyCsrfToken::class,
             SubstituteBindings::class,
-            HandleCors::class,
         ],
 
         'api' => [
             'throttle:60,1',
-            'bindings',
-            'cors',
+            'bindings'
         ],
     ];
 
