@@ -38,7 +38,7 @@ class Amazon
         $available   = $listing['AvailabilityAttributes']['AvailabilityType'] === 'now';
         $images      = static::getImagesForApi($item['ImageSets']['ImageSet'])->all();
 
-        $attributes = array_only($item['ItemAttributes'], [
+        $attributes = static::castsAttribute(array_only($item['ItemAttributes'], [
             'Brand',
             'Color',
             'EAN',
@@ -52,7 +52,7 @@ class Amazon
             'ProductTypeName',
             'Size',
             'Publisher',
-        ]);
+        ]));
 
         $prime = (bool)$listing['IsEligibleForPrime'];
 
@@ -104,5 +104,18 @@ class Amazon
     protected static function amazonProductAdvertisingApi(): AmazonClient
     {
         return app(AmazonClient::class);
+    }
+
+    protected static function castsAttribute(array $attributes): array
+    {
+        $ints = ['EAN', 'MPN', 'PackageQuantity'];
+
+        foreach ($attributes as $key => $value) {
+            if (in_array($key, $ints)) {
+                $attributes[$key] = (int)$value;
+            }
+        }
+
+        return $attributes;
     }
 }

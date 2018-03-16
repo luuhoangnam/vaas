@@ -10,7 +10,7 @@ use DTS\eBaySDK\Trading\Types\AbstractResponseType;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class RawController extends AuthRequiredController
+class TradingAPIController extends AuthRequiredController
 {
     public function send(Request $request, $username, $method)
     {

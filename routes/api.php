@@ -17,7 +17,7 @@ Route::middleware('auth:api')->group(function () {
     # END ACCOUNT
 
     # RAW REQUEST
-    Route::post('accounts/{username}/raw/{method}', 'API\RawController@send');
+    Route::post('accounts/{username}/trading/{method}', 'API\TradingAPIController@send');
     # END RAW REQUEST
 
     # EBAY INTERACTIONS
