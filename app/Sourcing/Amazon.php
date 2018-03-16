@@ -9,67 +9,61 @@ class Amazon
 {
     public static function inspect($asin)
     {
-        $cacheKey = md5("amazon.com:{$asin}");
+        $api = static::amazonProductAdvertisingApi();
 
-        $cacheTime = 60; // 1 Hour
+        $response = $api->item($asin);
 
-        return cache()->remember($cacheKey, $cacheTime, function () use ($asin) {
-            $api = static::amazonProductAdvertisingApi();
+        if (key_exists('Errors', $response['Items']['Request'])) {
+            $errors = $response['Items']['Request']['Errors'];
+            $error  = array_first($errors);
 
-            $response = $api->item($asin);
-
-            if (key_exists('Errors', $response['Items']['Request'])) {
-                $errors = $response['Items']['Request']['Errors'];
-                $error  = array_first($errors);
-
-                if ($error['Code'] === 'AWS.InvalidParameterValue') {
-                    throw new \InvalidArgumentException($error['Message']);
-                }
-            }
-
-            $item = $response['Items']['Item'];
-
-            if ( ! key_exists('Offer', $item['Offers'])) {
+            if ($error['Code'] === 'AWS.InvalidParameterValue') {
                 throw new \InvalidArgumentException($error['Message']);
-//            return AmazonCom::get($id); // Out of Stock
             }
+        }
 
-            $offer   = $item['Offers']['Offer'];
-            $listing = $offer['OfferListing'];
+        $item = $response['Items']['Item'];
 
-            $title       = $item['ItemAttributes']['Title'];
-            $description = $item['EditorialReviews']['EditorialReview']['Content'];
-            $price       = (double)$listing['Price']['Amount'] / 100;
-            $available   = $listing['AvailabilityAttributes']['AvailabilityType'] === 'now';
-            $images      = static::getImagesForApi($item['ImageSets']['ImageSet'])->all();
+        if ( ! key_exists('Offer', $item['Offers'])) {
+            throw new \InvalidArgumentException($error['Message']);
+//            return AmazonCom::get($id); // Out of Stock
+        }
 
-            $attributes = array_only($item['ItemAttributes'], [
-                'Brand',
-                'Color',
-                'EAN',
-                'PartNumber',
-                'Manufacturer',
-                'Label',
-                'PackageQuantity',
-                'MPN',
-                'Model',
-                'ProductGroup',
-                'ProductTypeName',
-                'Size',
-                'Publisher',
-            ]);
+        $offer   = $item['Offers']['Offer'];
+        $listing = $offer['OfferListing'];
 
-            $prime = (bool)$listing['IsEligibleForPrime'];
+        $title       = $item['ItemAttributes']['Title'];
+        $description = $item['EditorialReviews']['EditorialReview']['Content'];
+        $price       = (double)$listing['Price']['Amount'] / 100;
+        $available   = $listing['AvailabilityAttributes']['AvailabilityType'] === 'now';
+        $images      = static::getImagesForApi($item['ImageSets']['ImageSet'])->all();
 
-            $features = $item['ItemAttributes']['Feature'];
+        $attributes = array_only($item['ItemAttributes'], [
+            'Brand',
+            'Color',
+            'EAN',
+            'PartNumber',
+            'Manufacturer',
+            'Label',
+            'PackageQuantity',
+            'MPN',
+            'Model',
+            'ProductGroup',
+            'ProductTypeName',
+            'Size',
+            'Publisher',
+        ]);
 
-            return compact(
-                'id', 'title', 'description',
-                'price', 'available', 'prime',
-                'images', 'features',
-                'attributes'
-            );
-        });
+        $prime = (bool)$listing['IsEligibleForPrime'];
+
+        $features = $item['ItemAttributes']['Feature'];
+
+        return compact(
+            'id', 'title', 'description',
+            'price', 'available', 'prime',
+            'images', 'features',
+            'attributes'
+        );
     }
 
     protected static function getImagesForApi($imageSet): Collection
