@@ -26,13 +26,14 @@ return [
     ],
 
     'repricer' => [
-        'default_rule' => [
-            'profit'          => 5 / 100, // 5%
-            'source_tax'      => 9 / 100, // 9%
-            'final_value_fee' => 9.15 / 100, // 9.15%
-            'paypal_rate'     => 3.9 / 100, // 3.9%
-            'paypal_rate_usd' => 0.3, // $0.3
-            'minimum_price'   => 0.0,
+        'tax_rate' => 9 / 100,
+        'default'  => [
+            'margin'           => 5 / 100, // 5%
+            'tax'              => true,
+            'final_value_rate' => 9.15 / 100, // 9.15%
+            'paypal_rate'      => 3.9 / 100, // 3.9%
+            'paypal_usd'       => 0.3, // $0.3
+            'minimum_price'    => 0.0,
         ],
     ],
 

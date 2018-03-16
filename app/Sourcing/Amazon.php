@@ -66,7 +66,7 @@ class Amazon
         $offer   = $item['Offers']['Offer'];
         $listing = $offer['OfferListing'];
 
-        $price     = (double)$listing['Price']['Amount'] / 100;
+        $price     = static::price($listing);
         $available = $listing['AvailabilityAttributes']['AvailabilityType'] === 'now';
         $prime     = (bool)$listing['IsEligibleForPrime'];
 
@@ -136,5 +136,13 @@ class Amazon
         }
 
         return $attributes;
+    }
+
+    protected static function price($listing)
+    {
+        if (key_exists('SalePrice', $listing))
+            return (double)$listing['SalePrice']['Amount'] / 100;
+
+        return (double)$listing['Price']['Amount'] / 100;
     }
 }

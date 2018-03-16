@@ -2,19 +2,17 @@
 
 namespace App\Repricing;
 
-use App\Exceptions\UnableResolveSourceProductException;
 use App\Item;
 use App\Jobs\ReviseItemPrice;
 use App\Jobs\ReviseItemQuantityToZero;
-use App\Sourcing\AmazonProduct;
-use App\Sourcing\SourceProductInterface;
+use App\Sourcing\Amazon;
 use App\Support\ReviseCase;
 use App\Support\SellingPriceCalculator;
 use Illuminate\Database\Eloquent\Model;
 
 class Repricer extends Model
 {
-    protected $fillable = ['rule'];
+    protected $guarded = [];
 
     protected $casts = ['rule' => 'array'];
 
@@ -26,7 +24,7 @@ class Repricer extends Model
     public function run(): void
     {
         // 1. Fetch source product information
-        $product = $this->resolveSourceProduct()->fetch();
+        $product = $this->resolveProduct();
 
         // 2. Compare last state of current listing
         switch ($this->needRevise($product)) {
@@ -46,14 +44,13 @@ class Repricer extends Model
 
     }
 
-    protected function resolveSourceProduct(): SourceProductInterface
+    protected function resolveProduct(): array
     {
-        try {
-            // TODO Support more product source
-            return new AmazonProduct($this['item']['sku']);
-        } catch (\Exception $exception) {
-            throw new UnableResolveSourceProductException($this['item'], 0, $exception);
+        if ($this['product_type'] === 'amazon.com') {
+            return Amazon::inspect($this['product_id']);
         }
+
+        throw new \InvalidArgumentException($this['product_type']);
     }
 
     protected function needRevise(array $product): int
@@ -84,38 +81,17 @@ class Repricer extends Model
 
     protected function calculatedPrice($sourcePrice)
     {
-        // A. FORMULA
-        // 1. Price = Cog x Tax +             Fees                         +      Profit
-        // 2. Price = Cog x Tax + Price x (PayPalRate + finalValueFeeRate) + Price x ProfitRate
-        // 3. Price = (Cog x Tax + PayPalUsd) + Price x (PayPalRate + finalValueFeeRate + ProfitRate)
-        // 4. Cog x Tax + PayPalUsd = Price x (1 - PayPalRate - finalValueFeeRate - ProfitRate)
-        // 5. Price = (Cog x Tax + PayPalUsd) / (1 - PayPalRate - finalValueFeeRate - ProfitRate)
-
-        // B. IMPLEMENT
-        $rule = $this->rule();
-
-        $cog               = $this->costOfGoodsSold($sourcePrice);
-        $paypalUsd         = $rule['paypal_rate_usd'];
-        $paypalRate        = $rule['paypal_rate'];
-        $finalValueFeeRate = $rule['final_value_fee'];
-        $profitRate        = $rule['profit'];
-        $minimumPrice      = $rule['minimum_price'];
-
-//        $calculatedPrice = ($cog + $paypalUsd) / (1 - $paypalRate - $finalValueFeeRate - $profitRate);
-//
-//        if ($calculatedPrice < $minimumPrice) {
-//            return $minimumPrice;
-//        }
-
-        return SellingPriceCalculator::calculate(
-            $sourcePrice, $profitRate, (bool)$rule['source_tax'],
-            $finalValueFeeRate, $paypalRate, $paypalUsd, $minimumPrice
+        return SellingPriceCalculator::calc(
+            array_merge(
+                $this->rule(),
+                ['cost_of_goods' => $sourcePrice]
+            )
         );
     }
 
     protected function rule($field = null)
     {
-        $defaultRule = config('ebay.repricer.default_rule');
+        $defaultRule = config('ebay.repricer.default');
 
         $rule = array_merge($defaultRule, $this['rule']);
 
@@ -124,13 +100,6 @@ class Repricer extends Model
         }
 
         return $rule;
-    }
-
-    protected function costOfGoodsSold($sourcePrice)
-    {
-        $tax = $this->rule('source_tax');
-
-        return $sourcePrice * (1 + $tax);
     }
 
     protected function reviseItemQuantityToZero()

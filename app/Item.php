@@ -9,7 +9,6 @@ use App\Ranking\Trackable;
 use App\Ranking\Tracker;
 use App\Repricing\Repricer;
 use App\Services\Ebay;
-use App\Sourcing\AmazonProduct;
 use DTS\eBaySDK\Trading\Enums\ListingStatusCodeType;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use GuzzleHttp\Exception\RequestException;
@@ -110,6 +109,20 @@ class Item extends Model
         return $this->hasOne(Repricer::class);
     }
 
+    public function createRepricer($productType, $productId, array $rule = null): Repricer
+    {
+        $data = [
+            'product_type' => $productType,
+            'product_id'   => $productId,
+            'rule'         => $rule,
+        ];
+
+        return $this->repricer()->updateOrCreate(
+            array_only($data, ['product_type', 'product_id']),
+            $data
+        );
+    }
+
     public function trackers()
     {
         return $this->morphMany(Tracker::class, 'trackable');
@@ -144,22 +157,6 @@ class Item extends Model
     public function getQuantityAvailableAttribute()
     {
         return $this['quantity'] - $this['quantity_sold'];
-    }
-
-    public function getTitleRankAttribute()
-    {
-        $result = cache()->remember("item(id:{$this['item_id']}):title_rank", 60, function () {
-            return (new Ebay)->search($this['title'], [
-                'ranking' => [
-                    ['id' => $this['item_id'], 'type' => 'item_id'], // Self
-                ],
-            ]);
-        });
-
-        $rank  = $result['ranking']->first()['rank'];
-        $total = $result['total'];
-
-        return compact('rank', 'total');
     }
 
     public function getSourcePriceAttribute()
