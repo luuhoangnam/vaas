@@ -1,9 +1,13 @@
 <?php
 
-use App\Sourcing\Amazon\BasicCrawlFetchingStrategy;
 use App\Sourcing\Amazon\MarketingApiFetchingStrategy;
 
 return [
+    'webhooks' => [
+        'https://bc232b84.ngrok.io/ebay/events',
+        'https://api.dropist.io/ebay/events',
+    ],
+
     'lister' => [
         'tax_rate' => 9 / 100,
     ],

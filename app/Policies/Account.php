@@ -19,21 +19,26 @@ class Account
 
     public function listing(User $user, AccountModel $account)
     {
-        return $this->view($user, $account);
+        return $account->isBelongsTo($user);
     }
 
     public function view(User $user, AccountModel $account)
     {
-        return $user['id'] === $account['owner']['id'];
+        return $account->isBelongsTo($user);
     }
 
     public function update(User $user, AccountModel $account)
     {
-        return $user['id'] === $account['owner']['id'];
+        return $account->isBelongsTo($user);
     }
 
     public function delete(User $user, AccountModel $account)
     {
-        return $user['id'] === $account['owner']['id'];
+        return $account->isBelongsTo($user);
+    }
+
+    public function raw(User $user, AccountModel $account)
+    {
+        return $account->isBelongsTo($user);
     }
 }

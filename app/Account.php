@@ -49,6 +49,11 @@ class Account extends Model
         return static::query()->where('username', $username)->firstOrFail();
     }
 
+    public function isBelongsTo(User $owner): bool
+    {
+        return $this['user_id'] === $owner['id'];
+    }
+
     public static function exists($username): bool
     {
         return static::query()->where('username', $username)->exists();

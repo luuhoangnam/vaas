@@ -4,11 +4,6 @@ namespace App\Console\Commands;
 
 use App\Account;
 use App\Exceptions\TradingApiException;
-use DTS\eBaySDK\Trading\Enums\EnableCodeType;
-use DTS\eBaySDK\Trading\Enums\NotificationEventTypeCodeType;
-use DTS\eBaySDK\Trading\Types\ApplicationDeliveryPreferencesType;
-use DTS\eBaySDK\Trading\Types\NotificationEnableArrayType;
-use DTS\eBaySDK\Trading\Types\NotificationEnableType;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 

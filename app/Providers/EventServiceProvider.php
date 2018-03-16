@@ -13,6 +13,8 @@ use App\Listeners\LogPlatformNotificationPayload;
 use App\Listeners\RefillItemQuantity;
 use App\Listeners\TriggerSyncNewlyOrders;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Laravel\Passport\Events\AccessTokenCreated;
+use Laravel\Passport\Events\RefreshTokenCreated;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,16 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        # Laravel Passport
+        AccessTokenCreated::class => [
+            // RevokeOldTokens::class,
+        ],
+
+        RefreshTokenCreated::class => [
+            // PruneOldTokens::class,
+        ],
+
+        # Platform
         PlatformNotificationReceived::class => [
             LogPlatformNotificationPayload::class,
         ],
