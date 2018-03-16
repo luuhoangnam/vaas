@@ -11,14 +11,14 @@
     <div class="col-md-12">
         <h1>{{ $title }}</h1>
         <img src="{{ $image }}" class="rounded mx-auto d-block">
-        <h3><span class="glyphicon glyphicon-list-alt"></span> Description</h3>
-        <p>{{ $description }}</p>
         <h3>Features:</h3>
         <ul>
             @foreach($features as $feature)
                 <li>{{ $feature }}</li>
             @endforeach
         </ul>
+        <h3><span class="glyphicon glyphicon-list-alt"></span> Description</h3>
+        <p>{!! $description !!}</p>
 
         <ul class="list-unstyled">
             <li>
