@@ -21,6 +21,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Laravel\Passport\Http\Middleware\CheckForAnyScope;
+use Laravel\Passport\Http\Middleware\CheckScopes;
 
 class Kernel extends HttpKernel
 {
@@ -77,5 +79,7 @@ class Kernel extends HttpKernel
         'guest'         => RedirectIfAuthenticated::class,
         'throttle'      => ThrottleRequests::class,
         'cors'          => HandleCors::class,
+        'scopes'        => CheckScopes::class,
+        'scope'         => CheckForAnyScope::class,
     ];
 }
