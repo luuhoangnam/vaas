@@ -32,7 +32,7 @@ class RawController extends AuthRequiredController
             if ($response->Ack !== AckCodeType::C_SUCCESS) {
                 return new Response($response->toArray(), Response::HTTP_UNPROCESSABLE_ENTITY);
             }
- 
+
             return $response->toArray();
         } catch (\Exception $exception) {
             return ['error' => $exception->getMessage()];
