@@ -7,6 +7,22 @@ use Revolution\Amazon\ProductAdvertising\AmazonClient;
 
 class Amazon
 {
+    protected static $keepAttributes = [
+        'Brand',
+        'Color',
+        'EAN',
+        'PartNumber',
+        'Manufacturer',
+        'Label',
+        'PackageQuantity',
+        'MPN',
+        'Model',
+        'ProductGroup',
+        'ProductTypeName',
+        'Size',
+        'Publisher',
+    ];
+
     public static function inspect($asin)
     {
         $api = static::amazonProductAdvertisingApi();
@@ -22,48 +38,48 @@ class Amazon
             }
         }
 
-        $item = $response['Items']['Item'];
+        $item        = $response['Items']['Item'];
+        $title       = $item['ItemAttributes']['Title'];
+        $description = $item['EditorialReviews']['EditorialReview']['Content'];
 
+        $images     = static::getImagesForApi($item['ImageSets']['ImageSet'])->all();
+        $features   = $item['ItemAttributes']['Feature'];
+        $attributes = static::castsAttribute(array_only($item['ItemAttributes'], static::$keepAttributes));
+
+        # Currently Unavailable
         if ( ! key_exists('Offer', $item['Offers'])) {
-            throw new \InvalidArgumentException($error['Message']);
-//            return AmazonCom::get($id); // Out of Stock
+            return [
+                'id'          => $asin,
+                'title'       => $title,
+                'description' => $description,
+                'price'       => null,
+                'available'   => false,
+                'prime'       => null,
+                'images'      => $images,
+                'features'    => $features,
+                'attributes'  => $attributes,
+            ];
         }
 
+        # Offer Specific
         $offer   = $item['Offers']['Offer'];
         $listing = $offer['OfferListing'];
 
-        $title       = $item['ItemAttributes']['Title'];
-        $description = $item['EditorialReviews']['EditorialReview']['Content'];
-        $price       = (double)$listing['Price']['Amount'] / 100;
-        $available   = $listing['AvailabilityAttributes']['AvailabilityType'] === 'now';
-        $images      = static::getImagesForApi($item['ImageSets']['ImageSet'])->all();
+        $price     = (double)$listing['Price']['Amount'] / 100;
+        $available = $listing['AvailabilityAttributes']['AvailabilityType'] === 'now';
+        $prime     = (bool)$listing['IsEligibleForPrime'];
 
-        $attributes = static::castsAttribute(array_only($item['ItemAttributes'], [
-            'Brand',
-            'Color',
-            'EAN',
-            'PartNumber',
-            'Manufacturer',
-            'Label',
-            'PackageQuantity',
-            'MPN',
-            'Model',
-            'ProductGroup',
-            'ProductTypeName',
-            'Size',
-            'Publisher',
-        ]));
-
-        $prime = (bool)$listing['IsEligibleForPrime'];
-
-        $features = $item['ItemAttributes']['Feature'];
-
-        return compact(
-            'id', 'title', 'description',
-            'price', 'available', 'prime',
-            'images', 'features',
-            'attributes'
-        );
+        return [
+            'id'          => $asin,
+            'title'       => $title,
+            'description' => $description,
+            'price'       => $price,
+            'available'   => $available,
+            'prime'       => $prime,
+            'images'      => $images,
+            'features'    => $features,
+            'attributes'  => $attributes,
+        ];
     }
 
     protected static function getImagesForApi($imageSet): Collection

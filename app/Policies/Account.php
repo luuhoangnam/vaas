@@ -37,7 +37,7 @@ class Account
         return $account->isBelongsTo($user);
     }
 
-    public function raw(User $user, AccountModel $account)
+    public function trading(User $user, AccountModel $account)
     {
         return $account->isBelongsTo($user);
     }

@@ -14,10 +14,11 @@ Route::middleware('auth:api')->group(function () {
 
     # ACCOUNT
     Route::get('/user/accounts', 'AccountsController@myAccounts');
+    Route::get('/accounts/{username}/profiles', 'API\\AccountController@profiles');
     # END ACCOUNT
 
     # RAW REQUEST
-    Route::post('accounts/{username}/trading/{method}', 'API\TradingAPIController@send');
+    Route::post('accounts/{username}/trading/{method}', 'API\\TradingAPIController@send');
     # END RAW REQUEST
 
     # EBAY INTERACTIONS

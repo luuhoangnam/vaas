@@ -16,12 +16,12 @@ class TradingAPIController extends AuthRequiredController
     {
         $account = Account::find($username);
 
-        $this->authorize('raw', $account);
+        $this->authorize('trading', $account);
 
-        $requestClass = "\\DTS\\eBaySDK\\Trading\\Types\\" . studly_case($method) . 'RequestType';
+        $requestClass = $this->requestClass($method);
 
-        if ( ! class_exists($requestClass)) {
-            return ['error' => 'Request Does Not Supported'];
+        if ( ! $this->allowToCall($method) || ! class_exists($requestClass)) {
+            return new Response(['error' => 'Request Does Not Supported'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
@@ -29,7 +29,7 @@ class TradingAPIController extends AuthRequiredController
             $payload = $account->prepareAuthRequiredRequest(new $requestClass($request->all()));
 
             $cacheKey  = md5(serialize($payload->toArray()));
-            $cacheTime = $request->header('X-CACHE-TIME', 60);
+            $cacheTime = $request->header('X-CACHE-TIME', $this->cacheTime($method));
 
             if ($cacheTime === 'false' || $cacheTime === '0' || $cacheTime === 'no') {
                 cache()->forget($cacheKey);
@@ -39,7 +39,7 @@ class TradingAPIController extends AuthRequiredController
                 return $account->trading()->$method($payload)->toArray();
             });
 
-            $responseClass = "DTS\\eBaySDK\\Trading\\Types\\" . studly_case($method) . "ResponseType";
+            $responseClass = $this->responseClass($method);
 
             /** @var AbstractResponseType $response */
             $response = new $responseClass($data);
@@ -52,5 +52,27 @@ class TradingAPIController extends AuthRequiredController
         } catch (\Exception $exception) {
             return ['error' => $exception->getMessage()];
         }
+    }
+
+    protected function cacheTime($method)
+    {
+        return config("ebay.call_forwarding.trading.{$method}.cache_time", 0);
+    }
+
+    protected function allowToCall($method): bool
+    {
+        $allows = config('ebay.call_forwarding.trading');
+
+        return in_array($method, $allows) || in_array($method, array_keys($allows));
+    }
+
+    protected function responseClass($method): string
+    {
+        return "DTS\\eBaySDK\\Trading\\Types\\" . studly_case($method) . "ResponseType";
+    }
+
+    protected function requestClass($method): string
+    {
+        return "\\DTS\\eBaySDK\\Trading\\Types\\" . studly_case($method) . 'RequestType';
     }
 }

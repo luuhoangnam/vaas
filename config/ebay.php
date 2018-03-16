@@ -1,7 +1,5 @@
 <?php
 
-use App\Sourcing\Amazon\MarketingApiFetchingStrategy;
-
 return [
     'webhooks' => [
         'https://bc232b84.ngrok.io/ebay/events',
@@ -43,9 +41,18 @@ return [
             'treatNonPrimeAsNotAvailable' => true,
 
             'strategies' => [
-                MarketingApiFetchingStrategy::class,
+//                MarketingApiFetchingStrategy::class,
                 // BasicCrawlFetchingStrategy::class,
             ],
+        ],
+    ],
+
+    'call_forwarding' => [
+        'trading' => [
+            'getSuggestedCategories' => [
+                'cache_time' => 60 * 24 * 30, // 30 days
+            ],
+            'getUserPreferences',
         ],
     ],
 ];
