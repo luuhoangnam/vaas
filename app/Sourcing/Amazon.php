@@ -2,6 +2,7 @@
 
 namespace App\Sourcing;
 
+use App\Exceptions\AmazonException;
 use Illuminate\Support\Collection;
 use Revolution\Amazon\ProductAdvertising\AmazonClient;
 
@@ -34,7 +35,7 @@ class Amazon
             $error  = array_first($errors);
 
             if ($error['Code'] === 'AWS.InvalidParameterValue') {
-                throw new \InvalidArgumentException($error['Message']);
+                throw new AmazonException($error['Message'], $error['Code']);
             }
         }
 
@@ -68,6 +69,8 @@ class Amazon
         $price     = (double)$listing['Price']['Amount'] / 100;
         $available = $listing['AvailabilityAttributes']['AvailabilityType'] === 'now';
         $prime     = (bool)$listing['IsEligibleForPrime'];
+
+        // TODO Get Best Offer (New + Prime)
 
         return [
             'id'          => $asin,
