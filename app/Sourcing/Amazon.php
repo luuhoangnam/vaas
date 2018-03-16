@@ -2,206 +2,113 @@
 
 namespace App\Sourcing;
 
-use App\Exceptions\Amazon\ProductNotFoundException;
-use App\Exceptions\Amazon\SomethingWentWrongException;
-use Goutte\Client;
-use GuzzleHttp\Client as Guzzle;
-use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Support\Collection;
+use Revolution\Amazon\ProductAdvertising\AmazonClient;
 
-abstract class Amazon
+class Amazon
 {
-    protected $productId;
-
-    public function __construct($productId)
+    public static function inspect($asin)
     {
-        $this->productId = $productId;
-    }
+        $cacheKey = md5("amazon.com:{$asin}");
 
-    public function getProductId()
-    {
-        return $this->productId;
-    }
+        $cacheTime = 60; // 1 Hour
 
-    public static function get($id): array
-    {
-        return (new static($id))->scrape();
-    }
+        return cache()->remember($cacheKey, $cacheTime, function () use ($asin) {
+            $api = static::amazonProductAdvertisingApi();
 
-    public function scrape()
-    {
-        $cacheKey  = md5("amazon.com:{$this->getProductId()}");
-        $cacheTime = config('crawler.cache_time');
+            $response = $api->item($asin);
 
-        return cache()->remember($cacheKey, $cacheTime, function () {
-            // 1. Make Request
-            $crawler = $this->client()->request(
-                'GET',
-                $this->getProductUrl()
+            if (key_exists('Errors', $response['Items']['Request'])) {
+                $errors = $response['Items']['Request']['Errors'];
+                $error  = array_first($errors);
+
+                if ($error['Code'] === 'AWS.InvalidParameterValue') {
+                    throw new \InvalidArgumentException($error['Message']);
+                }
+            }
+
+            $item = $response['Items']['Item'];
+
+            if ( ! key_exists('Offer', $item['Offers'])) {
+                throw new \InvalidArgumentException($error['Message']);
+//            return AmazonCom::get($id); // Out of Stock
+            }
+
+            $offer   = $item['Offers']['Offer'];
+            $listing = $offer['OfferListing'];
+
+            $title       = $item['ItemAttributes']['Title'];
+            $description = $item['EditorialReviews']['EditorialReview']['Content'];
+            $price       = (double)$listing['Price']['Amount'] / 100;
+            $available   = $listing['AvailabilityAttributes']['AvailabilityType'] === 'now';
+            $images      = static::getImagesForApi($item['ImageSets']['ImageSet'])->all();
+
+            $attributes = array_only($item['ItemAttributes'], [
+                'Brand',
+                'Color',
+                'EAN',
+                'PartNumber',
+                'Manufacturer',
+                'Label',
+                'PackageQuantity',
+                'MPN',
+                'Model',
+                'ProductGroup',
+                'ProductTypeName',
+                'Size',
+                'Publisher',
+            ]);
+
+            $prime = (bool)$listing['IsEligibleForPrime'];
+
+            $features = $item['ItemAttributes']['Feature'];
+
+            return compact(
+                'id', 'title', 'description',
+                'price', 'available', 'prime',
+                'images', 'features',
+                'attributes'
             );
-
-            // 2. Extract Elements
-            $ok           = $this->isOk($crawler);
-            $pageNotFound = $this->isPageNotFound($crawler);
-
-            if ( ! $ok) {
-                throw new SomethingWentWrongException($crawler);
-            } elseif ($pageNotFound) {
-                throw new ProductNotFoundException($crawler);
-            }
-
-            $id          = $this->getProductId();
-            $price       = $this->extractPrice($crawler);
-            $title       = $this->extractTitle($crawler);
-            $description = $this->extractDescription($crawler);
-            $available   = $this->extractAvailability($crawler);
-            $images      = $this->extractImages($crawler);
-            $features    = $this->extractFeatures($crawler);
-            $attributes  = $this->extractAttributes($crawler);
-
-            // 3. Return Data
-            return compact('id', 'title', 'description', 'price', 'available', 'images', 'features', 'attributes');
         });
     }
 
-    protected function client(): Client
+    protected static function getImagesForApi($imageSet): Collection
     {
-        $userAgent = config('crawler.user_agent');
-        $cacheTime = 60;
-
-        $guzzle = new Guzzle([
-            'timeout' => 60,
-            'headers' => [
-                'User-Agent' => $userAgent,
-            ],
-        ]);
-
-        $client = new Client;
-        $client->setClient($guzzle);
-        $client->setHeader('User-Agent', $userAgent);
-
-        return $client;
-    }
-
-    abstract protected function getProductUrl(): string;
-
-    protected function isOk(Crawler $crawler): bool
-    {
-        $pageTitle = trim($crawler->filter('head > title')->text());
-
-        return $pageTitle !== 'Sorry! Something went wrong!';
-    }
-
-    protected function extractPrice(Crawler $crawler)
-    {
-        $possibleSelectors = [
-            '#priceblock_ourprice',
-            '#priceblock_saleprice',
-        ];
-
-        foreach ($possibleSelectors as $selector) {
-            $element = $crawler->filter($selector);
-
-            if ($element->count()) {
-                return (double)str_replace('$', '', $element->text());
+        return collect($imageSet)->map(function ($image) {
+            if (@$image['HiResImage']) {
+                return $image['HiResImage']['URL'];
             }
-        }
 
-        return null;
-    }
+            if (@$image['LargeImage']) {
+                return $image['LargeImage']['URL'];
+            }
 
-    protected function extractTitle(Crawler $crawler)
-    {
-        $element = $crawler->filter('#productTitle');
+            if (@$image['MediumImage']) {
+                return $image['MediumImage']['URL'];
+            }
 
-        if ( ! $element->count()) {
+            if (@$image['TinyImage']) {
+                return ($image['TinyImage']['URL']);
+            }
+
+            if (@$image['ThumbnailImage']) {
+                return ($image['ThumbnailImage']['URL']);
+            }
+
+            if (@$image['SmallImage']) {
+                return ($image['SmallImage']['URL']);
+            }
+
+            if (@$image['SwatchImage']) {
+                return ($image['SwatchImage']['URL']);
+            }
+
             return null;
-        }
-
-        return trim($element->text());
-    }
-
-    protected function extractDescription(Crawler $crawler)
-    {
-        $element = $crawler->filter('#productDescription');
-
-        if ( ! $element->count()) {
-            return null;
-        }
-
-        return trim($element->text());
-    }
-
-    protected function extractAvailability(Crawler $crawler)
-    {
-        $element = $crawler->filter('#availability');
-
-        if ( ! $element->count()) {
-            return null;
-        }
-
-        $availability = trim($element->text());
-
-        return $availability === 'In Stock.' && $availability !== 'Currently unavailable.';
-    }
-
-    protected function extractFeatures(Crawler $crawler)
-    {
-        $wrapper = $crawler->filter('#feature-bullets');
-
-        if ( ! $wrapper->count()) {
-            return [];
-        }
-
-        $elements = $wrapper->filter('li>span.a-list-item');
-
-        if ( ! $elements->count()) {
-            return [];
-        }
-
-        $features = collect($elements)->map(function (\DOMElement $element) {
-            return trim($element->textContent);
         });
-
-        return $features->toArray();
-
     }
 
-    protected function extractImages(Crawler $crawler)
+    protected static function amazonProductAdvertisingApi(): AmazonClient
     {
-        $element = $crawler->filter('#imgTagWrapperId img');
-
-        if ( ! $element->count()) {
-            return [];
-        }
-
-        $object = json_decode($element->attr('data-a-dynamic-image'), true);
-
-        return array_keys($object);
-    }
-
-    protected function extractAttributes(Crawler $crawler)
-    {
-        return [];
-
-        $wrapper = $crawler->filter('#detail-bullets');
-
-        if ( ! $wrapper->count()) {
-            return [];
-        }
-
-        $elements = $wrapper->filter('table .content ul li');
-
-        foreach ($elements as $element) {
-            // TODO Extract attribute
-        }
-
-        return [];
-    }
-
-    protected function isPageNotFound(Crawler $crawler): bool
-    {
-        $pageTitle = trim($crawler->filter('head > title')->text());
-
-        return $pageTitle == 'Page Not Found';
+        return app(AmazonClient::class);
     }
 }

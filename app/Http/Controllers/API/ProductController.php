@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\AuthRequiredController;
-use App\Support\Amazon;
+use App\Sourcing\Amazon;
 use Illuminate\Http\Request;
 
 class ProductController extends AuthRequiredController
