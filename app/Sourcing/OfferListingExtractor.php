@@ -50,7 +50,16 @@ class OfferListingExtractor
 
             # Seller Information
             $sellerEl = $row->filter('.olpSellerName');
-            $seller   = $sellerEl->count() ? trim($sellerEl->text()) : null;
+            if ($sellerEl->count()) {
+
+                if ($sellerEl->filter('[alt="Amazon.com"]')->count()) {
+                    $seller = 'Amazon.com';
+                } else {
+                    $seller = trim($sellerEl->text());
+                }
+            } else {
+                $seller = null;
+            }
 
             return [
                 'prime'  => true,

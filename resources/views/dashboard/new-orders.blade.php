@@ -30,7 +30,7 @@
                         $roundedPPF = round($order['total'] * 0.039 + 0.3, 2, PHP_ROUND_HALF_DOWN);
                         $goodPPFTextClass =  $order['final_value_fee'] < $roundedPPF ? 'text-success' : '';
 
-                        $textClass = $order['profit'] > 0.5 ? 'text-success' : ($order['profit'] > 0 ? 'text-warning' :'text-danger');
+                        $textClass = $order['profit'] > 2.0 ? 'text-success' : ($order['profit'] > 0 ? 'text-warning' :'text-danger');
                     @endphp
                     <tr>
                         <td><a href="{{ $order['account']['ebay_link'] }}">{{ $order['account']['username'] }}</a></td>
