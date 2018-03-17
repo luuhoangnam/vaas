@@ -69,6 +69,8 @@ class AmazonAPI
         $prime     = (bool)$listing['IsEligibleForPrime'];
 
         // TODO Get Best Offer (New + Prime)
+        // Get Offers Available: Only Prime + New
+        $offers = OfferListingExtractor::make($asin)->offers();
 
         return [
             'id'          => $asin,
@@ -80,6 +82,7 @@ class AmazonAPI
             'images'      => $images,
             'features'    => $features,
             'attributes'  => $attributes,
+            'offers'      => $offers,
         ];
     }
 
