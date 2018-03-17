@@ -4,7 +4,7 @@ namespace App;
 
 use App\Exceptions\AccountAlreadyLinkedException;
 use App\Exceptions\SourceProductClassDoesNotExistsException;
-use App\Sourcing\Amazon;
+use App\Sourcing\AmazonAPI;
 use App\Sourcing\AmazonCom;
 use App\Support\TemplateType;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -91,7 +91,7 @@ class User extends Authenticatable
             throw new SourceProductClassDoesNotExistsException($type);
         }
 
-        /** @var Amazon $scraper */
+        /** @var AmazonAPI $scraper */
         $scraper = new $type($id);
         
         $data = $scraper->scrape();

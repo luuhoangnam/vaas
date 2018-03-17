@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Exceptions\SourceProductClassDoesNotExistsException;
-use App\Sourcing\Amazon;
+use App\Sourcing\AmazonAPI;
 use App\Sourcing\AmazonCom;
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,7 +28,7 @@ class Product extends Model
 
     public function sync(): void
     {
-        /** @var Amazon $handler */
+        /** @var AmazonAPI $handler */
         $handler = $this->scraper();
 
         $data = $handler->scrape();

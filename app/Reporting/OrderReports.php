@@ -113,6 +113,11 @@ class OrderReports
         return $this->numberOfOrders() ? $this->revenue() / $this->numberOfOrders() : null;
     }
 
+    public function averageOrderProfit()
+    {
+        return $this->numberOfOrders() ? $this->profit() / $this->numberOfOrders() : null;
+    }
+
     public function count()
     {
         return $this->orders->count();

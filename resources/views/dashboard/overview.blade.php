@@ -25,5 +25,11 @@
             @include('snippets.statistic', ['title' => 'AOV', 'number' => usd($aov), 'change' => $aovChange])
 
         </div>
+
+        <div class="row">
+
+            @include('snippets.statistic', ['title' => 'AOF', 'number' => usd($aof), 'change' => $aofChange])
+
+        </div>
     </div>
 </div>

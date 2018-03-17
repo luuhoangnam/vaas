@@ -81,6 +81,9 @@ class HomeController extends AuthRequiredController
         $aov       = $orderReports->averageOrderValue();
         $aovChange = $aov ? ($aov - $orderReportsPreviousPeriod->averageOrderValue()) / $aov : null;
 
+        $aof       = $orderReports->averageOrderProfit();
+        $aofChange = $aof ? ($aof - $orderReportsPreviousPeriod->averageOrderProfit()) / $aof : null;
+
         $cog       = $orderReports->costOfGoods();
         $cogChange = $cog ? ($cog - $orderReportsPreviousPeriod->costOfGoods()) / $cog : null;
 
@@ -115,7 +118,7 @@ class HomeController extends AuthRequiredController
             'ordersCount', 'ordersCountChange',
             'fees', 'feesChange',
             'cashback', 'cashbackChange',
-            'aov', 'aovChange',
+            'aov', 'aovChange', 'aof', 'aofChange',
             'cog', 'cogChange',
             'profit', 'profitChange',
             'margin', 'marginChange',

@@ -6,7 +6,7 @@ use App\Exceptions\Amazon\ProductAdvertisingAPIException;
 use Illuminate\Support\Collection;
 use Revolution\Amazon\ProductAdvertising\AmazonClient;
 
-class Amazon
+class AmazonAPI
 {
     protected static $keepAttributes = [
         'Brand',

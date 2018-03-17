@@ -5,7 +5,7 @@ namespace App\Repricing;
 use App\Item;
 use App\Jobs\ReviseItemPrice;
 use App\Jobs\ReviseItemQuantityToZero;
-use App\Sourcing\Amazon;
+use App\Sourcing\AmazonAPI;
 use App\Support\ReviseCase;
 use App\Support\SellingPriceCalculator;
 use Illuminate\Database\Eloquent\Model;
@@ -49,7 +49,7 @@ class Repricer extends Model
     protected function resolveProduct(): array
     {
         if ($this['product_type'] === 'amazon.com') {
-            return Amazon::inspect($this['product_id']);
+            return AmazonAPI::inspect($this['product_id']);
         }
 
         throw new \InvalidArgumentException($this['product_type']);
