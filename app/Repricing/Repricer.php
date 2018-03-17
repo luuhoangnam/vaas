@@ -27,7 +27,9 @@ class Repricer extends Model
         $product = $this->resolveProduct();
 
         // 2. Compare last state of current listing
-        switch ($this->needRevise($product)) {
+        $reviseCase = $this->needRevise($product);
+
+        switch ($reviseCase) {
             case ReviseCase::NEED_ZERO_QUANTITY:
                 $this->reviseItemQuantityToZero();
                 break;

@@ -20,7 +20,7 @@ return [
 
     'quantityManager' => [
         'ignore'             => [
-            'goodie.depot',
+//            'goodie.depot',
         ],
         'autoRefillQuantity' => 1,
     ],

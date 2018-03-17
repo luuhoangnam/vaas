@@ -12,7 +12,6 @@
         <th scope="col">COG</th>
         <th scope="col">Profit</th>
         <th scope="col">Margin</th>
-        <th scope="col"></th>
     </tr>
     </thead>
 
@@ -53,15 +52,6 @@
                 </span>
             </td>
             <td>{{ percent($order['margin']) }}</td>
-            <td class="text-right">
-                @if ($item['cashback_link'])
-                    <a class="btn btn-primary btn-sm" target="_blank" href="{{ $item['cashback_link'] }}">
-                        Place Order
-                    </a>
-                @else
-                    <span class="text-muted">Can Not Fetch</span>
-                @endif
-            </td>
         </tr>
     @endforeach
     </tbody>

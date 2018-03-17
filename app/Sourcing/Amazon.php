@@ -2,7 +2,7 @@
 
 namespace App\Sourcing;
 
-use App\Exceptions\AmazonException;
+use App\Exceptions\Amazon\ProductAdvertisingAPIException;
 use Illuminate\Support\Collection;
 use Revolution\Amazon\ProductAdvertising\AmazonClient;
 
@@ -34,9 +34,7 @@ class Amazon
             $errors = $response['Items']['Request']['Errors'];
             $error  = array_first($errors);
 
-            if ($error['Code'] === 'AWS.InvalidParameterValue') {
-                throw new AmazonException($error['Message'], $error['Code']);
-            }
+            throw new ProductAdvertisingAPIException($error['Message'], $error['Code']);
         }
 
         $item        = $response['Items']['Item'];
@@ -140,8 +138,9 @@ class Amazon
 
     protected static function price($listing)
     {
-        if (key_exists('SalePrice', $listing))
+        if (key_exists('SalePrice', $listing)) {
             return (double)$listing['SalePrice']['Amount'] / 100;
+        }
 
         return (double)$listing['Price']['Amount'] / 100;
     }
