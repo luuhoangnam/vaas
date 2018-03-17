@@ -6,6 +6,10 @@ return [
         'https://api.dropist.io/ebay/events',
     ],
 
+    'final_value_rate' => [
+        82597 => 0.061,
+    ],
+
     'lister' => [
         'tax_rate' => 9 / 100,
     ],

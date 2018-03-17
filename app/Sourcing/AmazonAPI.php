@@ -73,6 +73,7 @@ class AmazonAPI
         $offers = OfferListingExtractor::make($asin)->offers();
 
         return [
+            'processor'   => self::class,
             'id'          => $asin,
             'title'       => $title,
             'description' => $description,

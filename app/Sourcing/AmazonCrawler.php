@@ -36,12 +36,11 @@ class AmazonCrawler
             );
 
             // 2. Extract Elements
-            $ok           = $this->isOk($crawler);
-            $pageNotFound = $this->isPageNotFound($crawler);
-
-            if ( ! $ok) {
+            if ( ! $this->isOk($crawler)) {
                 throw new SomethingWentWrongException($crawler);
-            } elseif ($pageNotFound) {
+            }
+
+            if ($this->isPageNotFound($crawler)) {
                 throw new ProductNotFoundException($crawler);
             }
 
@@ -60,10 +59,11 @@ class AmazonCrawler
 
             $prime      = $bestOffer['prime'];
             $price      = $bestOffer['price'];
-            $attributes = [];
+            $attributes = null;
 
             // 3. Return Data
             return [
+                'processor'   => self::class,
                 'id'          => $id,
                 'title'       => $title,
                 'price'       => $price,
@@ -81,14 +81,21 @@ class AmazonCrawler
     public static function client(): Client
     {
         $userAgent = config('crawler.user_agent');
+        $proxies   = config('crawler.proxies');
         // $cacheTime = 60;
 
-        $guzzle = new Guzzle([
+        $config = [
             'timeout' => 60,
             'headers' => [
                 'User-Agent' => $userAgent,
             ],
-        ]);
+        ];
+
+        if ($proxies) {
+            $config['proxy'] = array_random($proxies);
+        }
+
+        $guzzle = new Guzzle($config);
 
         $client = new Client;
         $client->setClient($guzzle);
@@ -104,7 +111,17 @@ class AmazonCrawler
 
     protected function isOk(Crawler $crawler): bool
     {
-        $pageTitle = trim($crawler->filter('head > title')->text());
+        if ( ! $crawler->count()) {
+            return false;
+        }
+
+        $titleEl = $crawler->filter('head > title');
+
+        if ( ! $titleEl->count()) {
+            return false;
+        }
+
+        $pageTitle = trim($titleEl->text());
 
         return $pageTitle !== 'Sorry! Something went wrong!';
     }
