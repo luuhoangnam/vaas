@@ -39,7 +39,7 @@ class AmazonAPI
 
         $item        = $response['Items']['Item'];
         $title       = $item['ItemAttributes']['Title'];
-        $description = $item['EditorialReviews']['EditorialReview']['Content'];
+        $description = static::description($item);
 
         $images     = static::getImagesForApi($item['ImageSets']['ImageSet'])->all();
         $features   = $item['ItemAttributes']['Feature'];
@@ -155,5 +155,26 @@ class AmazonAPI
         }
 
         return (double)$listing['Price']['Amount'] / 100;
+    }
+
+    protected static function description($item): string
+    {
+        if ( ! key_exists('EditorialReviews', $item) || ! key_exists('EditorialReview', $item['EditorialReviews'])) {
+            return '';
+        }
+
+        $filtered = collect($item['EditorialReviews']['EditorialReview'])->where('Source', 'Product Description');
+
+        if ($filtered->count() == 0) {
+            return '';
+        }
+
+        $review = $filtered->first();
+
+        if ( ! key_exists('Content', $review)) {
+            return '';
+        }
+
+        return $review['Content'];
     }
 }
