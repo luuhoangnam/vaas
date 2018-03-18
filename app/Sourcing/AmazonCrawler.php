@@ -4,6 +4,7 @@ namespace App\Sourcing;
 
 use App\Exceptions\Amazon\ProductNotFoundException;
 use App\Exceptions\Amazon\SomethingWentWrongException;
+use App\Jobs\Amazon\ExtractOffers;
 use Goutte\Client;
 use GuzzleHttp\Client as Guzzle;
 use Illuminate\Support\Collection;
@@ -53,9 +54,8 @@ class AmazonCrawler
             $features    = $this->extractFeatures($crawler);
 
             // Get Offers Available: Only Prime + New
-            $offerExtractors = OfferListingExtractor::make($this->asin);
-            $offers          = $offerExtractors->offers();
-            $bestOffer       = $offerExtractors->bestOffer();
+            $offers    = ExtractOffers::dispatchNow($this->asin);
+            $bestOffer = $this->bestOffer($offers);
 
             $prime      = $bestOffer['prime'];
             $price      = $bestOffer['price'];
@@ -78,10 +78,18 @@ class AmazonCrawler
         });
     }
 
+    public function bestOffer($offers)
+    {
+        if ( ! $offers instanceof Collection) {
+            $offers = collect($offers);
+        }
+
+        return $offers->sortBy('price')->first();
+    }
+
     public static function client(): Client
     {
         $userAgent = config('crawler.user_agent');
-        $proxies   = config('crawler.proxies');
         // $cacheTime = 60;
 
         $config = [
@@ -91,9 +99,7 @@ class AmazonCrawler
             ],
         ];
 
-        if ($proxies) {
-            $config['proxy'] = array_random($proxies);
-        }
+        static::configureProxy($config);
 
         $guzzle = new Guzzle($config);
 
@@ -102,6 +108,15 @@ class AmazonCrawler
         $client->setHeader('User-Agent', $userAgent);
 
         return $client;
+    }
+
+    protected static function configureProxy(array &$config)
+    {
+        $proxies = config('crawler.proxies', []);
+
+        $proxies[] = null;
+
+        $config['proxy'] = array_random($proxies);
     }
 
     protected function getProductUrl(): string

@@ -2,6 +2,8 @@
 
 namespace App\Sourcing;
 
+use App\Exceptions\Amazon\SomethingWentWrongException;
+use Illuminate\Http\Request;
 use Symfony\Component\DomCrawler\Crawler;
 
 class OfferListingExtractor
@@ -15,17 +17,26 @@ class OfferListingExtractor
 
     public static function make($asin, $prime = true, $new = true, $freeShipping = true): OfferListingExtractor
     {
+        $url = static::url($asin, $prime, $new, $freeShipping);
+
+        $crawler = AmazonCrawler::client()->request(Request::METHOD_GET, $url);
+
+        if ( ! AmazonCrawler::isOk($crawler)) {
+            throw new SomethingWentWrongException($crawler);
+        }
+
+        return new static($crawler);
+    }
+
+    public static function url($asin, $prime = true, $new = true, $freeShipping = true)
+    {
         $filters = [];
 
         $prime ? $filters[] = "f_primeEligible=true" : null;
         $new ? $filters[] = "f_new=true" : null;
         $freeShipping ? $filters[] = "f_freeShipping=true" : null;
 
-        $url = "https://www.amazon.com/gp/offer-listing/{$asin}/ref=olp_f_freeShipping?" . join('&', $filters);
-
-        $crawler = AmazonCrawler::client()->request('GET', $url);
-
-        return new static($crawler);
+        return "https://www.amazon.com/gp/offer-listing/{$asin}/ref=olp_f_freeShipping?" . join('&', $filters);
     }
 
     public function offers()

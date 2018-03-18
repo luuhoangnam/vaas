@@ -2,9 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Product;
 use App\Sourcing\AmazonCrawler;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Http\Request;
 use Illuminate\Queue\InteractsWithQueue;
@@ -26,22 +28,32 @@ class ScanAmazonBestSellerPage implements ShouldQueue
     {
         $crawler = AmazonCrawler::client()->request(Request::METHOD_GET, $this->url);
 
-        try {
-            # 1. All Products on This Page
-            $this->trackProducts($crawler);
-
-            # 2. Queue Next Page
-            if ($this->nextPage()) {
-                self::dispatch($this->nextPageUrl())->delay(10);
-            }
-
-            # 3. Queue Scan Sub Nodes
-            $this->queueSubNodes($crawler);
-        } catch (\Exception $exception) {
-            if ($this->attempts() < 3) {
-                $this->delay(2 ^ $this->attempts()); // Try again later
-            }
+        if ( ! AmazonCrawler::isOk($crawler)) {
+            return $this->tryAgain();
         }
+
+        #1. All Products on This Page
+        $this->trackProducts($crawler);
+
+        #2. Queue Next Page
+        if ($this->nextPage()) {
+            self::dispatch($this->nextPageUrl())->delay(10);
+        }
+
+//            #3. Queue Scan Sub Nodes
+//            $this->queueSubNodes($crawler);
+
+    }
+
+    public function tags()
+    {
+        return [
+            'amazon',
+            'best-seller',
+            'product',
+            'crawler',
+            "url:{$this->url}",
+        ];
     }
 
     protected function bestSellers(Crawler $crawler): array
@@ -122,7 +134,19 @@ class ScanAmazonBestSellerPage implements ShouldQueue
         $asins = $this->bestSellers($crawler);
 
         foreach ($asins as $asin) {
-            SyncAmazonProduct::dispatch($asin);
+            try {
+                Product::find($asin);
+            } catch (ModelNotFoundException $exception) {
+                // Product not tracked yet
+                SyncAmazonProduct::dispatch($asin);
+            }
+        }
+    }
+
+    protected function tryAgain()
+    {
+        if ($this->attempts() < 3) {
+            $this->release(2 ^ $this->attempts()); // Try again later
         }
     }
 }

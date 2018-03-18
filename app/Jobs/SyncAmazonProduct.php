@@ -2,8 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Exceptions\Amazon\ProductAdvertisingAPIException;
+use App\Jobs\Amazon\ExtractOffers;
 use App\Product;
 use App\Sourcing\AmazonAPI;
+use App\Sourcing\AmazonCrawler;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -33,8 +36,21 @@ class SyncAmazonProduct implements ShouldQueue
     {
         $asin = $this->product instanceof Product ? $this->product['asin'] : $this->product;
 
-        $data = AmazonAPI::inspect($asin);
+        try {
+            $data = AmazonAPI::inspect($asin);
+        } catch (ProductAdvertisingAPIException $exception) {
+            if ($exception->getCode() !== 'AWS.ECommerceService.ItemNotAccessible') {
+                throw $exception;
+            }
+
+            $data = AmazonCrawler::get($asin);
+        }
 
         Product::sync($data);
+
+        // Sync Offers
+        ExtractOffers::dispatch($asin);
+
+        return $data;
     }
 }

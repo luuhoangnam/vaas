@@ -41,7 +41,11 @@ class AmazonAPI
         $title       = $item['ItemAttributes']['Title'];
         $description = static::description($item);
 
-        $images     = static::getImagesForApi($item['ImageSets']['ImageSet'])->all();
+        if ($description == $asin) {
+            $description = '';
+        }
+
+        $images     = @$item['ImageSets']['ImageSet'] ? static::getImagesForApi($item['ImageSets']['ImageSet'])->all() : [];
         $features   = $item['ItemAttributes']['Feature'];
         $attributes = static::castsAttribute(array_only($item['ItemAttributes'], static::$keepAttributes));
 
@@ -69,10 +73,6 @@ class AmazonAPI
         $available = $listing['AvailabilityAttributes']['AvailabilityType'] === 'now';
         $prime     = (bool)$listing['IsEligibleForPrime'];
 
-        // TODO Get Best Offer (New + Prime)
-        // Get Offers Available: Only Prime + New
-        $offers = OfferListingExtractor::make($asin)->offers();
-
         return [
             'processor'   => self::class,
             'asin'        => $asin,
@@ -84,7 +84,6 @@ class AmazonAPI
             'images'      => $images,
             'features'    => $features,
             'attributes'  => $attributes,
-            'offers'      => $offers,
         ];
     }
 
@@ -97,37 +96,58 @@ class AmazonAPI
 
     protected static function getImagesForApi($imageSet): Collection
     {
+        $keys = array_keys($imageSet);
+
+        $intersect = array_intersect(
+            ['HiResImage', 'LargeImage', 'MediumImage', 'TinyImage', 'ThumbnailImage', 'SmallImage', 'SwatchImage'],
+            $keys
+        );
+
+        if ($intersect) {
+            // Single Image
+            return collect(
+                [
+                    static::chooseHighestQualityImage($imageSet),
+                ]
+            );
+        }
+
         return collect($imageSet)->map(function ($image) {
-            if (@$image['HiResImage']) {
-                return $image['HiResImage']['URL'];
-            }
-
-            if (@$image['LargeImage']) {
-                return $image['LargeImage']['URL'];
-            }
-
-            if (@$image['MediumImage']) {
-                return $image['MediumImage']['URL'];
-            }
-
-            if (@$image['TinyImage']) {
-                return ($image['TinyImage']['URL']);
-            }
-
-            if (@$image['ThumbnailImage']) {
-                return ($image['ThumbnailImage']['URL']);
-            }
-
-            if (@$image['SmallImage']) {
-                return ($image['SmallImage']['URL']);
-            }
-
-            if (@$image['SwatchImage']) {
-                return ($image['SwatchImage']['URL']);
-            }
-
-            return null;
+            return static::chooseHighestQualityImage($image);
         });
+    }
+
+    protected static function chooseHighestQualityImage($image)
+    {
+        if (@$image['HiResImage']) {
+            return $image['HiResImage']['URL'];
+        }
+
+        if (@$image['LargeImage']) {
+            return $image['LargeImage']['URL'];
+        }
+
+        if (@$image['MediumImage']) {
+            return $image['MediumImage']['URL'];
+        }
+
+        if (@$image['TinyImage']) {
+            return ($image['TinyImage']['URL']);
+        }
+
+        if (@$image['ThumbnailImage']) {
+            return ($image['ThumbnailImage']['URL']);
+        }
+
+        if (@$image['SmallImage']) {
+            return ($image['SmallImage']['URL']);
+        }
+
+        if (@$image['SwatchImage']) {
+            return ($image['SwatchImage']['URL']);
+        }
+
+        return null;
     }
 
     protected static function amazonProductAdvertisingApi(): AmazonClient
@@ -163,18 +183,24 @@ class AmazonAPI
             return '';
         }
 
-        $filtered = collect($item['EditorialReviews']['EditorialReview'])->where('Source', 'Product Description');
+        $editorialReview = $item['EditorialReviews']['EditorialReview'];
+
+        if (key_exists('Source', $editorialReview) && $editorialReview['Source'] === 'Product Description') {
+            return $editorialReview['Content'];
+        }
+
+        $filtered = collect($editorialReview)->where('Source', 'Product Description');
 
         if ($filtered->count() == 0) {
             return '';
         }
 
-        $review = $filtered->first();
+        $description = $filtered->first();
 
-        if ( ! key_exists('Content', $review)) {
+        if ( ! key_exists('Content', $description)) {
             return '';
         }
 
-        return $review['Content'];
+        return $description['Content'];
     }
 }
