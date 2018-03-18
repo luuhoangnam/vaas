@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\ApiUsage;
+use App\Console\Commands\BackupDatabase;
 use App\Console\Commands\BulkImportTrackersByAccount;
 use App\Console\Commands\ForceRefreshRanking;
 use App\Console\Commands\ItemResearch;
@@ -44,6 +45,7 @@ class Kernel extends ConsoleKernel
         MakeRepricer::class,
         RunRepricerPeriodically::class,
         ScanAmazonBestSellers::class,
+        BackupDatabase::class,
     ];
 
     /**
@@ -58,6 +60,7 @@ class Kernel extends ConsoleKernel
         $schedule->command("ebay:sync:all --only_orders --since '3 hours ago'")->hourly(); // Fix
         $schedule->command('ranking:refresh')->daily();
         $schedule->command('repricer:periodic')->everyFifteenMinutes();
+        $schedule->command('db:backup')->everyMinute();
     }
 
     /**

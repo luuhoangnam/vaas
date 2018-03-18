@@ -22,6 +22,7 @@
         "laravel/passport": "^5.0",
         "laravel/scout": "^4.0",
         "laravel/tinker": "~1.0",
+        "league/flysystem-aws-s3-v3": "^1.0",
         "moneyphp/money": "^3.1",
         "mustache/mustache": "^2.12",
         "predis/predis": "^1.1",
@@ -29,6 +30,7 @@
         "revolution/laravel-amazon-product-api": "^0.4.0",
         "rtconner/laravel-tagging": "~2.2",
         "sabre/xml": "^2.1",
+        "spatie/db-dumper": "^2.9",
         "venturecraft/revisionable": "^1.28"
     },
     "require-dev": {
