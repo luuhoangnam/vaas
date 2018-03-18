@@ -18,9 +18,9 @@ class AmazonCrawler
         $this->asin = $asin;
     }
 
-    public static function get($id): array
+    public static function get($asin): array
     {
-        return (new static($id))->scrape();
+        return (new static($asin))->scrape();
     }
 
     public function scrape()
@@ -36,11 +36,11 @@ class AmazonCrawler
             );
 
             // 2. Extract Elements
-            if ( ! $this->isOk($crawler)) {
+            if ( ! static::isOk($crawler)) {
                 throw new SomethingWentWrongException($crawler);
             }
 
-            if ($this->isPageNotFound($crawler)) {
+            if (static::isPageNotFound($crawler)) {
                 throw new ProductNotFoundException($crawler);
             }
 
@@ -64,7 +64,7 @@ class AmazonCrawler
             // 3. Return Data
             return [
                 'processor'   => self::class,
-                'id'          => $id,
+                'asin'        => $id,
                 'title'       => $title,
                 'price'       => $price,
                 'prime'       => $prime,
@@ -109,7 +109,7 @@ class AmazonCrawler
         return "https://www.amazon.com/dp/{$this->asin}";
     }
 
-    protected function isOk(Crawler $crawler): bool
+    public static function isOk(Crawler $crawler): bool
     {
         if ( ! $crawler->count()) {
             return false;
@@ -240,7 +240,7 @@ class AmazonCrawler
         });
     }
 
-    protected function isPageNotFound(Crawler $crawler): bool
+    public static function isPageNotFound(Crawler $crawler): bool
     {
         $pageTitle = trim($crawler->filter('head > title')->text());
 

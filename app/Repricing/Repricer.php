@@ -48,11 +48,7 @@ class Repricer extends Model
 
     protected function resolveProduct(): array
     {
-        if ($this['product_type'] === 'amazon.com') {
-            return AmazonAPI::inspect($this['product_id']);
-        }
-
-        throw new \InvalidArgumentException($this['product_type']);
+        return AmazonAPI::inspect($this['asin']);
     }
 
     protected function needRevise(array $product): int

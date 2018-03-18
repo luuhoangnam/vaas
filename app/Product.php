@@ -2,46 +2,39 @@
 
 namespace App;
 
-use App\Exceptions\SourceProductClassDoesNotExistsException;
-use App\Sourcing\AmazonAPI;
-use App\Sourcing\AmazonCom;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
     protected $guarded = [];
 
-    protected $casts = ['images' => 'array', 'attributes' => 'array'];
+    protected $casts = [
+        'images'     => 'array',
+        'attributes' => 'array',
+        'features'   => 'array',
+        'offers'     => 'array',
+    ];
 
-    public static function find($sourceId, $type = AmazonCom::class): Product
+    public static function find($asin): Product
     {
         return static::query()
-                     ->where('type', $type)
-                     ->where('source_id', $sourceId)
+                     ->with('owners')
+                     ->where('asin', $asin)
                      ->firstOrFail();
+    }
+
+    public static function sync(array $data): Product
+    {
+        $data = array_except($data, 'processor');
+
+        return static::query()->updateOrCreate(
+            ['asin' => $data['asin']],
+            $data
+        );
     }
 
     public function owners()
     {
         return $this->belongsToMany(User::class, 'product_user', 'product_id', 'user_id');
-    }
-
-    public function sync(): void
-    {
-        /** @var AmazonAPI $handler */
-        $handler = $this->scraper();
-
-        $data = $handler->scrape();
-
-        $this->update($data, ['touch' => true]);
-    }
-
-    protected function scraper()
-    {
-        if ( ! class_exists($this['type'])) {
-            throw new SourceProductClassDoesNotExistsException($this['type']);
-        }
-
-        return new $this['type']($this['source_id']);
     }
 }

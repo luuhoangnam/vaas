@@ -17,6 +17,7 @@ class CreateItemsTable extends Migration
             $table->increments('id');
             $table->string('item_id')->unique();
             $table->string('title');
+            $table->string('picture_url')->nullable();
             $table->unsignedInteger('quantity');
             $table->unsignedInteger('quantity_sold');
             $table->double('price');

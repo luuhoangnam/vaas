@@ -5,8 +5,8 @@ namespace App\Listeners;
 use App\Account;
 use App\Events\PlatformNotifications\FixedPriceTransaction;
 use App\Exceptions\TradingApiException;
-use Carbon\Carbon;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
+use DTS\eBaySDK\Trading\Types\GetItemTransactionsResponseType;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -19,22 +19,25 @@ class RefillItemQuantity implements ShouldQueue
 
     public function handle(FixedPriceTransaction $event)
     {
-        if ($this->ignoreAccount($event->payload->RecipientUserID)) {
+        /** @var GetItemTransactionsResponseType $payload */
+        $payload = $event->getPayload();
+
+        if ($this->ignoreAccount($payload->RecipientUserID)) {
             return;
         }
 
-        $displayQuantity = config('ebay.quantityManager.autoRefillQuantity', 1);
+        $displayQuantity = config('ebay.quantity_manager.refill_quantity', 1);
 
         $this->reviseItem(
-            Account::find($event->payload->RecipientUserID),
-            $event->payload->Item,
+            Account::find($payload->RecipientUserID),
+            $payload->Item,
             $displayQuantity
         );
     }
 
     protected function ignoreAccount($username): bool
     {
-        return in_array($username, config('ebay.quantityManager.ignore', []));
+        return in_array($username, config('ebay.quantity_manager.ignore', []));
     }
 
     protected function reviseItem(Account $account, ItemType $item, $displayQuantity = 1): void
@@ -49,7 +52,7 @@ class RefillItemQuantity implements ShouldQueue
         $response = $account->trading()->reviseItem($request);
 
         if ($response->Ack === AckCodeType::C_FAILURE) {
-            $this->release(now()->addMinutes(15));
+            $this->release(now()->addMinutes(2 ^ $this->attempts()));
 
             // Send notification if needed
 

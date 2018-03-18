@@ -22,11 +22,11 @@ return [
         //
     ],
 
-    'quantityManager' => [
+    'quantity_manager' => [
         'ignore'             => [
 //            'goodie.depot',
         ],
-        'autoRefillQuantity' => 1,
+        'refill_quantity' => 1,
     ],
 
     'repricer' => [

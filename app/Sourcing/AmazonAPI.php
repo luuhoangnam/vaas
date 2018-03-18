@@ -48,7 +48,7 @@ class AmazonAPI
         # Currently Unavailable
         if ( ! key_exists('Offer', $item['Offers'])) {
             return [
-                'id'          => $asin,
+                'asin'        => $asin,
                 'title'       => $title,
                 'description' => $description,
                 'price'       => null,
@@ -57,6 +57,7 @@ class AmazonAPI
                 'images'      => $images,
                 'features'    => $features,
                 'attributes'  => $attributes,
+                'offers'      => [],
             ];
         }
 
@@ -74,7 +75,7 @@ class AmazonAPI
 
         return [
             'processor'   => self::class,
-            'id'          => $asin,
+            'asin'        => $asin,
             'title'       => $title,
             'description' => $description,
             'price'       => $price,
@@ -85,6 +86,13 @@ class AmazonAPI
             'attributes'  => $attributes,
             'offers'      => $offers,
         ];
+    }
+
+    public static function bestSellers($nodeID)
+    {
+        $api = static::amazonProductAdvertisingApi();
+
+        $response = $api->browse($nodeID);
     }
 
     protected static function getImagesForApi($imageSet): Collection

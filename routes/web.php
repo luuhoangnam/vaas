@@ -28,6 +28,7 @@ Route::get('items/{item}', 'ItemsController@show')->name('items.show');
 Route::get('research/compare', 'ResearchController@compare')->name('research.compare');
 Route::get('research/competitor', 'ResearchController@competitor')->name('research.competitor');
 Route::get('research/item/{id?}', 'ResearchController@item')->name('research.item');
+Route::get('research/amazon', 'ResearchController@amazon')->name('research.amazon');
 # END RESEARCH
 
 # REPORTS

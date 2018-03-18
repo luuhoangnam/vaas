@@ -10,6 +10,7 @@ use App\Console\Commands\LowPerformanceListing;
 use App\Console\Commands\MakeRepricer;
 use App\Console\Commands\PeriodicRefreshRank;
 use App\Console\Commands\RunRepricerPeriodically;
+use App\Console\Commands\ScanAmazonBestSellers;
 use App\Console\Commands\SubscribePlatformNotification;
 use App\Console\Commands\SyncAlleBayAccounts;
 use App\Console\Commands\SynceBayAccount;
@@ -42,6 +43,7 @@ class Kernel extends ConsoleKernel
         ApiUsage::class,
         MakeRepricer::class,
         RunRepricerPeriodically::class,
+        ScanAmazonBestSellers::class,
     ];
 
     /**

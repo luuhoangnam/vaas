@@ -15,6 +15,7 @@ class CreateRepricersTable extends Migration
     {
         Schema::create('repricers', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('asin');
             $table->binary('rule')->nullable();
             $table->timestamps();
 

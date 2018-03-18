@@ -67,4 +67,9 @@ class ResearchController extends AuthRequiredController
 
         return view('research.competitor', compact('performance', 'items'));
     }
+
+    public function amazon(Request $request)
+    {
+
+    }
 }

@@ -8,9 +8,9 @@ use App\Events\PlatformNotificationReceived;
 use App\Events\PlatformNotifications\FixedPriceTransaction;
 use App\Listeners\AttachTracker;
 use App\Listeners\CreateCompanionListerQueueJob;
-use App\Listeners\ItemEventSubscriber;
 use App\Listeners\LogPlatformNotificationPayload;
 use App\Listeners\RefillItemQuantity;
+use App\Listeners\Subscribers\ItemEventsSubscriber;
 use App\Listeners\TriggerSyncNewlyOrders;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Laravel\Passport\Events\AccessTokenCreated;
@@ -29,7 +29,7 @@ class EventServiceProvider extends ServiceProvider
             // RevokeOldTokens::class,
         ],
 
-        RefreshTokenCreated::class => [
+        RefreshTokenCreated::class          => [
             // PruneOldTokens::class,
         ],
 
@@ -53,7 +53,7 @@ class EventServiceProvider extends ServiceProvider
     ];
 
     protected $subscribe = [
-        ItemEventSubscriber::class,
+        ItemEventsSubscriber::class,
     ];
 
     /**
