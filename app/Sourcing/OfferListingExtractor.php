@@ -4,6 +4,7 @@ namespace App\Sourcing;
 
 use App\Exceptions\Amazon\SomethingWentWrongException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Symfony\Component\DomCrawler\Crawler;
 
 class OfferListingExtractor
@@ -84,5 +85,16 @@ class OfferListingExtractor
     public function bestOffer()
     {
         return collect($this->offers())->sortBy('price')->first();
+    }
+
+    public static function bestOfferWithTax($offers = null, $taxRate = 0.09)
+    {
+        if ( ! $offers instanceof Collection) {
+            $offers = collect($offers);
+        }
+
+        return $offers->sortBy(function (array $offer) use ($taxRate) {
+            return $offer['seller'] === 'Amazon.com' ? $offer['price'] * $taxRate : $offer['price'];
+        })->first();
     }
 }

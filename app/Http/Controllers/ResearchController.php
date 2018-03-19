@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\Amazon\ExtractOffers;
+use App\Jobs\SyncAmazonProduct;
 use App\Researching\CompetitorResearch;
+use App\Sourcing\AmazonAPI;
+use App\Sourcing\OfferListingExtractor;
 use DTS\eBaySDK\Finding\Services\FindingService;
 use DTS\eBaySDK\Shopping\Services\ShoppingService;
 use DTS\eBaySDK\Shopping\Types\GetMultipleItemsRequestType;
@@ -71,5 +75,29 @@ class ResearchController extends AuthRequiredController
     public function amazon(Request $request)
     {
 
+    }
+
+    public function asins(Request $request)
+    {
+        $this->validate($request, ['asins' => 'required']);
+
+        $asins = explode(',', $request['asins']);
+
+        $products = collect($asins)->unique()->map(function ($asin) {
+            $product = cache()->remember("amazon:{$asin}", 60, function () use ($asin) {
+                return SyncAmazonProduct::dispatchNow($asin);
+            });
+
+            $product['offers'] = @$product['offers'] ?: cache()->remember("amazon:{$asin}:offers", 60,
+                function () use ($asin) {
+                    return ExtractOffers::dispatchNow($asin);
+                });
+
+            $product['best_offer'] = OfferListingExtractor::bestOfferWithTax($product['offers']);
+
+            return $product;
+        });
+
+        return view('research.asins', compact('products'));
     }
 }
