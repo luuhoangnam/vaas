@@ -1,8 +1,19 @@
 <?php
 
+use App\eBay\FindingAPI;
+use App\eBay\TradingAPI;
+
 return [
     'api' => [
-        'cache_time' => 5, // 1 Minutes
+        'cache_time' => 1,
+
+        TradingAPI::class => [
+            'cache_time' => 5,
+        ],
+
+        FindingAPI::class => [
+            'cache_time' => 60,
+        ],
     ],
 
     'webhooks' => [

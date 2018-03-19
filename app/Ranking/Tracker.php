@@ -3,6 +3,7 @@
 namespace App\Ranking;
 
 use App\Account;
+use App\eBay\FindingAPI;
 use App\Exceptions\FindingApiException;
 use App\Item;
 use Carbon\Carbon;
@@ -69,9 +70,12 @@ class Tracker extends Model
                     ->get();
     }
 
-    protected function finding(): FindingService
+    /**
+     * @return FindingService
+     */
+    protected function finding()
     {
-        return app(FindingService::class);
+        return app(FindingAPI::class);
     }
 
     protected function performSearch($buyerPostalCode = 10001): FindItemsByKeywordsResponse
