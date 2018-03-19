@@ -49450,6 +49450,7 @@ __webpack_require__(222);
 __webpack_require__(223);
 __webpack_require__(224);
 __webpack_require__(225);
+__webpack_require__(236);
 
 // Reports
 __webpack_require__(226);
@@ -81581,6 +81582,52 @@ Object.defineProperty(jQuery.trumbowyg, 'defaultOptions', {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 232 */,
+/* 233 */,
+/* 234 */,
+/* 235 */,
+/* 236 */
+/***/ (function(module, exports) {
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+Vue.component('price-distribution-chart', {
+    props: ['config'],
+
+    data: function data() {
+        return {
+            type: 'bar',
+            chart: null
+        };
+    },
+    mounted: function mounted() {
+        this.renderChart();
+    },
+
+
+    computed: {
+        //
+    },
+
+    methods: {
+        toggleType: function toggleType() {
+            this.type = this.type === 'bar' ? this.type = 'pie' : 'bar';
+
+            this.renderChart();
+        },
+        renderChart: function renderChart() {
+            this.chart instanceof Chart && this.chart.destroy();
+
+            var config = _extends({}, this.config, {
+                type: this.type
+            });
+
+            this.chart = new Chart('price-distribution-chart', config);
+        }
+    }
+});
 
 /***/ })
 /******/ ]);

@@ -49,7 +49,7 @@
                 <div class="row">
                     <div class="col-xl-12">
 
-                        @include('dashboard.category-chart')
+                        @include('dashboard.price-distribution')
 
                     </div>
                 </div>

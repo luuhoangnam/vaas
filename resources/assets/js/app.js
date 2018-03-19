@@ -23,6 +23,7 @@ require('./components/item/ItemChart');
 require('./components/dashboard/OrdersTable');
 require('./components/dashboard/SaleChart');
 require('./components/dashboard/CategoryChart');
+require('./components/dashboard/PriceDistributionChart');
 
 // Reports
 require('./components/reports/SaleChart');

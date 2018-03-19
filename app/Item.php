@@ -8,6 +8,7 @@ use App\Exceptions\CanNotFetchProductInformation;
 use App\Ranking\Trackable;
 use App\Ranking\Tracker;
 use App\Repricing\Repricer;
+use Carbon\Carbon;
 use DTS\eBaySDK\Trading\Enums\ListingStatusCodeType;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use GuzzleHttp\Exception\RequestException;
@@ -20,7 +21,10 @@ use Laravel\Scout\Searchable;
  *
  * @method active():Item
  * @method highValue($minimum = 50):self
+ * @method lowValue($maximum = 10):self
  * @method priceBetween(float $minimum, float $maximum):self
+ * @method static since(Carbon | string | null $since):self
+ * @method static until(Carbon | string | null $until):self
  *
  * @package App
  */
@@ -88,6 +92,29 @@ class Item extends Model
         $query->where('price', '>=', $minimum);
     }
 
+    public function scopeLowValue(Builder $query, $maximum = 10)
+    {
+        $query->where('price', '<=', $maximum);
+    }
+
+    public function scopeSince(Builder $query, $since)
+    {
+        if ( ! $since instanceof Carbon) {
+            $since = new Carbon($since);
+        }
+
+        $query->where('start_time', '>=', $since);
+    }
+
+    public function scopeUntil(Builder $query, $until)
+    {
+        if ( ! $until instanceof Carbon) {
+            $until = new Carbon($until);
+        }
+
+        $query->where('start_time', '<=', $until);
+    }
+
     public function scopePriceBetween(Builder $query, $minimum, $maximum)
     {
         $query->where('price', '>=', $minimum)
@@ -142,7 +169,7 @@ class Item extends Model
 
     public function scopeActive(Builder $builder)
     {
-        return $builder->where('status', ListingStatusCodeType::C_ACTIVE);
+        $builder->where('status', ListingStatusCodeType::C_ACTIVE);
     }
 
     public function getEbayLinkAttribute()

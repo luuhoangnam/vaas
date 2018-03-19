@@ -56,6 +56,11 @@ class ItemReports
 
     public function total()
     {
+        return $this->count();
+    }
+
+    public function count()
+    {
         return $this->items->count();
     }
 

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Item;
 use App\Order;
 use App\Reporting\OrderReports;
+use Carbon\Carbon as PureCarbon;
 use DTS\eBaySDK\Trading\Enums\OrderStatusCodeType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -108,6 +110,9 @@ class HomeController extends AuthRequiredController
         $newItems          = $newItemsQuery->get();
         $newItemsPaginated = $newItemsQuery->paginate();
 
+        # ITEM PRICE DISTRIBUTION
+        $priceDistributionChart = $this->generatePriceDistributionChart($request, $startDate, $endDate);
+
         $pageTitle = 'Dashboard';
 
         // RENDER DASHBOARD
@@ -123,11 +128,11 @@ class HomeController extends AuthRequiredController
             'profit', 'profitChange',
             'margin', 'marginChange',
             'startDate', 'endDate', 'previousPeriodStartDate', 'previousPeriodEndDate',
-            'saleChart', 'categoryChart'
+            'saleChart', 'categoryChart', 'priceDistributionChart'
         ));
     }
 
-    protected function buildOrdersQuery(Request $request, \Carbon\Carbon $startDate, \Carbon\Carbon $endDate)
+    protected function buildOrdersQuery(Request $request, PureCarbon $startDate, PureCarbon $endDate)
     {
         $user = $this->resolveCurrentUser($request);
 
@@ -149,7 +154,7 @@ class HomeController extends AuthRequiredController
         return $query;
     }
 
-    protected function generateSaleChart(Collection $orders, \Carbon\Carbon $startDate, \Carbon\Carbon $endDate)
+    protected function generateSaleChart(Collection $orders, PureCarbon $startDate, PureCarbon $endDate)
     {
         $dates = date_range($startDate, $endDate);
 
@@ -271,22 +276,22 @@ class HomeController extends AuthRequiredController
         ];
     }
 
-    protected function defaultEndDate(): \Carbon\Carbon
+    protected function defaultEndDate(): PureCarbon
     {
         return Carbon::today();
     }
 
-    protected function defaultStartDate(): \Carbon\Carbon
+    protected function defaultStartDate(): PureCarbon
     {
         return Carbon::today()->subDays(30);
     }
 
-    protected function previousPeriodEndDate(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate): \Carbon\Carbon
+    protected function previousPeriodEndDate(PureCarbon $startDate, PureCarbon $endDate): PureCarbon
     {
         return (clone $startDate)->subDay();
     }
 
-    protected function previousPeriodStartDate(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate): \Carbon\Carbon
+    protected function previousPeriodStartDate(PureCarbon $startDate, PureCarbon $endDate): PureCarbon
     {
         return (clone $this->previousPeriodEndDate($startDate, $endDate))->subDays($endDate->diffInDays($startDate));
     }
@@ -331,6 +336,69 @@ class HomeController extends AuthRequiredController
                         'pointHoverBackgroundColor' => '#fff',
                         'pointHoverBorderColor'     => 'rgb(54, 162, 235)',
                         'data'                      => [28, 48, 40, 19, 96, 27, 100],
+                    ],
+                ],
+            ],
+
+            'options' => [
+                //
+            ],
+        ];
+    }
+
+    protected function generatePriceDistributionChart(Request $request, PureCarbon $startDate, PureCarbon $endDate)
+    {
+        /** @var Builder|Item $baseQuery */
+        $baseQuery = Item::active()->since($startDate)->until($endDate)->whereHas(
+            'account',
+            function (Builder $builder) use ($request) {
+                $builder->whereIn('username', $request['accounts']);
+            }
+        );
+
+        $lessThanTen    = (clone $baseQuery)->where('price', '<=', 10)->count();
+        $tenToTwenty    = (clone $baseQuery)->where('price', '>', 10)
+                                            ->where('price', '<=', 20)
+                                            ->count();
+        $twentyToForty  = (clone $baseQuery)->where('price', '>', 20)
+                                            ->where('price', '<=', 40)
+                                            ->count();
+        $fortyToHundred = (clone $baseQuery)->where('price', '>', 40)
+                                            ->where('price', '<=', 100)
+                                            ->count();
+        $overHundred    = (clone $baseQuery)->where('price', '>', 100)->count();
+
+        $labels = ['Price <= $10', '$10 < Price <= $20', '$20 < Price <= $40', '$40 < Price <= $100', 'Price > $100'];
+        $data   = [$lessThanTen, $tenToTwenty, $twentyToForty, $fortyToHundred, $overHundred];
+
+        return [
+            'type' => 'pie',
+
+            'data' => [
+                'labels'   => $labels,
+                'datasets' => [
+                    [
+                        'label'           => 'Item Price',
+                        "backgroundColor" => [
+                            "rgba(255, 99, 132, 0.2)",
+                            "rgba(255, 159, 64, 0.2)",
+                            "rgba(255, 205, 86, 0.2)",
+                            "rgba(75, 192, 192, 0.2)",
+                            "rgba(54, 162, 235, 0.2)",
+                            "rgba(153, 102, 255, 0.2)",
+                            "rgba(201, 203, 207, 0.2)",
+                        ],
+                        "borderColor"     => [
+                            "rgb(255, 99, 132)",
+                            "rgb(255, 159, 64)",
+                            "rgb(255, 205, 86)",
+                            "rgb(75, 192, 192)",
+                            "rgb(54, 162, 235)",
+                            "rgb(153, 102, 255)",
+                            "rgb(201, 203, 207)",
+                        ],
+                        "borderWidth"     => 1,
+                        'data'            => $data,
                     ],
                 ],
             ],
