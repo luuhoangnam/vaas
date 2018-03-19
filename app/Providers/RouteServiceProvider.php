@@ -40,8 +40,6 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapWebhooksRoutes();
 
         $this->mapWebRoutes();
-
-        $this->mapTestRoutes();
     }
 
     /**
@@ -79,16 +77,5 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/webhooks.php'));
-    }
-
-    protected function mapTestRoutes()
-    {
-        if ($this->app->environment('production') && ! file_exists(base_path('routes/test.php'))) {
-            return;
-        }
-
-        Route::middleware('web')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/test.php'));
     }
 }

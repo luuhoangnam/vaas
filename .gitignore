@@ -6,7 +6,7 @@
 /.idea
 /.vscode
 /.vagrant
-/routes/*test.php
+/routes/test.php
 /routes/debug.php
 /storage/app/*.csv
 Homestead.json
