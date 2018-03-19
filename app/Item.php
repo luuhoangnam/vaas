@@ -8,7 +8,6 @@ use App\Exceptions\CanNotFetchProductInformation;
 use App\Ranking\Trackable;
 use App\Ranking\Tracker;
 use App\Repricing\Repricer;
-use App\Services\Ebay;
 use DTS\eBaySDK\Trading\Enums\ListingStatusCodeType;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use GuzzleHttp\Exception\RequestException;
@@ -20,6 +19,8 @@ use Laravel\Scout\Searchable;
  * Class Item
  *
  * @method active():Item
+ * @method highValue($minimum = 50):self
+ * @method priceBetween(float $minimum, float $maximum):self
  *
  * @package App
  */
@@ -80,6 +81,17 @@ class Item extends Model
     public function itemType(): ItemType
     {
         return new ItemType(['ItemID' => $this['item_id']]);
+    }
+
+    public function scopeHighValue(Builder $query, $minimum = 50)
+    {
+        $query->where('price', '>=', $minimum);
+    }
+
+    public function scopePriceBetween(Builder $query, $minimum, $maximum)
+    {
+        $query->where('price', '>=', $minimum)
+              ->where('price', '<=', $maximum);
     }
 
     public function account()
