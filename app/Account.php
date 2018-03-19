@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\eBay\TradingAPI;
 use App\Exceptions\TradingApiException;
 use App\Ranking\Trackable;
 use DTS\eBaySDK\BusinessPoliciesManagement\Services\BusinessPoliciesManagementService;
@@ -112,9 +113,12 @@ class Account extends Model
         );
     }
 
-    public function trading(): TradingService
+    /**
+     * @return TradingService|TradingAPI
+     */
+    public function trading()
     {
-        return app(TradingService::class);
+        return TradingAPI::make($this);
     }
 
     public function businessPoliciesManagement(): BusinessPoliciesManagementService

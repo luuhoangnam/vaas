@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'api' => [
+        'cache_time' => 5, // 1 Minutes
+    ],
+
     'webhooks' => [
         'https://bc232b84.ngrok.io/ebay/events',
         'https://api.dropist.io/ebay/events',
@@ -23,7 +27,7 @@ return [
     ],
 
     'quantity_manager' => [
-        'ignore'             => [
+        'ignore'          => [
 //            'goodie.depot',
         ],
         'refill_quantity' => 1,
