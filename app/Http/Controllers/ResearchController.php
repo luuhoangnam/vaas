@@ -140,16 +140,20 @@ class ResearchController extends AuthRequiredController
                 ->where('sellingStatus.currentPrice.value', '<', $minSellingPrice)
                 ->count();
 
-            $soldLastThirtyDays = [];
+            $soldLastThirtyDays = $skus = [];
 
             foreach ($competitors->searchResult->item as $index => $item) {
                 if ($index >= 10) {
                     $soldLastThirtyDays[$item->itemId] = null;
+                    $skus[$item->itemId]               = null;
 
                     continue;
                 }
 
-                $soldLastThirtyDays[$item->itemId] = is_numeric($this->soldLastThirtyDays($item->itemId)) ? $this->soldLastThirtyDays($item->itemId) : null;
+                list($sold, $sku) = $this->soldLastThirtyDays($item->itemId);
+
+                $soldLastThirtyDays[$item->itemId] = is_numeric($sold) ? $sold : null;
+                $skus[$item->itemId]               = $sku ?: null;
             }
         }
 
@@ -157,7 +161,7 @@ class ResearchController extends AuthRequiredController
             'research.asin',
             compact(
                 'product', 'competitors', 'higherPrice', 'equalsPrice', 'lowerPrice', 'costOfGoods',
-                'minSellingPrice', 'soldLastThirtyDays'
+                'minSellingPrice', 'soldLastThirtyDays', 'skus'
             )
         );
     }
@@ -225,6 +229,7 @@ class ResearchController extends AuthRequiredController
 
         $request->OutputSelector = [
             'PaginationResult.TotalNumberOfEntries',
+            'Item.SKU',
         ];
 
         /** @var \DTS\eBaySDK\Trading\Services\TradingService $trading */
@@ -232,7 +237,7 @@ class ResearchController extends AuthRequiredController
 
         $response = $trading->getItemTransactions($request, 60 * 6);
 
-        return $response->PaginationResult->TotalNumberOfEntries;
+        return [$response->PaginationResult->TotalNumberOfEntries, $response->Item->SKU];
     }
 
     protected function getOfferFromCache($asin)

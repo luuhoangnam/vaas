@@ -7,7 +7,7 @@
 @section('content')
     <div class="container-fluid">
         <div class="row justify-content-center">
-            <div class="col-xl-8">
+            <div class="col-xl-10">
                 <div class="card">
                     <div class="card-header">
                         (<a href="https://www.amazon.com/dp/{{ $product['asin'] }}">{{ $product['asin'] }}</a>)
@@ -106,7 +106,7 @@
         </div>
 
         <div class="row justify-content-center">
-            <div class="col-xl-8">
+            <div class="col-xl-10">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <span>
@@ -146,6 +146,7 @@
                                     $price = $item->sellingStatus->currentPrice->value;
                                     $priceDiff = $price - $minSellingPrice;
                                     $soldLast30D = !is_null($soldLastThirtyDays[$item->itemId]) ? number_format($soldLastThirtyDays[$item->itemId]): 'N/A';
+                                    $asin = @$skus[$item->itemId] ?: 'N/A';
                                 @endphp
 
                                 <tr>
@@ -162,8 +163,12 @@
                                         {{ usd($price) }}
                                         <small>({{ percent($priceDiff / $minSellingPrice) }})</small>
                                     </td>
-                                    <td>N/A</td>
-                                    <td>{{ $soldLast30D }}</td>
+                                    <td class="{{ $asin === $product['asin'] ? 'text-success' : null }}">
+                                        {{ $asin }}
+                                    </td>
+                                    <td class="{{ $soldLast30D >= 10 ? 'text-success' : null }}">
+                                        {{ $soldLast30D }}
+                                    </td>
                                     <td>{{ app_carbon($item->listingInfo->startTime)->diffForHumans() }}</td>
                                 </tr>
                             @endforeach
