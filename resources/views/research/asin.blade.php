@@ -145,6 +145,7 @@
                                 @php
                                     $price = $item->sellingStatus->currentPrice->value;
                                     $priceDiff = $price - $minSellingPrice;
+                                    $soldLast30D = !is_null($soldLastThirtyDays[$item->itemId]) ? number_format($soldLastThirtyDays[$item->itemId]): 'N/A';
                                 @endphp
 
                                 <tr>
@@ -162,7 +163,7 @@
                                         <small>({{ percent($priceDiff / $minSellingPrice) }})</small>
                                     </td>
                                     <td>N/A</td>
-                                    <td>{{ number_format($soldLastThirtyDays[$item->itemId]) }}</td>
+                                    <td>{{ $soldLast30D }}</td>
                                     <td>{{ app_carbon($item->listingInfo->startTime)->diffForHumans() }}</td>
                                 </tr>
                             @endforeach

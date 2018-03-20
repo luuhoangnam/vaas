@@ -142,8 +142,14 @@ class ResearchController extends AuthRequiredController
 
             $soldLastThirtyDays = [];
 
-            foreach ($competitors->searchResult->item as $item) {
-                $soldLastThirtyDays[$item->itemId] = $this->soldLastThirtyDays($item->itemId) ?: null;
+            foreach ($competitors->searchResult->item as $index => $item) {
+                if ($index >= 10) {
+                    $soldLastThirtyDays[$item->itemId] = null;
+
+                    continue;
+                }
+
+                $soldLastThirtyDays[$item->itemId] = is_numeric($this->soldLastThirtyDays($item->itemId)) ? $this->soldLastThirtyDays($item->itemId) : null;
             }
         }
 

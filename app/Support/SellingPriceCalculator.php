@@ -28,7 +28,7 @@ class SellingPriceCalculator
 
         $taxRate = config('ebat.repricer.tax_rate', 0.09);
 
-        $cogIncludedTax = $input['cost_of_goods'] * ($input['tax'] ? $taxRate : 1);
+        $cogIncludedTax = $input['cost_of_goods'] * ($input['tax'] ? (1 + $taxRate) : 1);
 
         $calculatedPrice = ($cogIncludedTax + $input['paypal_usd']) / (1 - $input['paypal_rate'] - $input['final_value_rate'] - $input['margin']);
 
