@@ -162,10 +162,7 @@ class ResearchController extends AuthRequiredController
             return SyncAmazonProduct::dispatchNow($asin);
         });
 
-        $product['offers'] = @$product['offers'] ?: cache()->remember("amazon:{$asin}:offers", 60,
-            function () use ($asin) {
-                return ExtractOffers::dispatchNow($asin);
-            });
+        $product['offers'] = @$product['offers'] ?: $this->getOfferFromCache($asin);
 
         $product['offers'] = collect($product['offers'])->map(function ($offer) {
             return array_merge($offer, ['tax' => $offer['seller'] === 'Amazon.com']);
@@ -230,5 +227,12 @@ class ResearchController extends AuthRequiredController
         $response = $trading->getItemTransactions($request, 60 * 6);
 
         return $response->PaginationResult->TotalNumberOfEntries;
+    }
+
+    protected function getOfferFromCache($asin)
+    {
+        return cache()->remember("amazon:{$asin}:offers", 60, function () use ($asin) {
+            return ExtractOffers::dispatchNow($asin);
+        });
     }
 }

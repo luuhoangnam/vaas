@@ -13,8 +13,8 @@ class ViewCrawlerPerformance extends Command
 
     public function handle()
     {
-        $total     = Redis::incr('crawler:amazon:requests');
-        $fails     = Redis::incr('crawler:amazon:fails');
+        $total     = Redis::get('crawler:amazon:requests');
+        $fails     = Redis::get('crawler:amazon:fails');
         $failsRate = percent($fails / $total);
 
         $this->info("Total Requests: {$total}");
