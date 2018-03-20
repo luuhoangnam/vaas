@@ -91,4 +91,8 @@ return [
             ],
         ],
     ],
+
+    'notifications' => [
+        'slack' => env('HORIZON_NOTIFICATION_SLACK'),
+    ],
 ];

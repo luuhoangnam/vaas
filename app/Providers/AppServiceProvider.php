@@ -21,10 +21,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        # HORIZON
         Horizon::auth(function (Request $request) {
             return $this->app->environment('local') ||
                    $request->user() && in_array($request->user()['email'], $this->developers);
         });
+
+        Horizon::routeSlackNotificationsTo(config('horizon.notifications.slack'));
+        # END HORIZON
     }
 
     /**
