@@ -5,6 +5,7 @@ namespace App\Sourcing;
 use App\Exceptions\Amazon\ProductNotFoundException;
 use App\Exceptions\Amazon\SomethingWentWrongException;
 use App\Jobs\Amazon\ExtractOffers;
+use Campo\UserAgent;
 use Goutte\Client;
 use GuzzleHttp\Client as Guzzle;
 use Illuminate\Http\Request;
@@ -92,13 +93,10 @@ class AmazonCrawler
 
     public static function client(): Client
     {
-        $userAgent = config('crawler.user_agent');
-        // $cacheTime = 60;
-
         $config = [
             'timeout' => 60,
             'headers' => [
-                'User-Agent' => $userAgent,
+                'User-Agent' => static::userAgent(),
             ],
         ];
 
@@ -108,7 +106,6 @@ class AmazonCrawler
 
         $client = new Client;
         $client->setClient($guzzle);
-        $client->setHeader('User-Agent', $userAgent);
 
         return $client;
     }
@@ -138,7 +135,7 @@ class AmazonCrawler
             return false;
         }
 
-        $titleEl = $crawler->filter('head > title');
+        $titleEl = $crawler->filter('title');
 
         if ( ! $titleEl->count()) {
             return false;
@@ -292,5 +289,10 @@ class AmazonCrawler
         Redis::incr('crawler:amazon:requests');
 
         return AmazonCrawler::client()->request(Request::METHOD_GET, $url);
+    }
+
+    protected static function userAgent()
+    {
+        return UserAgent::random();
     }
 }
