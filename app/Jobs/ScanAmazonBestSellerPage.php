@@ -26,9 +26,11 @@ class ScanAmazonBestSellerPage implements ShouldQueue
 
     public function handle()
     {
-        $crawler = AmazonCrawler::client()->request(Request::METHOD_GET, $this->url);
+        $crawler = AmazonCrawler::getAmazonPage($this->url);
 
-        if ( ! AmazonCrawler::isOk($crawler)) {
+        if (AmazonCrawler::notOk($crawler)) {
+            Redis::incr('crawler:amazon:fails');
+
             return $this->tryAgain();
         }
 

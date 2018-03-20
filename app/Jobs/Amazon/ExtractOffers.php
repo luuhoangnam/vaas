@@ -41,6 +41,8 @@ class ExtractOffers implements ShouldQueue
         } catch (SomethingWentWrongException $exception) {
             $this->release(3 ^ $this->attempts());
 
+            Redis::incr('crawler:amazon:retries');
+
             throw $exception;
         }
     }

@@ -7,7 +7,9 @@ use App\Exceptions\Amazon\SomethingWentWrongException;
 use App\Jobs\Amazon\ExtractOffers;
 use Goutte\Client;
 use GuzzleHttp\Client as Guzzle;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Redis;
 use Symfony\Component\DomCrawler\Crawler;
 
 class AmazonCrawler
@@ -31,17 +33,18 @@ class AmazonCrawler
 
         return cache()->remember($cacheKey, $cacheTime, function () {
             // 1. Make Request
-            $crawler = $this->client()->request(
-                'GET',
-                $this->getProductUrl()
-            );
+            $crawler = $this->requestProductPage();
 
             // 2. Extract Elements
-            if ( ! static::isOk($crawler)) {
+            if (static::notOk($crawler)) {
+                Redis::incr('crawler:amazon:fails');
+
                 throw new SomethingWentWrongException($crawler);
             }
 
             if (static::isPageNotFound($crawler)) {
+                Redis::incr('crawler:amazon:not_found');
+
                 throw new ProductNotFoundException($crawler);
             }
 
@@ -122,6 +125,11 @@ class AmazonCrawler
     protected function getProductUrl(): string
     {
         return "https://www.amazon.com/dp/{$this->asin}";
+    }
+
+    public static function notOk(Crawler $crawler): bool
+    {
+        return ! static::isOk($crawler);
     }
 
     public static function isOk(Crawler $crawler): bool
@@ -272,5 +280,17 @@ class AmazonCrawler
         $extractor = OfferListingExtractor::make($this->asin);
 
         return $extractor->offers();
+    }
+
+    protected function requestProductPage()
+    {
+        return static::getAmazonPage($this->getProductUrl());
+    }
+
+    public static function getAmazonPage(string $url): Crawler
+    {
+        Redis::incr('crawler:amazon:requests');
+
+        return AmazonCrawler::client()->request(Request::METHOD_GET, $url);
     }
 }

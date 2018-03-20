@@ -17,6 +17,7 @@ use App\Console\Commands\SyncAlleBayAccounts;
 use App\Console\Commands\SynceBayAccount;
 use App\Console\Commands\TrackRankingForAccount;
 use App\Console\Commands\TrackRankingForItem;
+use App\Console\Commands\ViewCrawlerPerformance;
 use App\Console\Commands\ViewRankingOfItem;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -45,6 +46,7 @@ class Kernel extends ConsoleKernel
         RunRepricerPeriodically::class,
         ScanAmazonBestSellers::class,
         BackupDatabase::class,
+        ViewCrawlerPerformance::class,
     ];
 
     /**

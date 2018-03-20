@@ -15,8 +15,6 @@ use DTS\eBaySDK\Finding\Enums\AckValue;
 use DTS\eBaySDK\Finding\Enums\ItemFilterType;
 use DTS\eBaySDK\Finding\Enums\OutputSelectorType;
 use DTS\eBaySDK\Finding\Services\FindingService;
-use DTS\eBaySDK\Finding\Types\AspectFilter;
-use DTS\eBaySDK\Finding\Types\Condition;
 use DTS\eBaySDK\Finding\Types\FindItemsByKeywordsRequest;
 use DTS\eBaySDK\Finding\Types\ItemFilter;
 use DTS\eBaySDK\Finding\Types\PaginationInput;

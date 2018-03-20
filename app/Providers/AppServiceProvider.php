@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Http\Request;
+use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Horizon\Horizon;
 

@@ -5,6 +5,7 @@ namespace App\Sourcing;
 use App\Exceptions\Amazon\SomethingWentWrongException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Redis;
 use Symfony\Component\DomCrawler\Crawler;
 
 class OfferListingExtractor
@@ -20,9 +21,11 @@ class OfferListingExtractor
     {
         $url = static::url($asin, $prime, $new, $freeShipping);
 
-        $crawler = AmazonCrawler::client()->request(Request::METHOD_GET, $url);
+        $crawler = AmazonCrawler::getAmazonPage($url);
 
         if ( ! AmazonCrawler::isOk($crawler)) {
+            Redis::incr('crawler:amazon:fails');
+
             throw new SomethingWentWrongException($crawler);
         }
 
