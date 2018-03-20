@@ -20,11 +20,12 @@ use Laravel\Scout\Searchable;
  * Class Item
  *
  * @method active():Item
- * @method highValue($minimum = 50):self
- * @method lowValue($maximum = 10):self
- * @method priceBetween(float $minimum, float $maximum):self
- * @method static since(Carbon | string | null $since):self
- * @method static until(Carbon | string | null $until):self
+ * @method highValue($minimum = 50)
+ * @method lowValue($maximum = 10)
+ * @method static listedOn($asin)
+ * @method priceBetween(float $minimum, float $maximum)
+ * @method static since(Carbon | string | null $since)
+ * @method static until(Carbon | string | null $until)
  *
  * @package App
  */
@@ -85,6 +86,11 @@ class Item extends Model
     public function itemType(): ItemType
     {
         return new ItemType(['ItemID' => $this['item_id']]);
+    }
+
+    public function scopeListedOn(Builder $query, $asin)
+    {
+        $query->with('account')->where('sku', $asin);
     }
 
     public function scopeHighValue(Builder $query, $minimum = 50)

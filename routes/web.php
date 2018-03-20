@@ -30,6 +30,7 @@ Route::get('research/competitor', 'ResearchController@competitor')->name('resear
 Route::get('research/item/{id?}', 'ResearchController@item')->name('research.item');
 Route::get('research/amazon', 'ResearchController@amazon')->name('research.amazon');
 Route::get('research/asins', 'ResearchController@asins')->name('research.asins');
+Route::get('research/asin/{asin}', 'ResearchController@asin')->name('research.asin');
 # END RESEARCH
 
 # REPORTS

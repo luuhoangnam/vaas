@@ -4,6 +4,10 @@ Vue.component('price-distribution-chart', {
     data() {
         return {
             type: 'bar',
+            legend: {
+                display: false,
+                position: 'top'
+            },
             chart: null
         }
     },
@@ -18,7 +22,18 @@ Vue.component('price-distribution-chart', {
 
     methods: {
         toggleType() {
-            this.type = this.type === 'bar' ? this.type = 'pie' : 'bar';
+            if (this.type === 'bar') {
+                this.type = 'pie';
+                this.legend = {
+                    display: true,
+                    position: 'right'
+                };
+            } else {
+                this.type = 'bar';
+                this.legend = {
+                    display: false
+                };
+            }
 
             this.renderChart();
         },
@@ -27,7 +42,12 @@ Vue.component('price-distribution-chart', {
 
             const config = {
                 ...this.config,
-                type: this.type
+                type: this.type,
+                options: {
+                    legend: {
+                        ...this.legend
+                    }
+                },
             };
 
             this.chart = new Chart('price-distribution-chart', config);

@@ -81599,6 +81599,10 @@ Vue.component('price-distribution-chart', {
     data: function data() {
         return {
             type: 'bar',
+            legend: {
+                display: false,
+                position: 'top'
+            },
             chart: null
         };
     },
@@ -81613,7 +81617,18 @@ Vue.component('price-distribution-chart', {
 
     methods: {
         toggleType: function toggleType() {
-            this.type = this.type === 'bar' ? this.type = 'pie' : 'bar';
+            if (this.type === 'bar') {
+                this.type = 'pie';
+                this.legend = {
+                    display: true,
+                    position: 'right'
+                };
+            } else {
+                this.type = 'bar';
+                this.legend = {
+                    display: false
+                };
+            }
 
             this.renderChart();
         },
@@ -81621,7 +81636,10 @@ Vue.component('price-distribution-chart', {
             this.chart instanceof Chart && this.chart.destroy();
 
             var config = _extends({}, this.config, {
-                type: this.type
+                type: this.type,
+                options: {
+                    legend: _extends({}, this.legend)
+                }
             });
 
             this.chart = new Chart('price-distribution-chart', config);

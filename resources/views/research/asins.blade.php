@@ -25,13 +25,14 @@
                             <th>BO Price</th>
                             <th>BO Seller</th>
                             <th>N&P Offers</th>
+                            <th>Lised On</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($products as $product)
                             <tr>
                                 <td>
-                                    <a href="https://www.amazon.com/dp/{{ $product['asin'] }}">{{ $product['asin'] }}</a>
+                                    <a href="{{ route('research.asin', $product['asin']) }}">{{ $product['asin'] }}</a>
                                 </td>
                                 <td>
                                     @isset($product['images'][0])
@@ -54,6 +55,17 @@
                                     @endisset
                                 </td>
                                 <td>{{ count($product['offers']) }}</td>
+                                <td>
+                                    @if(count($product['listed_on']))
+                                        <ul style="padding-left: 0">
+                                            @foreach($product['listed_on'] as $account)
+                                                <li>{{ $account }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @else
+                                        <span class="text-muted">Not Listed Yet</span>
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>

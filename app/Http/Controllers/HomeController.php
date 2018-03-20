@@ -8,7 +8,6 @@ use App\Reporting\OrderReports;
 use Carbon\Carbon as PureCarbon;
 use DTS\eBaySDK\Trading\Enums\OrderStatusCodeType;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -196,25 +195,27 @@ class HomeController extends AuthRequiredController
                     [
                         'type'            => 'bar',
                         'label'           => 'Orders',
-                        'backgroundColor' => 'rgba(6, 84, 186, 0.6)',
-                        'borderColor'     => 'rgba(6, 84, 186, 1)',
+//                        'backgroundColor' => 'rgba(6, 84, 186, 0.6)',
+                        'backgroundColor' => "rgba(54, 162, 235, 0.2)",
+                        'borderColor'     => "rgb(54, 162, 235)",
                         'data'            => $countData,
                         'yAxisID'         => 'ordersCount',
                     ],
                     [
-                        'type'    => 'line',
-                        'label'   => 'Revenue',
-//                        'backgroundColor' => 'rgba(6, 84, 186, 0.6)',
-//                        'borderColor'     => 'rgba(6, 84, 186, 1)',
-                        'data'    => $revenueData,
-                        'yAxisID' => 'revenue',
+                        'type'            => 'line',
+                        'label'           => 'Revenue',
+                        'fill'            => false,
+                        'backgroundColor' => "rgba(255, 205, 86, 0.2)",
+                        'borderColor'     => "rgb(255, 205, 86)",
+                        'data'            => $revenueData,
+                        'yAxisID'         => 'revenue',
                     ],
                     [
                         'type'            => 'line',
                         'label'           => 'Profit',
                         'fill'            => false,
-                        'backgroundColor' => 'rgba(121, 250, 76, .6)',
-                        'borderColor'     => 'rgb(121, 250, 76)',
+                        'backgroundColor' => "rgba(75, 192, 192, 0.2)",
+                        'borderColor'     => "rgb(75, 192, 192)",
                         'data'            => $profitData,
                         'yAxisID'         => 'profit',
                     ],

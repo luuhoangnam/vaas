@@ -2,15 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Account;
+use App\eBay\FindingAPI;
+use App\Exceptions\FindingApiException;
+use App\Item;
 use App\Jobs\Amazon\ExtractOffers;
 use App\Jobs\SyncAmazonProduct;
 use App\Researching\CompetitorResearch;
-use App\Sourcing\AmazonAPI;
 use App\Sourcing\OfferListingExtractor;
+use App\Support\SellingPriceCalculator;
+use DTS\eBaySDK\Finding\Enums\AckValue;
+use DTS\eBaySDK\Finding\Enums\ItemFilterType;
+use DTS\eBaySDK\Finding\Enums\OutputSelectorType;
 use DTS\eBaySDK\Finding\Services\FindingService;
+use DTS\eBaySDK\Finding\Types\AspectFilter;
+use DTS\eBaySDK\Finding\Types\Condition;
+use DTS\eBaySDK\Finding\Types\FindItemsByKeywordsRequest;
+use DTS\eBaySDK\Finding\Types\ItemFilter;
+use DTS\eBaySDK\Finding\Types\PaginationInput;
 use DTS\eBaySDK\Shopping\Services\ShoppingService;
 use DTS\eBaySDK\Shopping\Types\GetMultipleItemsRequestType;
 use DTS\eBaySDK\Shopping\Types\GetMultipleItemsResponseType;
+use DTS\eBaySDK\Trading\Types\GetItemTransactionsRequestType;
+use DTS\eBaySDK\Trading\Types\PaginationType;
 use Illuminate\Http\Request;
 
 class ResearchController extends AuthRequiredController
@@ -84,20 +98,139 @@ class ResearchController extends AuthRequiredController
         $asins = explode(',', $request['asins']);
 
         $products = collect($asins)->unique()->map(function ($asin) {
-            $product = cache()->remember("amazon:{$asin}", 60, function () use ($asin) {
-                return SyncAmazonProduct::dispatchNow($asin);
-            });
-
-            $product['offers'] = @$product['offers'] ?: cache()->remember("amazon:{$asin}:offers", 60,
-                function () use ($asin) {
-                    return ExtractOffers::dispatchNow($asin);
-                });
-
-            $product['best_offer'] = OfferListingExtractor::bestOfferWithTax($product['offers']);
-
-            return $product;
+            return $this->getProduct($asin);
         });
 
         return view('research.asins', compact('products'));
+    }
+
+    public function asin(Request $request, $asin)
+    {
+        $asin = $request['asin'];
+
+        $product = $this->getProduct($asin);
+
+        if (key_exists('UPC', $product['attributes'])) {
+            $competitors = $this->geteBayCompetitors($product['attributes']['UPC']);
+        } elseif (key_exists('EAN', $product['attributes'])) {
+            $competitors = $this->geteBayCompetitors($product['attributes']['EAN']);
+        } else {
+            $competitors = null;
+        }
+
+        $costOfGoods     = $product['best_offer']['tax'] ? $product['best_offer']['price'] * 1.09 : $product['best_offer']['price'];
+        $minSellingPrice = SellingPriceCalculator::calc([
+            'cost_of_goods'    => $product['best_offer']['price'],
+            'margin'           => 0,
+            'tax'              => $product['best_offer']['tax'],
+            'final_value_rate' => 0.0915,
+            'paypal_rate'      => 0.039,
+            'paypal_usd'       => 0.3,
+            'minimum_price'    => 0.0,
+        ]);
+
+        if ($competitors) {
+            $higherPrice = collect($competitors->searchResult->toArray()['item'])
+                ->where('sellingStatus.currentPrice.value', '>', $minSellingPrice)
+                ->count();
+
+            $equalsPrice = collect($competitors->searchResult->toArray()['item'])
+                ->where('sellingStatus.currentPrice.value', '=', $minSellingPrice)
+                ->count();
+
+            $lowerPrice = collect($competitors->searchResult->toArray()['item'])
+                ->where('sellingStatus.currentPrice.value', '<', $minSellingPrice)
+                ->count();
+
+            $soldLastThirtyDays = [];
+
+            foreach ($competitors->searchResult->item as $item) {
+                $soldLastThirtyDays[$item->itemId] = $this->soldLastThirtyDays($item->itemId) ?: null;
+            }
+        }
+
+        return view(
+            'research.asin',
+            compact(
+                'product', 'competitors', 'higherPrice', 'equalsPrice', 'lowerPrice', 'costOfGoods',
+                'minSellingPrice', 'soldLastThirtyDays'
+            )
+        );
+    }
+
+    protected function getProduct($asin)
+    {
+        $product = cache()->remember("amazon:{$asin}", 60, function () use ($asin) {
+            return SyncAmazonProduct::dispatchNow($asin);
+        });
+
+        $product['offers'] = @$product['offers'] ?: cache()->remember("amazon:{$asin}:offers", 60,
+            function () use ($asin) {
+                return ExtractOffers::dispatchNow($asin);
+            });
+
+        $product['offers'] = collect($product['offers'])->map(function ($offer) {
+            return array_merge($offer, ['tax' => $offer['seller'] === 'Amazon.com']);
+        })->all();
+
+        $product['best_offer'] = OfferListingExtractor::bestOfferWithTax($product['offers']);
+
+        $product['listed_on'] = Item::listedOn($asin)->get()->pluck('account.username');
+
+        return $product;
+    }
+
+    protected function geteBayCompetitors($keyword)
+    {
+        /** @var FindingService|FindingAPI $finding */
+        $finding = new FindingAPI;
+
+        $request = new FindItemsByKeywordsRequest;
+
+        $request->keywords        = (string)$keyword;
+        $request->buyerPostalCode = (string)10001;
+
+        $request->itemFilter[] = new ItemFilter(['name' => ItemFilterType::C_CONDITION, 'value' => ['New']]);
+
+        $request->outputSelector = [
+            OutputSelectorType::C_SELLER_INFO,
+        ];
+
+        $request->paginationInput = new PaginationInput;
+
+        $request->paginationInput->entriesPerPage = 100;
+
+        $response = $finding->findItemsByKeywords($request, 60);
+
+        if ($response->ack === AckValue::C_FAILURE) {
+            throw new FindingApiException($request, $response);
+        }
+
+        return $response;
+    }
+
+    protected function soldLastThirtyDays($itemID)
+    {
+        /** @var Account $account */
+        $account = $this->resolveCurrentUser()->accounts()->inRandomOrder()->firstOrFail();
+
+        $request         = new GetItemTransactionsRequestType;
+        $request->ItemID = (string)$itemID;
+
+        $request->Pagination                 = new PaginationType;
+        $request->Pagination->EntriesPerPage = 1;
+
+        $request->NumberOfDays = 30;
+
+        $request->OutputSelector = [
+            'PaginationResult.TotalNumberOfEntries',
+        ];
+
+        /** @var \DTS\eBaySDK\Trading\Services\TradingService $trading */
+        $trading = $account->trading();
+
+        $response = $trading->getItemTransactions($request, 60 * 6);
+
+        return $response->PaginationResult->TotalNumberOfEntries;
     }
 }
