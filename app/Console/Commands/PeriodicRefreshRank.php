@@ -13,7 +13,7 @@ class PeriodicRefreshRank extends Command
     public function handle()
     {
         Tracker::all()->shuffle()->each(function (Tracker $tracker) {
-            RefreshRankJob::dispatch($tracker);
+            RefreshRankJob::dispatch($tracker)->onQueue('ranking');
         });
     }
 }

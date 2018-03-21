@@ -49418,7 +49418,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(148);
-module.exports = __webpack_require__(231);
+module.exports = __webpack_require__(232);
 
 
 /***/ }),
@@ -49450,16 +49450,16 @@ __webpack_require__(222);
 __webpack_require__(223);
 __webpack_require__(224);
 __webpack_require__(225);
-__webpack_require__(236);
-
-// Reports
 __webpack_require__(226);
 
-// Listing Builder
+// Reports
 __webpack_require__(227);
 
+// Listing Builder
+__webpack_require__(228);
+
 // Lister
-__webpack_require__(229);
+__webpack_require__(230);
 
 var app = new Vue({
   el: '#app'
@@ -79091,6 +79091,66 @@ Vue.component('dashboard-category-chart', {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+Vue.component('price-distribution-chart', {
+    props: ['config'],
+
+    data: function data() {
+        return {
+            type: 'bar',
+            legend: {
+                display: false,
+                position: 'top'
+            },
+            chart: null
+        };
+    },
+    mounted: function mounted() {
+        this.renderChart();
+    },
+
+
+    computed: {
+        //
+    },
+
+    methods: {
+        toggleType: function toggleType() {
+            if (this.type === 'bar') {
+                this.type = 'pie';
+                this.legend = {
+                    display: true,
+                    position: 'right'
+                };
+            } else {
+                this.type = 'bar';
+                this.legend = {
+                    display: false
+                };
+            }
+
+            this.renderChart();
+        },
+        renderChart: function renderChart() {
+            this.chart instanceof Chart && this.chart.destroy();
+
+            var config = _extends({}, this.config, {
+                type: this.type,
+                options: {
+                    legend: _extends({}, this.legend)
+                }
+            });
+
+            this.chart = new Chart('price-distribution-chart', config);
+        }
+    }
+});
+
+/***/ }),
+/* 227 */
+/***/ (function(module, exports) {
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 Vue.component('reports-sale-chart', {
     props: ['config'],
 
@@ -79109,10 +79169,10 @@ Vue.component('reports-sale-chart', {
 });
 
 /***/ }),
-/* 227 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Mustache = __webpack_require__(228);
+var Mustache = __webpack_require__(229);
 
 Vue.component('listing-builder', {
     props: ['template', 'product'],
@@ -79143,7 +79203,7 @@ Vue.component('listing-builder', {
 });
 
 /***/ }),
-/* 228 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -79782,10 +79842,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 229 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(230);
+__webpack_require__(231);
 var _ = __webpack_require__(11);
 
 Vue.component('lister', {
@@ -79834,7 +79894,7 @@ Vue.component('lister', {
 });
 
 /***/ }),
-/* 230 */
+/* 231 */
 /***/ (function(module, exports) {
 
 /**
@@ -81578,74 +81638,10 @@ Object.defineProperty(jQuery.trumbowyg, 'defaultOptions', {
 
 
 /***/ }),
-/* 231 */
+/* 232 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 232 */,
-/* 233 */,
-/* 234 */,
-/* 235 */,
-/* 236 */
-/***/ (function(module, exports) {
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-Vue.component('price-distribution-chart', {
-    props: ['config'],
-
-    data: function data() {
-        return {
-            type: 'bar',
-            legend: {
-                display: false,
-                position: 'top'
-            },
-            chart: null
-        };
-    },
-    mounted: function mounted() {
-        this.renderChart();
-    },
-
-
-    computed: {
-        //
-    },
-
-    methods: {
-        toggleType: function toggleType() {
-            if (this.type === 'bar') {
-                this.type = 'pie';
-                this.legend = {
-                    display: true,
-                    position: 'right'
-                };
-            } else {
-                this.type = 'bar';
-                this.legend = {
-                    display: false
-                };
-            }
-
-            this.renderChart();
-        },
-        renderChart: function renderChart() {
-            this.chart instanceof Chart && this.chart.destroy();
-
-            var config = _extends({}, this.config, {
-                type: this.type,
-                options: {
-                    legend: _extends({}, this.legend)
-                }
-            });
-
-            this.chart = new Chart('price-distribution-chart', config);
-        }
-    }
-});
 
 /***/ })
 /******/ ]);

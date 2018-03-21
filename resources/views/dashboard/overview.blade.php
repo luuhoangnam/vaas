@@ -30,6 +30,10 @@
 
             @include('snippets.statistic', ['title' => 'AOF', 'number' => usd($aof), 'change' => $aofChange])
 
+            @include('snippets.statistic', ['title' => 'CBR', 'number' => percent(0), 'change' => 0])
+
+            @include('snippets.statistic', ['title' => 'Sell Through', 'number' => percent(0), 'change' => 0])
+
         </div>
     </div>
 </div>

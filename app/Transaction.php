@@ -2,6 +2,7 @@
 
 namespace App;
 
+use DTS\eBaySDK\Trading\Types\TransactionType;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model

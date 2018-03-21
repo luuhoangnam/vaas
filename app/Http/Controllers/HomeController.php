@@ -353,7 +353,9 @@ class HomeController extends AuthRequiredController
         $baseQuery = Item::active()->since($startDate)->until($endDate)->whereHas(
             'account',
             function (Builder $builder) use ($request) {
-                $builder->whereIn('username', $request['accounts']);
+                if ($request->has('accounts')) {
+                    $builder->whereIn('username', $request['accounts']);
+                }
             }
         );
 

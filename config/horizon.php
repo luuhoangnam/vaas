@@ -74,9 +74,9 @@ return [
         'production' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue'      => ['default', 'repricer', 'quantity_manager'],
+                'queue'      => ['default', 'repricer', 'quantity_manager', 'ranking'],
                 'balance'    => 'simple',
-                'processes'  => 25,
+                'processes'  => 100,
                 'tries'      => 3,
             ],
         ],
@@ -84,9 +84,9 @@ return [
         'local' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue'      => ['default', 'repricer', 'quantity_manager'],
+                'queue'      => ['default', 'repricer', 'quantity_manager', 'ranking'],
                 'balance'    => 'simple',
-                'processes'  => 10,
+                'processes'  => 20,
                 'tries'      => 5,
             ],
         ],

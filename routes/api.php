@@ -12,6 +12,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/products/amazon.com/{id}', 'API\\ProductController@inspect');
     # END PRODUCT
 
+    # RESEARCH
+    Route::get('/research/competitor/items', 'API\\ResearchCompetitorController@items');
+    Route::get('/items/{item}/transactions/count', 'API\\ItemController@transactionsCount');
+    # END RESEARCH
+
     # ACCOUNT
     Route::get('/user/accounts', 'AccountsController@myAccounts');
     Route::get('/accounts/{username}/profiles', 'API\\AccountController@profiles');
