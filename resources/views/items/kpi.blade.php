@@ -34,6 +34,12 @@
             </div>
             <div class="col">
                 <div class="card-text align-content-center">
+                    <h6 class="text-center text-uppercase">Total Value</h6>
+                    <h2 class="text-center">{{ usd($reporter->value()) }}</h2>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card-text align-content-center">
                     <h6 class="text-center text-uppercase">EPI</h6>
                     <h2 class="text-center">{{ usd($reporter->averageEarningPerItem()) }}</h2>
                 </div>

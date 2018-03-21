@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\eBay\FindingAPI;
 use App\Exceptions\FindingApiException;
+use App\Exceptions\TradingApiException;
 use App\Http\Controllers\AuthRequiredController;
 use DTS\eBaySDK\Finding\Enums\AckValue;
 use DTS\eBaySDK\Finding\Enums\ItemFilterType;
@@ -14,6 +15,9 @@ use DTS\eBaySDK\Finding\Types\ItemFilter;
 use DTS\eBaySDK\Finding\Types\PaginationInput;
 use DTS\eBaySDK\Finding\Types\SearchItem;
 use DTS\eBaySDK\Finding\Types\SearchResult;
+use DTS\eBaySDK\Trading\Enums\AckCodeType;
+use DTS\eBaySDK\Trading\Types\GetItemTransactionsRequestType;
+use DTS\eBaySDK\Trading\Types\PaginationType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 

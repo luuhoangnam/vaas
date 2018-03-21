@@ -15,8 +15,6 @@ class RefillItemQuantity implements ShouldQueue
 {
     use InteractsWithQueue;
 
-    public $queue = 'quantity_manager';
-
     public function handle(FixedPriceTransaction $event)
     {
         /** @var GetItemTransactionsResponseType $payload */

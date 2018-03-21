@@ -62,31 +62,48 @@ class HomeController extends AuthRequiredController
 
         # METRICS
         $ordersCount       = $orderReports->count();
-        $ordersCountChange = $ordersCount ? ($ordersCount - $orderReportsPreviousPeriod->count()) / $ordersCount : null;
+        $ordersCountPrev   = $orderReportsPreviousPeriod->count();
+        $ordersCountChange = $ordersCountPrev ? ($ordersCount - $ordersCountPrev) / $ordersCountPrev : null;
 
         $revenue       = $orderReports->revenue();
-        $revenueChange = $revenue ? ($revenue - $orderReportsPreviousPeriod->revenue()) / $revenue : null;
+        $revenuePrev   = $orderReportsPreviousPeriod->revenue();
+        $revenueChange = $revenuePrev ? ($revenue - $revenuePrev) / $revenuePrev : null;
 
         $fees       = $orderReports->fees();
-        $feesChange = $fees ? ($fees - $orderReportsPreviousPeriod->fees()) / $fees : null;
+        $feesPrev   = $orderReportsPreviousPeriod->fees();
+        $feesChange = $feesPrev ? ($fees - $feesPrev) / $feesPrev : null;
 
         $cashback       = $orderReports->cashback();
-        $cashbackChange = $cashback ? ($cashback - $orderReportsPreviousPeriod->cashback()) / $cashback : null;
+        $cashbackPrev   = $orderReportsPreviousPeriod->cashback();
+        $cashbackChange = $cashbackPrev ? ($cashback - $cashbackPrev) / $cashbackPrev : null;
 
         $profit       = $orderReports->profit();
-        $profitChange = $profit ? ($profit - $orderReportsPreviousPeriod->profit()) / $profit : null;
+        $profitPrev   = $orderReportsPreviousPeriod->profit();
+        $profitChange = $profitPrev ? ($profit - $profitPrev) / $profitPrev : null;
 
         $margin       = $orderReports->margin();
-        $marginChange = $margin ? ($margin - $orderReportsPreviousPeriod->margin()) / $margin : null;
+        $marginPrev   = $orderReportsPreviousPeriod->margin();
+        $marginChange = $marginPrev ? ($margin - $marginPrev) / $marginPrev : null;
 
         $aov       = $orderReports->averageOrderValue();
-        $aovChange = $aov ? ($aov - $orderReportsPreviousPeriod->averageOrderValue()) / $aov : null;
+        $aovPrev   = $orderReportsPreviousPeriod->averageOrderValue();
+        $aovChange = $aovPrev ? ($aov - $aovPrev) / $aovPrev : null;
 
         $aof       = $orderReports->averageOrderProfit();
-        $aofChange = $aof ? ($aof - $orderReportsPreviousPeriod->averageOrderProfit()) / $aof : null;
+        $aofPrev   = $orderReportsPreviousPeriod->averageOrderProfit();
+        $aofChange = $aofPrev ? ($aof - $aofPrev) / $aofPrev : null;
 
         $cog       = $orderReports->costOfGoods();
-        $cogChange = $cog ? ($cog - $orderReportsPreviousPeriod->costOfGoods()) / $cog : null;
+        $cogPrev   = $orderReportsPreviousPeriod->costOfGoods();
+        $cogChange = $cogPrev ? ($cog - $cogPrev) / $cogPrev : null;
+
+        $sellThrough       = $this->sellThroughInPeriod($startDate, $endDate);
+        $sellThroughPrev   = $this->sellThroughInPeriod($previousPeriodStartDate, $previousPeriodEndDate);
+        $sellThroughChange = $sellThroughPrev ? ($sellThrough - $sellThroughPrev) / $sellThroughPrev : null;
+
+        $cashbackRate       = $this->cashbackOrdersCountInPeriod($startDate, $endDate) / $ordersCount;
+        $cashbackRatePrev   = $this->cashbackOrdersCountInPeriod($previousPeriodStartDate, $previousPeriodEndDate) / $ordersCountPrev;
+        $cashbackRateChange = $cashbackRatePrev ? ($cashbackRate - $cashbackRatePrev) / $cashbackRatePrev : null;
 
         # SALE CHART
         $saleChart = $this->generateSaleChart($orders, $startDate, $endDate);
@@ -127,8 +144,37 @@ class HomeController extends AuthRequiredController
             'profit', 'profitChange',
             'margin', 'marginChange',
             'startDate', 'endDate', 'previousPeriodStartDate', 'previousPeriodEndDate',
-            'saleChart', 'categoryChart', 'priceDistributionChart'
+            'saleChart', 'categoryChart', 'priceDistributionChart', 'sellThrough', 'sellThroughChange',
+            'cashbackRate', 'cashbackRateChange'
         ));
+    }
+
+    public function cashbackOrdersCountInPeriod(PureCarbon $startDate, PureCarbon $endDate)
+    {
+        return (clone $this->buildOrdersQuery(request(), $startDate, $endDate))->where('cashback', '>', 0)->count();
+    }
+
+    public function sellThroughInPeriod(PureCarbon $startDate, PureCarbon $endDate)
+    {
+        $items = $this->resolveCurrentUser()
+                      ->items()
+                      ->whereHas('account', function (Builder $query) {
+                          if (request()->has('accounts')) {
+                              $query->whereIn('username', request('accounts'));
+                          }
+                      })
+                      ->whereDate('start_time', '>=', $startDate)
+                      ->whereDate('start_time', '<=', $endDate);
+
+        $totalListedItem = (clone $items)->count();
+
+        $totalSoldListedItem = (clone $items)->whereHas('orders',
+            function (Builder $builder) use ($startDate, $endDate) {
+                $builder->where('created_time', '>=', $startDate)
+                        ->where('created_time', '<=', $endDate);
+            })->count();
+
+        return $totalListedItem ? $totalSoldListedItem / $totalListedItem : null;
     }
 
     protected function buildOrdersQuery(Request $request, PureCarbon $startDate, PureCarbon $endDate)

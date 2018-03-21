@@ -144,6 +144,11 @@ class Item extends Model
         );
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'item_id', 'item_id');
+    }
+
     public function getEarningAttribute()
     {
         return $this->orders()->sum('total');
