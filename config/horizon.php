@@ -77,7 +77,7 @@ return [
                 'queue'      => ['default', 'repricer', 'ranking'],
                 'balance'    => 'auto',
                 'processes'  => 100,
-                'tries'      => 3,
+                'tries'      => 5,
             ],
         ],
 
