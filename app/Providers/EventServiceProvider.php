@@ -2,12 +2,16 @@
 
 namespace App\Providers;
 
+use App\Events\CompetitorSpied;
+use App\Events\FoundNewCompetitorItem;
 use App\Events\ItemCreated;
 use App\Events\ListerJobCreated;
 use App\Events\PlatformNotificationReceived;
 use App\Events\PlatformNotifications\FixedPriceTransaction;
+use App\Listeners\AnalyzeCompetitorItem;
 use App\Listeners\AttachTracker;
 use App\Listeners\CreateCompanionListerQueueJob;
+use App\Listeners\FindActiveSellingItems;
 use App\Listeners\LogPlatformNotificationPayload;
 use App\Listeners\RefillItemQuantity;
 use App\Listeners\Subscribers\ItemEventsSubscriber;
@@ -49,6 +53,15 @@ class EventServiceProvider extends ServiceProvider
 
         ListerJobCreated::class => [
             CreateCompanionListerQueueJob::class,
+        ],
+
+        // Spying
+        CompetitorSpied::class  => [
+            FindActiveSellingItems::class,
+        ],
+
+        FoundNewCompetitorItem::class => [
+            AnalyzeCompetitorItem::class,
         ],
     ];
 

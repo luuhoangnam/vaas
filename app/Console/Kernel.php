@@ -12,6 +12,7 @@ use App\Console\Commands\MakeRepricer;
 use App\Console\Commands\PeriodicRefreshRank;
 use App\Console\Commands\RunRepricerPeriodically;
 use App\Console\Commands\ScanAmazonBestSellers;
+use App\Console\Commands\SpyCompetitor;
 use App\Console\Commands\SubscribePlatformNotification;
 use App\Console\Commands\SyncAlleBayAccounts;
 use App\Console\Commands\SynceBayAccount;
@@ -47,6 +48,7 @@ class Kernel extends ConsoleKernel
         ScanAmazonBestSellers::class,
         BackupDatabase::class,
         ViewCrawlerPerformance::class,
+        SpyCompetitor::class,
     ];
 
     /**
