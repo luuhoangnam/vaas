@@ -6,6 +6,7 @@ use App\Account;
 use App\Exceptions\Amazon\ProductAdvertisingAPIException;
 use App\Exceptions\TradingApiException;
 use App\Http\Controllers\Controller;
+use App\Item;
 use App\Sourcing\AmazonAPI;
 use App\Sourcing\AmazonCrawler;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
@@ -60,6 +61,7 @@ class ResearchItemController extends Controller
             'watch_count'          => $item->WatchCount,
             'attributes'           => $this->normalizeAttribute($item),
             'source'               => $this->guessSource($item),
+            'listed_on'            => $item->SKU ? $this->listedOn($item->SKU) : null,
         ];
     }
 
@@ -101,5 +103,15 @@ class ResearchItemController extends Controller
 
             return AmazonCrawler::get($item->SKU);
         });
+    }
+
+    protected function listedOn($sku)
+    {
+        return Item::query()
+                   ->with('account')
+                   ->where('sku', $sku)
+                   ->get()
+                   ->pluck('account.username')
+                   ->values();
     }
 }
