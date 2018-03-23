@@ -64,6 +64,28 @@
             "Tests\\": "tests/"
         }
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:luuhoangnam/amazon.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:luuhoangnam/db.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:luuhoangnam/debug.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:luuhoangnam/http.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:luuhoangnam/support.git"
+        }
+    ],
     "extra": {
         "laravel": {
             "dont-discover": [
