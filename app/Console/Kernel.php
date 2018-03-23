@@ -75,10 +75,5 @@ class Kernel extends ConsoleKernel
         $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
-
-        // Require debug command if exists
-        if (file_exists(base_path('routes/debug.php'))) {
-            require base_path('routes/debug.php');
-        }
     }
 }

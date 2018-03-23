@@ -2,18 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use Illuminate\Http\Request;
+use LuuHoangNam\Http\Controllers\AuthRequiredController as Base;
 
-abstract class AuthRequiredController extends Controller
+abstract class AuthRequiredController extends Base
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    protected function resolveCurrentUser(Request $request = null): User
-    {
-        return $request instanceof Request ? $request->user() : request()->user();
-    }
+    //
 }

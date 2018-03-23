@@ -229,6 +229,17 @@ class Item extends Model
         return $firstOrder['created_time']->diffForHumans($this['start_time']);
     }
 
+    public function getLastOrderSinceAttribute()
+    {
+        $lastOrder = $this->orders()->latest('created_time')->first();
+
+        if ( ! $lastOrder instanceof Order) {
+            return null;
+        }
+
+        return $lastOrder['created_time'];
+    }
+
     public static function extractItemAttributes(ItemType $item, $only = [], $except = []): array
     {
         $attrs = [

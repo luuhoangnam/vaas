@@ -33,11 +33,9 @@ use DTS\eBaySDK\Trading\Types\SellerPaymentProfileType;
 use DTS\eBaySDK\Trading\Types\SellerProfilesType;
 use DTS\eBaySDK\Trading\Types\SellerReturnProfileType;
 use DTS\eBaySDK\Trading\Types\SellerShippingProfileType;
-use DTS\eBaySDK\Trading\Types\TransactionType;
 use DTS\eBaySDK\Trading\Types\VerifyAddItemResponseType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 
 class Account extends Model
 {

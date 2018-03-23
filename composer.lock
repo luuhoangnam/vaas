@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "46b499379e1e8642c3d5d0da89955032",
+    "content-hash": "1bdd7e50a72a29e665629b714c95cb78",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -110,16 +110,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.52.30",
+            "version": "3.52.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "4d51b552026aefc060f2b4f3bd19e33c98088c9c"
+                "reference": "8a886aeb1475825b324ebeefce2fb0730be649a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/4d51b552026aefc060f2b4f3bd19e33c98088c9c",
-                "reference": "4d51b552026aefc060f2b4f3bd19e33c98088c9c",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/8a886aeb1475825b324ebeefce2fb0730be649a5",
+                "reference": "8a886aeb1475825b324ebeefce2fb0730be649a5",
                 "shasum": ""
             },
             "require": {
@@ -186,7 +186,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2018-03-21T21:17:52+00:00"
+            "time": "2018-03-22T22:05:02+00:00"
         },
         {
             "name": "barryvdh/laravel-cors",
@@ -2104,12 +2104,79 @@
             "time": "2017-12-23T23:33:42+00:00"
         },
         {
+            "name": "luuhoangnam/amazon",
+            "version": "dev-develop",
+            "dist": {
+                "type": "path",
+                "url": "/Users/luuhoangnam/Code/Packages/amazon",
+                "reference": "70ee663b70444479a26ebb6a487e147676ddb1a2",
+                "shasum": null
+            },
+            "require": {
+                "illuminate/support": "^5.6",
+                "php": ">=7.1.3"
+            },
+            "require-dev": {
+                "filp/whoops": "~2.0",
+                "fzaninotto/faker": "~1.4",
+                "mockery/mockery": "~1.0",
+                "nunomaduro/collision": "~2.0",
+                "orchestra/testbench": "^3.6",
+                "phpunit/phpunit": "~7.0",
+                "symfony/thanks": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "LuuHoangNam\\Amazon\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LuuHoangNam\\Amazon\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ],
+                "check-style": [
+                    "phpcs -p --standard=PSR2 src/"
+                ],
+                "fix-style": [
+                    "phpcbf -p --standard=PSR2 src/"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Luu Hoang Nam",
+                    "email": "hoangnam0705@icloud.com"
+                }
+            ],
+            "description": "Amazon Product Database Helpers",
+            "keywords": [
+                "amazon",
+                "laravel",
+                "library"
+            ]
+        },
+        {
             "name": "luuhoangnam/db",
             "version": "dev-develop",
             "dist": {
                 "type": "path",
                 "url": "/Users/luuhoangnam/Code/Packages/db",
-                "reference": "e9d102d25ecd665768b580bb98e20eec66e3b865",
+                "reference": "95241f4e39166210990df068ad5763cbfad1a76c",
                 "shasum": null
             },
             "require": {
@@ -2169,6 +2236,208 @@
                 "database",
                 "laravel",
                 "library"
+            ]
+        },
+        {
+            "name": "luuhoangnam/debug",
+            "version": "dev-develop",
+            "dist": {
+                "type": "path",
+                "url": "/Users/luuhoangnam/Code/Packages/debug",
+                "reference": "c9324fb07814ffe1b366f327dff0c486e9369a7d",
+                "shasum": null
+            },
+            "require": {
+                "illuminate/support": "^5.6",
+                "php": ">=7.1.3"
+            },
+            "require-dev": {
+                "filp/whoops": "~2.0",
+                "fzaninotto/faker": "~1.4",
+                "mockery/mockery": "~1.0",
+                "nunomaduro/collision": "~2.0",
+                "orchestra/testbench": "^3.6",
+                "phpunit/phpunit": "~7.0",
+                "symfony/thanks": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": []
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LuuHoangNam\\Debug\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ],
+                "check-style": [
+                    "phpcs -p --standard=PSR2 src/"
+                ],
+                "fix-style": [
+                    "phpcbf -p --standard=PSR2 src/"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Luu Hoang Nam",
+                    "email": "hoangnam0705@icloud.com"
+                }
+            ],
+            "description": "Debug Kit",
+            "keywords": [
+                "debug",
+                "laravel",
+                "library"
+            ]
+        },
+        {
+            "name": "luuhoangnam/http",
+            "version": "dev-develop",
+            "dist": {
+                "type": "path",
+                "url": "/Users/luuhoangnam/Code/Packages/http",
+                "reference": "2a527fb5d596f1d89c2f6a778a3f33c4f1d3e629",
+                "shasum": null
+            },
+            "require": {
+                "illuminate/support": "^5.6",
+                "php": ">=7.1.3"
+            },
+            "require-dev": {
+                "filp/whoops": "~2.0",
+                "fzaninotto/faker": "~1.4",
+                "mockery/mockery": "~1.0",
+                "nunomaduro/collision": "~2.0",
+                "orchestra/testbench": "^3.6",
+                "phpunit/phpunit": "~7.0",
+                "symfony/thanks": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "LuuHoangNam\\Http\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LuuHoangNam\\Http\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ],
+                "check-style": [
+                    "phpcs -p --standard=PSR2 src/"
+                ],
+                "fix-style": [
+                    "phpcbf -p --standard=PSR2 src/"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Luu Hoang Nam",
+                    "email": "hoangnam0705@icloud.com"
+                }
+            ],
+            "description": "Http Layer Kit",
+            "keywords": [
+                "http",
+                "laravel",
+                "library"
+            ]
+        },
+        {
+            "name": "luuhoangnam/support",
+            "version": "dev-develop",
+            "dist": {
+                "type": "path",
+                "url": "/Users/luuhoangnam/Code/Packages/support",
+                "reference": "d7c9b7d6024a6e0e2d2e85bb48b4f0138cebdcc6",
+                "shasum": null
+            },
+            "require": {
+                "illuminate/support": "^5.6",
+                "php": ">=7.1.3"
+            },
+            "require-dev": {
+                "filp/whoops": "~2.0",
+                "fzaninotto/faker": "~1.4",
+                "mockery/mockery": "~1.0",
+                "nunomaduro/collision": "~2.0",
+                "orchestra/testbench": "^3.6",
+                "phpunit/phpunit": "~7.0",
+                "symfony/thanks": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "LuuHoangNam\\Support\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LuuHoangNam\\Support\\": "src/"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ],
+                "check-style": [
+                    "phpcs -p --standard=PSR2 src/"
+                ],
+                "fix-style": [
+                    "phpcbf -p --standard=PSR2 src/"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Luu Hoang Nam",
+                    "email": "hoangnam0705@icloud.com"
+                }
+            ],
+            "description": "PHP Development Support Kit",
+            "keywords": [
+                "laravel",
+                "library",
+                "support"
             ]
         },
         {
@@ -4678,6 +4947,74 @@
     ],
     "packages-dev": [
         {
+            "name": "barryvdh/laravel-debugbar",
+            "version": "v3.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/barryvdh/laravel-debugbar.git",
+                "reference": "7a91480cc6e597caed5117a3c5d685f06d35c5a1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/7a91480cc6e597caed5117a3c5d685f06d35c5a1",
+                "reference": "7a91480cc6e597caed5117a3c5d685f06d35c5a1",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/routing": "5.5.x|5.6.x",
+                "illuminate/session": "5.5.x|5.6.x",
+                "illuminate/support": "5.5.x|5.6.x",
+                "maximebf/debugbar": "~1.15.0",
+                "php": ">=7.0",
+                "symfony/debug": "^3|^4",
+                "symfony/finder": "^3|^4"
+            },
+            "require-dev": {
+                "illuminate/framework": "5.5.x"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.2-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Barryvdh\\Debugbar\\ServiceProvider"
+                    ],
+                    "aliases": {
+                        "Debugbar": "Barryvdh\\Debugbar\\Facade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Barryvdh\\Debugbar\\": "src/"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Barry vd. Heuvel",
+                    "email": "barryvdh@gmail.com"
+                }
+            ],
+            "description": "PHP Debugbar integration for Laravel",
+            "keywords": [
+                "debug",
+                "debugbar",
+                "laravel",
+                "profiler",
+                "webprofiler"
+            ],
+            "time": "2018-03-06T08:35:31+00:00"
+        },
+        {
             "name": "doctrine/instantiator",
             "version": "1.1.0",
             "source": {
@@ -4889,6 +5226,67 @@
                 "test"
             ],
             "time": "2016-01-20T08:20:44+00:00"
+        },
+        {
+            "name": "maximebf/debugbar",
+            "version": "v1.15.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maximebf/php-debugbar.git",
+                "reference": "30e7d60937ee5f1320975ca9bc7bcdd44d500f07"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maximebf/php-debugbar/zipball/30e7d60937ee5f1320975ca9bc7bcdd44d500f07",
+                "reference": "30e7d60937ee5f1320975ca9bc7bcdd44d500f07",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "psr/log": "^1.0",
+                "symfony/var-dumper": "^2.6|^3.0|^4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.0|^5.0"
+            },
+            "suggest": {
+                "kriswallsmith/assetic": "The best way to manage assets",
+                "monolog/monolog": "Log using Monolog",
+                "predis/predis": "Redis storage"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.14-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "DebugBar\\": "src/DebugBar/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Maxime Bouroumeau-Fuseau",
+                    "email": "maxime.bouroumeau@gmail.com",
+                    "homepage": "http://maximebf.com"
+                },
+                {
+                    "name": "Barry vd. Heuvel",
+                    "email": "barryvdh@gmail.com"
+                }
+            ],
+            "description": "Debug bar in the browser for php application",
+            "homepage": "https://github.com/maximebf/php-debugbar",
+            "keywords": [
+                "debug",
+                "debugbar"
+            ],
+            "time": "2017-12-15T11:13:46+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -6464,7 +6862,11 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "luuhoangnam/db": 20
+        "luuhoangnam/amazon": 20,
+        "luuhoangnam/db": 20,
+        "luuhoangnam/debug": 20,
+        "luuhoangnam/http": 20,
+        "luuhoangnam/support": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

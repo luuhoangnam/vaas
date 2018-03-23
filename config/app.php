@@ -150,6 +150,7 @@ return [
         /*
          * Package Service Providers...
          */
+        LuuHoangNam\Debug\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -162,7 +163,6 @@ return [
         App\Providers\EbayServiceProvider::class,
         App\Providers\BladeServiceProvider::class,
         App\Providers\GoogleServiceProvider::class,
-        App\Providers\DebugServiceProvider::class,
 
     ],
 
