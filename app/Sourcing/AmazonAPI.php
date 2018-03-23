@@ -3,6 +3,7 @@
 namespace App\Sourcing;
 
 use App\Exceptions\Amazon\ProductAdvertisingAPIException;
+use App\Jobs\Amazon\ExtractOffers;
 use Illuminate\Support\Collection;
 use Revolution\Amazon\ProductAdvertising\AmazonClient;
 
@@ -24,7 +25,7 @@ class AmazonAPI
         'Publisher',
     ];
 
-    public static function inspect($asin)
+    public static function inspect($asin, $includeOffers = false)
     {
         $api = static::amazonProductAdvertisingApi();
 
@@ -73,6 +74,9 @@ class AmazonAPI
         $available = $listing['AvailabilityAttributes']['AvailabilityType'] === 'now';
         $prime     = (bool)$listing['IsEligibleForPrime'];
 
+        # Extract Offers on Demand
+        $offers = $includeOffers ? ExtractOffers::dispatchNow($asin) : null;
+
         return [
             'processor'   => self::class,
             'asin'        => $asin,
@@ -84,6 +88,7 @@ class AmazonAPI
             'images'      => $images,
             'features'    => $features,
             'attributes'  => $attributes,
+            'offers'      => $offers,
         ];
     }
 

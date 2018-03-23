@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 
+Route::post('/items/{id}', 'API\\ResearchItemController@show');
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/user', function (Request $request) {
