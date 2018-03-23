@@ -102,7 +102,8 @@ class HomeController extends AuthRequiredController
         $sellThroughChange = $sellThroughPrev ? ($sellThrough - $sellThroughPrev) / $sellThroughPrev : null;
 
         $cashbackRate       = $this->cashbackOrdersCountInPeriod($startDate, $endDate) / $ordersCount;
-        $cashbackRatePrev   = $this->cashbackOrdersCountInPeriod($previousPeriodStartDate, $previousPeriodEndDate) / $ordersCountPrev;
+        $cashbackRatePrev   = $this->cashbackOrdersCountInPeriod($previousPeriodStartDate,
+                $previousPeriodEndDate) / $ordersCountPrev;
         $cashbackRateChange = $cashbackRatePrev ? ($cashbackRate - $cashbackRatePrev) / $cashbackRatePrev : null;
 
         # SALE CHART
