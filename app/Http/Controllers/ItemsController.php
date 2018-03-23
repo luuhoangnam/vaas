@@ -79,9 +79,13 @@ class ItemsController extends AuthRequiredController
                 break;
         }
 
-        # START BEFORE
+        # START BETWEEN
         if ($request['start_before']) {
-            $query->whereDate('start_time', '<', new Carbon($request['start_before']));
+            $query->whereDate('start_time', '<=', new Carbon($request['start_before']));
+        }
+
+        if ($request['start_after']) {
+            $query->whereDate('start_time', '>=', new Carbon($request['start_after']));
         }
 
         return $query;
@@ -195,9 +199,9 @@ class ItemsController extends AuthRequiredController
 
         if ($item['trackers']->count()) {
             $config['data']['datasets'][] = [
-                'type'  => 'line',
-                'label' => 'Rank',
-                'data'  => $data->pluck('rank')->toArray(),
+                'type'            => 'line',
+                'label'           => 'Rank',
+                'data'            => $data->pluck('rank')->toArray(),
                 'backgroundColor' => 'rgba(255, 255, 255, 0)',
                 'borderColor'     => 'rgb(255, 99, 132)',
             ];

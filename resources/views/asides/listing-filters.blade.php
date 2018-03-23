@@ -1,4 +1,5 @@
 @php
+    $startAfter = old('start_after', request('start_after'));
     $startBefore = old('start_before', request('start_before'));
 @endphp
 
@@ -47,10 +48,17 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Start Before</label>
-                <input type="date" class="form-control" name="start_before"
-                       value="{{ $startBefore ? carbon($startBefore)->toDateString() : null }}"/>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>Start After</label>
+                    <input type="date" class="form-control" name="start_after"
+                           value="{{ $startAfter ? carbon($startAfter)->toDateString() : null }}"/>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Start Before</label>
+                    <input type="date" class="form-control" name="start_before"
+                           value="{{ $startBefore ? carbon($startBefore)->toDateString() : null }}"/>
+                </div>
             </div>
 
             <div class="form-group">

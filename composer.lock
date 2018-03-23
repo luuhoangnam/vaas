@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "1bdd7e50a72a29e665629b714c95cb78",
+    "content-hash": "5d012ae812ddd396d72bc99705531a22",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -2106,11 +2106,16 @@
         {
             "name": "luuhoangnam/amazon",
             "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:luuhoangnam/amazon.git",
+                "reference": "70ee663b70444479a26ebb6a487e147676ddb1a2"
+            },
             "dist": {
-                "type": "path",
-                "url": "/Users/luuhoangnam/Code/Packages/amazon",
+                "type": "zip",
+                "url": "https://api.github.com/repos/luuhoangnam/amazon/zipball/70ee663b70444479a26ebb6a487e147676ddb1a2",
                 "reference": "70ee663b70444479a26ebb6a487e147676ddb1a2",
-                "shasum": null
+                "shasum": ""
             },
             "require": {
                 "illuminate/support": "^5.6",
@@ -2168,16 +2173,26 @@
                 "amazon",
                 "laravel",
                 "library"
-            ]
+            ],
+            "support": {
+                "source": "https://github.com/luuhoangnam/amazon/tree/develop",
+                "issues": "https://github.com/luuhoangnam/amazon/issues"
+            },
+            "time": "2018-03-23T02:14:13+00:00"
         },
         {
             "name": "luuhoangnam/db",
             "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:luuhoangnam/db.git",
+                "reference": "95241f4e39166210990df068ad5763cbfad1a76c"
+            },
             "dist": {
-                "type": "path",
-                "url": "/Users/luuhoangnam/Code/Packages/db",
+                "type": "zip",
+                "url": "https://api.github.com/repos/luuhoangnam/db/zipball/95241f4e39166210990df068ad5763cbfad1a76c",
                 "reference": "95241f4e39166210990df068ad5763cbfad1a76c",
-                "shasum": null
+                "shasum": ""
             },
             "require": {
                 "illuminate/support": "^5.6",
@@ -2236,16 +2251,26 @@
                 "database",
                 "laravel",
                 "library"
-            ]
+            ],
+            "support": {
+                "source": "https://github.com/luuhoangnam/db/tree/develop",
+                "issues": "https://github.com/luuhoangnam/db/issues"
+            },
+            "time": "2018-03-23T01:59:29+00:00"
         },
         {
             "name": "luuhoangnam/debug",
             "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:luuhoangnam/debug.git",
+                "reference": "c9324fb07814ffe1b366f327dff0c486e9369a7d"
+            },
             "dist": {
-                "type": "path",
-                "url": "/Users/luuhoangnam/Code/Packages/debug",
+                "type": "zip",
+                "url": "https://api.github.com/repos/luuhoangnam/debug/zipball/c9324fb07814ffe1b366f327dff0c486e9369a7d",
                 "reference": "c9324fb07814ffe1b366f327dff0c486e9369a7d",
-                "shasum": null
+                "shasum": ""
             },
             "require": {
                 "illuminate/support": "^5.6",
@@ -2301,16 +2326,26 @@
                 "debug",
                 "laravel",
                 "library"
-            ]
+            ],
+            "support": {
+                "source": "https://github.com/luuhoangnam/debug/tree/develop",
+                "issues": "https://github.com/luuhoangnam/debug/issues"
+            },
+            "time": "2018-03-23T03:10:57+00:00"
         },
         {
             "name": "luuhoangnam/http",
             "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:luuhoangnam/http.git",
+                "reference": "2a527fb5d596f1d89c2f6a778a3f33c4f1d3e629"
+            },
             "dist": {
-                "type": "path",
-                "url": "/Users/luuhoangnam/Code/Packages/http",
+                "type": "zip",
+                "url": "https://api.github.com/repos/luuhoangnam/http/zipball/2a527fb5d596f1d89c2f6a778a3f33c4f1d3e629",
                 "reference": "2a527fb5d596f1d89c2f6a778a3f33c4f1d3e629",
-                "shasum": null
+                "shasum": ""
             },
             "require": {
                 "illuminate/support": "^5.6",
@@ -2368,16 +2403,26 @@
                 "http",
                 "laravel",
                 "library"
-            ]
+            ],
+            "support": {
+                "source": "https://github.com/luuhoangnam/http/tree/develop",
+                "issues": "https://github.com/luuhoangnam/http/issues"
+            },
+            "time": "2018-03-23T03:25:07+00:00"
         },
         {
             "name": "luuhoangnam/support",
             "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:luuhoangnam/support.git",
+                "reference": "d7c9b7d6024a6e0e2d2e85bb48b4f0138cebdcc6"
+            },
             "dist": {
-                "type": "path",
-                "url": "/Users/luuhoangnam/Code/Packages/support",
+                "type": "zip",
+                "url": "https://api.github.com/repos/luuhoangnam/support/zipball/d7c9b7d6024a6e0e2d2e85bb48b4f0138cebdcc6",
                 "reference": "d7c9b7d6024a6e0e2d2e85bb48b4f0138cebdcc6",
-                "shasum": null
+                "shasum": ""
             },
             "require": {
                 "illuminate/support": "^5.6",
@@ -2438,7 +2483,12 @@
                 "laravel",
                 "library",
                 "support"
-            ]
+            ],
+            "support": {
+                "source": "https://github.com/luuhoangnam/support/tree/develop",
+                "issues": "https://github.com/luuhoangnam/support/issues"
+            },
+            "time": "2018-03-23T02:58:46+00:00"
         },
         {
             "name": "moneyphp/money",
@@ -4947,74 +4997,6 @@
     ],
     "packages-dev": [
         {
-            "name": "barryvdh/laravel-debugbar",
-            "version": "v3.1.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/barryvdh/laravel-debugbar.git",
-                "reference": "7a91480cc6e597caed5117a3c5d685f06d35c5a1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/7a91480cc6e597caed5117a3c5d685f06d35c5a1",
-                "reference": "7a91480cc6e597caed5117a3c5d685f06d35c5a1",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/routing": "5.5.x|5.6.x",
-                "illuminate/session": "5.5.x|5.6.x",
-                "illuminate/support": "5.5.x|5.6.x",
-                "maximebf/debugbar": "~1.15.0",
-                "php": ">=7.0",
-                "symfony/debug": "^3|^4",
-                "symfony/finder": "^3|^4"
-            },
-            "require-dev": {
-                "illuminate/framework": "5.5.x"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.2-dev"
-                },
-                "laravel": {
-                    "providers": [
-                        "Barryvdh\\Debugbar\\ServiceProvider"
-                    ],
-                    "aliases": {
-                        "Debugbar": "Barryvdh\\Debugbar\\Facade"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Barryvdh\\Debugbar\\": "src/"
-                },
-                "files": [
-                    "src/helpers.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Barry vd. Heuvel",
-                    "email": "barryvdh@gmail.com"
-                }
-            ],
-            "description": "PHP Debugbar integration for Laravel",
-            "keywords": [
-                "debug",
-                "debugbar",
-                "laravel",
-                "profiler",
-                "webprofiler"
-            ],
-            "time": "2018-03-06T08:35:31+00:00"
-        },
-        {
             "name": "doctrine/instantiator",
             "version": "1.1.0",
             "source": {
@@ -5226,67 +5208,6 @@
                 "test"
             ],
             "time": "2016-01-20T08:20:44+00:00"
-        },
-        {
-            "name": "maximebf/debugbar",
-            "version": "v1.15.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/maximebf/php-debugbar.git",
-                "reference": "30e7d60937ee5f1320975ca9bc7bcdd44d500f07"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/maximebf/php-debugbar/zipball/30e7d60937ee5f1320975ca9bc7bcdd44d500f07",
-                "reference": "30e7d60937ee5f1320975ca9bc7bcdd44d500f07",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0",
-                "psr/log": "^1.0",
-                "symfony/var-dumper": "^2.6|^3.0|^4.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.0|^5.0"
-            },
-            "suggest": {
-                "kriswallsmith/assetic": "The best way to manage assets",
-                "monolog/monolog": "Log using Monolog",
-                "predis/predis": "Redis storage"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.14-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "DebugBar\\": "src/DebugBar/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Maxime Bouroumeau-Fuseau",
-                    "email": "maxime.bouroumeau@gmail.com",
-                    "homepage": "http://maximebf.com"
-                },
-                {
-                    "name": "Barry vd. Heuvel",
-                    "email": "barryvdh@gmail.com"
-                }
-            ],
-            "description": "Debug bar in the browser for php application",
-            "homepage": "https://github.com/maximebf/php-debugbar",
-            "keywords": [
-                "debug",
-                "debugbar"
-            ],
-            "time": "2017-12-15T11:13:46+00:00"
         },
         {
             "name": "mockery/mockery",
