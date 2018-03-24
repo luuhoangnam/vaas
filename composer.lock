@@ -110,16 +110,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.52.31",
+            "version": "3.52.32",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "8a886aeb1475825b324ebeefce2fb0730be649a5"
+                "reference": "c10b8f60a5da9ad4d7fa9f890186632a4c025d1b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/8a886aeb1475825b324ebeefce2fb0730be649a5",
-                "reference": "8a886aeb1475825b324ebeefce2fb0730be649a5",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/c10b8f60a5da9ad4d7fa9f890186632a4c025d1b",
+                "reference": "c10b8f60a5da9ad4d7fa9f890186632a4c025d1b",
                 "shasum": ""
             },
             "require": {
@@ -186,7 +186,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2018-03-22T22:05:02+00:00"
+            "time": "2018-03-23T18:04:27+00:00"
         },
         {
             "name": "barryvdh/laravel-cors",
@@ -2416,12 +2416,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:luuhoangnam/support.git",
-                "reference": "d7c9b7d6024a6e0e2d2e85bb48b4f0138cebdcc6"
+                "reference": "73be3024f2f3dad2dd4569175e55846849b0d6ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/luuhoangnam/support/zipball/d7c9b7d6024a6e0e2d2e85bb48b4f0138cebdcc6",
-                "reference": "d7c9b7d6024a6e0e2d2e85bb48b4f0138cebdcc6",
+                "url": "https://api.github.com/repos/luuhoangnam/support/zipball/73be3024f2f3dad2dd4569175e55846849b0d6ab",
+                "reference": "73be3024f2f3dad2dd4569175e55846849b0d6ab",
                 "shasum": ""
             },
             "require": {
@@ -2488,7 +2488,7 @@
                 "source": "https://github.com/luuhoangnam/support/tree/develop",
                 "issues": "https://github.com/luuhoangnam/support/issues"
             },
-            "time": "2018-03-23T02:58:46+00:00"
+            "time": "2018-03-24T00:25:33+00:00"
         },
         {
             "name": "moneyphp/money",

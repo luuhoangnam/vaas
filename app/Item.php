@@ -193,29 +193,9 @@ class Item extends Model
         return (new AmazonAssociates)->link($this['sku']);
     }
 
-    public function getCashbackLinkAttribute()
-    {
-        try {
-            return (new AmazonProduct($this['sku']))->getCashbackLink();
-        } catch (CanNotFetchProductInformation $exception) {
-            return null;
-        } catch (RequestException $exception) {
-            return null;
-        }
-    }
-
     public function getQuantityAvailableAttribute()
     {
         return $this['quantity'] - $this['quantity_sold'];
-    }
-
-    public function getSourcePriceAttribute()
-    {
-        try {
-            return optional(new AmazonProduct($this['sku']))->price;
-        } catch (CanNotFetchProductInformation $exception) {
-            return null;
-        }
     }
 
     public function getTimeTookForFirstSaleAttribute()

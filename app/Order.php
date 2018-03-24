@@ -98,6 +98,10 @@ class Order extends Model
 
     public function getEbayLinkAttribute()
     {
+        if ($this['transactions']->count() === 0) {
+            return null;
+        }
+
         $transaction = $this['transactions'][0];
 
         $transactionID = $transaction['transaction_id'];
