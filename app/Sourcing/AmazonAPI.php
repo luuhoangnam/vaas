@@ -47,7 +47,7 @@ class AmazonAPI
         }
 
         $images     = @$item['ImageSets']['ImageSet'] ? static::getImagesForApi($item['ImageSets']['ImageSet'])->all() : [];
-        $features   = $item['ItemAttributes']['Feature'];
+        $features   = @$item['ItemAttributes']['Feature'] ?: [];
         $attributes = static::castsAttribute(array_only($item['ItemAttributes'], static::$keepAttributes));
 
         # Currently Unavailable

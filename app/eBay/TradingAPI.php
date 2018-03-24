@@ -49,7 +49,7 @@ class TradingAPI extends API
 
         return $request;
     }
-    
+
     public static function normalizeAttribute(ItemType $item)
     {
         $attributes = [];
