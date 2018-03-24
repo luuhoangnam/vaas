@@ -4,6 +4,7 @@ namespace App\Spy;
 
 use App\Account;
 use App\Events\FoundNewCompetitorItem;
+use App\Product;
 use DTS\eBaySDK\Finding\Types\SearchItem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +25,11 @@ class CompetitorItem extends Model
     public function owner()
     {
         return $this->belongsTo(Competitor::class, 'competitor_id', 'id');
+    }
+
+    public function source()
+    {
+        return $this->hasOne(Product::class, 'asin', 'sku');
     }
 
     public static function persist($competitor, SearchItem $item): CompetitorItem

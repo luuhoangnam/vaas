@@ -6,6 +6,7 @@ use App\Events\FoundNewCompetitorItem;
 use App\Jobs\ResearchCompetitorItemPerformance;
 use App\Spy\CompetitorItem;
 use Carbon\Carbon as PureCarbon;
+use Carbon\Carbon;
 
 class AutoResearchCompetitorItem
 {
@@ -18,39 +19,42 @@ class AutoResearchCompetitorItem
 
     protected function willResearch(CompetitorItem $item): bool
     {
-        foreach (config('ebay.spying.auto_research') as $config) {
-            $field = $item[$config['field']];
+        $qualifiedPrice     = $item['price'] > 15;
+        $listedWithin90Days = Carbon::now()->diffInDays($item['start_time']) < 90;
 
-            if ($field === 'start_time' || $field === 'end_time') {
-                return $this->compareCarbon($field, $config['operator'], $config['value']);
-            }
+        return $qualifiedPrice && $listedWithin90Days ? true : false;
 
-            if ($config['operator'] === '>' && $field <= $config['value']) {
-                return false;
-            }
-
-            if ($config['operator'] === '>=' && $field < $config['value']) {
-                return false;
-            }
-
-            if ($config['operator'] === '=' && $field != $config['value']) {
-                return false;
-            }
-
-            if ($config['operator'] === '!=' && $field == $config['value']) {
-                return false;
-            }
-
-            if ($config['operator'] === '<=' && $field > $config['value']) {
-                return false;
-            }
-
-            if ($config['operator'] === '<' && $field >= $config['value']) {
-                return false;
-            }
-        }
-
-        return true;
+//        foreach (config('ebay.spying.auto_research') as $config) {
+//            $field = $item[$config['field']];
+//
+//            if ($field === 'start_time' || $field === 'end_time') {
+//                return $this->compareCarbon($field, $config['operator'], $config['value']);
+//            }
+//
+//            if ($config['operator'] === '>' && $field <= $config['value']) {
+//                return false;
+//            }
+//
+//            if ($config['operator'] === '>=' && $field < $config['value']) {
+//                return false;
+//            }
+//
+//            if ($config['operator'] === '=' && $field != $config['value']) {
+//                return false;
+//            }
+//
+//            if ($config['operator'] === '!=' && $field == $config['value']) {
+//                return false;
+//            }
+//
+//            if ($config['operator'] === '<=' && $field > $config['value']) {
+//                return false;
+//            }
+//
+//            if ($config['operator'] === '<' && $field >= $config['value']) {
+//                return false;
+//            }
+//        }
     }
 
     protected function compareCarbon($field, $operator, $value)

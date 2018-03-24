@@ -27,15 +27,20 @@ return [
 
     'spying' => [
         'auto_research' => [
-            [
-                'field'    => 'price',
-                'operator' => '>=',
-                'value'    => 15,
+            'performance' => [
+                [
+                    'field'    => 'price',
+                    'operator' => '>=',
+                    'value'    => 15,
+                ],
+                [
+                    'field'    => 'start_time',
+                    'operator' => '>=',
+                    'value'    => '3 months ago',
+                ],
             ],
-            [
-                'field'    => 'start_time',
-                'operator' => '>=',
-                'value'    => '3 months ago',
+            'sourcing'    => [
+
             ],
         ],
     ],

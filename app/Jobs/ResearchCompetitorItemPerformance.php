@@ -8,6 +8,7 @@ use App\Spy\CompetitorItem;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Types\GetItemTransactionsRequestType;
 use DTS\eBaySDK\Trading\Types\GetItemTransactionsResponseType;
+use DTS\eBaySDK\Trading\Types\ItemType;
 use DTS\eBaySDK\Trading\Types\PaginationType;
 use DTS\eBaySDK\Trading\Types\TransactionType;
 use Illuminate\Bus\Queueable;
@@ -41,6 +42,13 @@ class ResearchCompetitorItemPerformance implements ShouldQueue
 
         $request->NumberOfDays = 30;
 
+        $request->OutputSelector = [
+            'TransactionArray.Transactions.CreatedDate',
+            'Item.SKU',
+            'Item.Quantity',
+            'Item.SellingStatus.QuantitySold',
+        ];
+
         $response = $this->trading()->getItemTransactions($request);
 
         if ($response->Ack === AckCodeType::C_FAILURE) {
@@ -48,25 +56,38 @@ class ResearchCompetitorItemPerformance implements ShouldQueue
         }
 
         try {
+            $itemType     = $this->itemType($response);
             $transactions = $this->transactions($response);
         } catch (\Exception $exception) {
             throw $exception;
         }
 
         // Transaction Last 30 Days
-        $now     = Carbon::now();
+        $now = Carbon::now();
+
         $sold7d  = $this->countTransactionForPeriod($transactions, (clone $now)->subDays(7), $now);
         $sold14d = $this->countTransactionForPeriod($transactions, (clone $now)->subDays(14), $now);
         $sold21d = $this->countTransactionForPeriod($transactions, (clone $now)->subDays(21), $now);
         $sold30d = $this->countTransactionForPeriod($transactions, (clone $now)->subDays(30), $now);
 
         $this->item->update([
+            'sku'             => $itemType->SKU,
+            'quantity'        => $itemType->Quantity,
+            'quantity_sold'   => $itemType->SellingStatus->QuantitySold,
             'sold_7d'         => $sold7d,
             'sold_14d'        => $sold14d,
             'sold_21d'        => $sold21d,
             'sold_30d'        => $sold30d,
             'perf_updated_at' => Carbon::now(),
         ]);
+
+        #2. Research Sourcing if Possible
+        $qualifiedItemSold    = $sold30d >= 10;
+        $willResearchSourcing = $itemType->SKU && $qualifiedItemSold;
+
+        if ($willResearchSourcing) {
+            SyncAmazonProduct::dispatch($itemType->SKU);
+        }
     }
 
     public function trading()
@@ -90,5 +111,10 @@ class ResearchCompetitorItemPerformance implements ShouldQueue
         }
 
         return new Collection($response->TransactionArray->Transaction);
+    }
+
+    protected function itemType(GetItemTransactionsResponseType $response): ItemType
+    {
+        return $response->Item;
     }
 }
