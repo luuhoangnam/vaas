@@ -23,6 +23,7 @@ class AmazonAPI
         'ProductTypeName',
         'Size',
         'Publisher',
+        'UPC',
     ];
 
     public static function inspect($asin, $includeOffers = false)
