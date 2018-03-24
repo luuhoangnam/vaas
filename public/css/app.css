@@ -10003,6 +10003,10 @@ body {
   margin-top: 2rem;
 }
 
+tr > td {
+  vertical-align: middle !important;
+}
+
 .trumbowyg {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }

@@ -8,7 +8,7 @@ use App\Events\ItemCreated;
 use App\Events\ListerJobCreated;
 use App\Events\PlatformNotificationReceived;
 use App\Events\PlatformNotifications\FixedPriceTransaction;
-use App\Listeners\AnalyzeCompetitorItem;
+use App\Listeners\AutoResearchCompetitorItem;
 use App\Listeners\AttachTracker;
 use App\Listeners\CreateCompanionListerQueueJob;
 use App\Listeners\FindActiveSellingItems;
@@ -57,11 +57,11 @@ class EventServiceProvider extends ServiceProvider
 
         // Spying
         CompetitorSpied::class  => [
-            FindActiveSellingItems::class,
+//            FindActiveSellingItems::class,
         ],
 
         FoundNewCompetitorItem::class => [
-            AnalyzeCompetitorItem::class,
+            AutoResearchCompetitorItem::class,
         ],
     ];
 

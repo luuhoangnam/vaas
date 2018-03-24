@@ -18,6 +18,9 @@ try {
     // window.ClipboardJS = require('clipboard');
 
     require('bootstrap');
+
+    // Setup Bootstrap JS
+    $(() => $('[data-toggle="tooltip"]').tooltip())
 } catch (e) {
 }
 

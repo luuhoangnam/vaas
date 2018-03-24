@@ -19,7 +19,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Carbon\Carbon as PureCarbon;
 
-class UpdateItemSellingPerformance implements ShouldQueue
+class ResearchCompetitorItemPerformance implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -41,12 +41,7 @@ class UpdateItemSellingPerformance implements ShouldQueue
 
         $request->NumberOfDays = 30;
 
-//        $request->OutputSelector = [
-//
-//        ];
-
-        /** @noinspection PhpMethodParametersCountMismatchInspection */
-        $response = $this->trading()->getItemTransactions($request, 60); // Cache For 60 Minutes
+        $response = $this->trading()->getItemTransactions($request);
 
         if ($response->Ack === AckCodeType::C_FAILURE) {
             throw new TradingApiException($request, $response);
@@ -59,9 +54,19 @@ class UpdateItemSellingPerformance implements ShouldQueue
         }
 
         // Transaction Last 30 Days
-        $sold30d = $this->countTransactionForPeriod($transactions, Carbon::now()->subDays(30), Carbon::now());
+        $now     = Carbon::now();
+        $sold7d  = $this->countTransactionForPeriod($transactions, (clone $now)->subDays(7), $now);
+        $sold14d = $this->countTransactionForPeriod($transactions, (clone $now)->subDays(14), $now);
+        $sold21d = $this->countTransactionForPeriod($transactions, (clone $now)->subDays(21), $now);
+        $sold30d = $this->countTransactionForPeriod($transactions, (clone $now)->subDays(30), $now);
 
-        $this->item->update(['sold_30d' => $sold30d]);
+        $this->item->update([
+            'sold_7d'         => $sold7d,
+            'sold_14d'        => $sold14d,
+            'sold_21d'        => $sold21d,
+            'sold_30d'        => $sold30d,
+            'perf_updated_at' => Carbon::now(),
+        ]);
     }
 
     public function trading()

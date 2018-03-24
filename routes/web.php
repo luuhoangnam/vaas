@@ -52,3 +52,11 @@ Route::post('lister', 'ListerController@submit')->name('lister.submit');
 Route::get('oauth/google/redirect', 'OAuth\\GoogleController@redirect')->name('oauth.google.redirect');
 Route::get('oauth/google/callback', 'OAuth\\GoogleController@callback')->name('oauth.google.callback');
 # END OAUTH
+
+# COMPETITOR SPYING
+Route::get('competitors', 'Spying\\CompetitorController@index')->name('competitor');
+Route::post('competitors', 'Spying\\CompetitorController@store')->name('competitor.store');
+Route::delete('competitors/{username}', 'Spying\\CompetitorController@store')->name('competitor.delete');
+
+Route::get('competitors/items', 'Spying\\ItemController@index')->name('competitor.items');
+# END COMPETITOR SPYING

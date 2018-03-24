@@ -22,13 +22,17 @@ class CreateCompetitorItemsTable extends Migration
             $table->unsignedInteger('quantity_sold')->nullable();
             $table->double('price')->nullable();
             $table->unsignedBigInteger('primary_category_id')->nullable();
-            $table->string('sku')->nullable()->nullable();
-            $table->string('upc')->nullable()->nullable();
-            $table->timestamp('start_time')->nullable()->nullable();
-            $table->timestamp('end_time')->nullable()->nullable();
+            $table->string('sku')->nullable();
+            $table->string('upc')->nullable();
+            $table->timestamp('start_time')->nullable();
+            $table->timestamp('end_time')->nullable();
             $table->string('status')->nullable();
-            // Selling Performance
-            $table->unsignedInteger('sold_30d')->nullable(); // <- Item Sold Last 30 Days
+            // Performance
+            $table->unsignedInteger('sold_7d')->nullable();
+            $table->unsignedInteger('sold_14d')->nullable();
+            $table->unsignedInteger('sold_21d')->nullable();
+            $table->unsignedInteger('sold_30d')->nullable();
+            $table->timestamp('perf_updated_at')->nullable();
 
             $table->unsignedInteger('competitor_id');
             $table->timestamps();

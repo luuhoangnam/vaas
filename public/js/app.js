@@ -49489,6 +49489,11 @@ try {
   // window.ClipboardJS = require('clipboard');
 
   __webpack_require__(197);
+
+  // Setup Bootstrap JS
+  $(function () {
+    return $('[data-toggle="tooltip"]').tooltip();
+  });
 } catch (e) {}
 
 /**
