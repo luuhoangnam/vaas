@@ -49,57 +49,7 @@ class TradingAPI extends API
 
         return $request;
     }
-
-    public static function getItem($id, Account $account = null)
-    {
-        $account = $account instanceof Account ? $account : Account::random();
-
-        $trading = $request = new GetItemRequestType;
-
-        $request->IncludeWatchCount    = true;
-        $request->IncludeItemSpecifics = true;
-
-        $request->ItemID = (string)$id;
-
-        /** @noinspection PhpMethodParametersCountMismatchInspection */
-        $response = $account->trading()->getItem($request, 15);
-
-        if ($response->Ack === AckCodeType::C_FAILURE) {
-            throw new TradingApiException($request, $response);
-        }
-
-        $item = $response->Item;
-
-        return [
-            'item_id'              => $item->ItemID,
-            'title'                => $item->Title,
-            'primary_category'     => [
-                'id'      => (int)$item->PrimaryCategory->CategoryID,
-                'name'    => $item->PrimaryCategory->CategoryName,
-                'parents' => array_reverse(explode(':', $item->PrimaryCategory->CategoryName)),
-            ],
-            'picture'              => $item->PictureDetails->GalleryURL,
-            'country'              => $item->Country,
-            'price'                => $item->SellingStatus->CurrentPrice->value,
-            'currency'             => $item->SellingStatus->CurrentPrice->currencyID,
-            'status'               => $item->SellingStatus->ListingStatus,
-            'quantity'             => $item->Quantity,
-            'quantity_sold'        => $item->SellingStatus->QuantitySold,
-            'sku'                  => $item->SKU,
-            'postal_code'          => $item->PostalCode,
-            'handling_time'        => $item->DispatchTimeMax,
-            'start_time'           => app_carbon($item->ListingDetails->StartTime)->toDateTimeString(),
-            'end_time'             => app_carbon($item->ListingDetails->EndTime)->toDateTimeString(),
-            'listing_type'         => $item->ListingType,
-            'condition'            => $item->ConditionDisplayName,
-            'has_variants'         => (bool)$item->Variations,
-            'is_top_rated_listing' => $item->TopRatedListing,
-            'watch_count'          => $item->WatchCount,
-            'attributes'           => static::normalizeAttribute($item),
-            'listed_on'            => static::listedOn($item->SKU),
-        ];
-    }
-
+    
     public static function normalizeAttribute(ItemType $item)
     {
         $attributes = [];
