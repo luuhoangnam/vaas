@@ -81,8 +81,6 @@ abstract class API
             /** @var BaseType $response */
             $response = $this->forward($method, $request);
 
-            UpdateAPIUsage::dispatch();
-
             return $response->toArray();
         });
     }
