@@ -60,3 +60,13 @@ Route::delete('competitors/{username}', 'Spying\\CompetitorController@store')->n
 
 Route::get('competitors/items', 'Spying\\ItemController@index')->name('competitor.items');
 # END COMPETITOR SPYING
+
+Route::get('ipinfo', function () {
+    $client = \App\Sourcing\AmazonCrawler::client()->getClient();
+
+    $response = $client->get('https://ipinfo.io', ['headers' => ['Accept' => 'application/json']]);
+    
+    $body = $response->getBody()->getContents();
+
+    return json_decode($body, true);
+});
