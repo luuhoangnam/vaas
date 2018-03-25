@@ -39,7 +39,7 @@ class ResearchItemController extends Controller
         $request->ItemID = (string)$id;
 
         /** @noinspection PhpMethodParametersCountMismatchInspection */
-        $response = $this->trading()->getItem($request, 60); // Cached for 1 Hour
+        $response = $this->trading()->getItem($request, 60 * 24); // Cached for 1 Day
 
         if ($response->Ack === AckCodeType::C_FAILURE) {
             throw new TradingApiException($request, $response);
