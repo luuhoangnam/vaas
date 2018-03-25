@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'proxy_enable' => true,
+    'proxy_enable' => env('CRAWLER_USE_PROXY', true),
 
     'proxies' => [
         'http://hoangnam0705:wgHaUXF0@209.54.186.8:60099',

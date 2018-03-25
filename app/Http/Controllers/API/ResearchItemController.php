@@ -168,7 +168,7 @@ class ResearchItemController extends Controller
 
         return cache()->remember($cacheKey, $cacheTime, function () use ($item) {
             try {
-                if ($asin = $this->itemSKU($item)) {
+                if ($asin = $this->itemASIN($item)) {
                     $product = AmazonAPI::inspect($asin, false);
                 } elseif ($upc = $this->itemUPC($item)) {
                     $product = AmazonAPI::inspect($upc, false, AmazonIdMode::UPC);
@@ -201,8 +201,16 @@ class ResearchItemController extends Controller
         });
     }
 
-    protected function itemSKU(ItemType $item)
+    protected function itemASIN(ItemType $item)
     {
+        if ( ! $item->SKU) {
+            return null;
+        }
+
+        if (strlen($item->SKU) !== 10) {
+            return null;
+        }
+
         return $item->SKU;
     }
 
