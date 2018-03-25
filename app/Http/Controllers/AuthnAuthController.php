@@ -13,11 +13,7 @@ class AuthnAuthController extends AuthRequiredController
 {
     public function signIn(Request $request)
     {
-        $this->validate($request, [
-            'ru_name' => '',
-        ]);
-
-        $ruName = env('EBAY_RUNAME');
+        $ruName = request('ru_name') ?: env('EBAY_RUNAME');
 
         $sessionId = $this->getSessionID($ruName);
 
