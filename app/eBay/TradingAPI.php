@@ -8,6 +8,7 @@ use App\Item;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Enums\DetailLevelCodeType;
 use DTS\eBaySDK\Trading\Services\TradingService;
+use DTS\eBaySDK\Trading\Types\ApiAccessRuleType;
 use DTS\eBaySDK\Trading\Types\CustomSecurityHeaderType;
 use DTS\eBaySDK\Trading\Types\GetApiAccessRulesRequestType;
 use DTS\eBaySDK\Trading\Types\GetItemRequestType;
@@ -72,12 +73,13 @@ class TradingAPI extends API
                       ->get();
     }
 
-    public function usage()
+    public function usage($method = 'ApplicationAggregate')
     {
         $request = new GetApiAccessRulesRequestType;
 
         $request->DetailLevel = [DetailLevelCodeType::C_RETURN_ALL];
 
+        /** @noinspection PhpUndefinedMethodInspection */
         $response = $this->getApiAccessRules($request, false);
 
         if ($response->Ack === AckCodeType::C_FAILURE) {
@@ -85,7 +87,7 @@ class TradingAPI extends API
         }
 
         foreach ($response->ApiAccessRule as $rule) {
-            if ($rule->CallName === 'ApplicationAggregate') {
+            if ($rule->CallName === $method) {
                 return [$rule->DailyUsage, $rule->DailySoftLimit, $rule->DailyHardLimit];
             }
         }
