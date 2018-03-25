@@ -86,7 +86,7 @@ class AuthnAuthController extends AuthRequiredController
         $request->SessionID = $sessionID;
 
         $response = $this->trading()->fetchToken($request)->toArray();
-dd($response);
+
         return $response['eBayAuthToken'];
     }
 
