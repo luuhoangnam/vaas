@@ -26,11 +26,38 @@ class AmazonAPI
         'UPC',
     ];
 
-    public static function inspect($asin, $includeOffers = false)
+    public static function ean($ean)
     {
-        $api = static::amazonProductAdvertisingApi();
+        return static::item($ean, AmazonIdMode::EAN);
+    }
 
-        $response = $api->item($asin);
+    public static function ibsn($ibsn)
+    {
+        return static::item($ibsn, AmazonIdMode::IBSN);
+    }
+
+    public static function upc($upc)
+    {
+        return static::item($upc, AmazonIdMode::UPC);
+    }
+
+    public static function asin($asin)
+    {
+        return static::item($asin, AmazonIdMode::ASIN);
+    }
+
+    public static function item($id, $mode = AmazonIdMode::ASIN)
+    {
+        if ( ! AmazonIdMode::isValid($mode)) {
+            throw new \InvalidArgumentException('Can not accept this amazon ID type');
+        }
+
+        return static::amazonProductAdvertisingApi()->setIdType($mode)->item($id);
+    }
+
+    public static function inspect($id, $includeOffers = false, $mode = AmazonIdMode::ASIN)
+    {
+        $response = static::item($id, $mode);
 
         if (key_exists('Errors', $response['Items']['Request'])) {
             $errors = $response['Items']['Request']['Errors'];
@@ -39,11 +66,13 @@ class AmazonAPI
             throw new ProductAdvertisingAPIException($error['Message'], $error['Code']);
         }
 
+
         $item        = $response['Items']['Item'];
+        $asin        = $item['ASIN'];
         $title       = $item['ItemAttributes']['Title'];
         $description = static::description($item);
 
-        if ($description == $asin) {
+        if ($description == $id) {
             $description = '';
         }
 

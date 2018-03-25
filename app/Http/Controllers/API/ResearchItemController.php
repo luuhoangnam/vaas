@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Item;
 use App\Sourcing\AmazonAPI;
 use App\Sourcing\AmazonCrawler;
+use App\Sourcing\AmazonIdMode;
 use Carbon\Carbon as PureCarbon;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Enums\DetailLevelCodeType;
@@ -147,22 +148,67 @@ class ResearchItemController extends Controller
         $cacheTime = 60;
 
         return cache()->remember($cacheKey, $cacheTime, function () use ($item) {
-            if ( ! $item->SKU) {
-                return null;
-            }
-
             try {
-                $product = AmazonAPI::inspect($item->SKU, true);
+                if ($asin = $this->itemSKU($item)) {
+                    $product = AmazonAPI::inspect($asin, true);
+                } elseif ($upc = $this->itemUPC($item)) {
+                    $product = AmazonAPI::inspect($upc, true, AmazonIdMode::UPC);
+                } elseif ($ean = $this->itemEAN($item)) {
+                    $product = AmazonAPI::inspect($ean, true, AmazonIdMode::EAN);
+                } elseif ($ibsn = $this->itemIBSN($item)) {
+                    $product = AmazonAPI::inspect($ibsn, true, AmazonIdMode::IBSN);
+                } else {
+                    return null;
+                }
 
                 return $product;
             } catch (ProductAdvertisingAPIException $exception) {
-                if ($exception->getCode() !== 'AWS.ECommerceService.ItemNotAccessible') {
+                if ($item->SKU && $exception->getCode() !== 'AWS.ECommerceService.ItemNotAccessible') {
+                    return AmazonCrawler::get($item->SKU);
+                }
+
+                if ($exception->getCode() !== 'AWS.InvalidParameterValue') {
                     return null;
                 }
             }
 
-            return AmazonCrawler::get($item->SKU);
+            return null;
         });
+    }
+
+    protected function itemSKU(ItemType $item)
+    {
+        return $item->SKU;
+    }
+
+    protected function itemUPC(ItemType $item)
+    {
+        return $this->itemAttribute($item, 'UPC');
+    }
+
+    protected function itemEAN(ItemType $item)
+    {
+        return $this->itemAttribute($item, 'EAN');
+    }
+
+    protected function itemIBSN(ItemType $item)
+    {
+        return $this->itemAttribute($item, 'IBSN');
+    }
+
+    protected function itemAttribute(ItemType $item, $name)
+    {
+        if ( ! @$item->ItemSpecifics) {
+            return null;
+        }
+
+        foreach ($item->ItemSpecifics->NameValueList as $attr) {
+            if ($attr->Name === $name) {
+                return array_first($attr->Value);
+            }
+        }
+
+        return null;
     }
 
     protected function listedOn($sku)
