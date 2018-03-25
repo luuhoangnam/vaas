@@ -2,7 +2,6 @@
 
 namespace App\eBay;
 
-use App\Jobs\UpdateAPIUsage;
 use DTS\eBaySDK\Types\BaseType;
 use Illuminate\Contracts\Cache\Factory as Cache;
 
