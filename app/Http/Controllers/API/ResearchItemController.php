@@ -311,11 +311,11 @@ class ResearchItemController extends Controller
         $orders   = $data->pluck('count');
         $revenues = $data->pluck('revenue');
 
-        $orderAxisStep = round($orders->max());
-        $maxOrdersAxis = (round($orders->max() / $orderAxisStep) + 1) * $orderAxisStep;
+        $orderAxisStep = round($orders->max()) ?: 1;
+        $maxOrdersAxis = (round($orders->max() / $orderAxisStep, 0, PHP_ROUND_HALF_UP) + 1) * $orderAxisStep;
 
-        $revenueAxisStep = round($revenues->max());
-        $maxRevenueAxis  = (round($revenues->max() / $revenueAxisStep) + 1) * $revenueAxisStep;
+        $revenueAxisStep = round($revenues->max()) ?: 1;
+        $maxRevenueAxis  = (round($revenues->max() / $revenueAxisStep, 0, PHP_ROUND_HALF_UP) + 1) * $revenueAxisStep;
 
         return [
             'type' => 'bar',
