@@ -17,6 +17,7 @@ use App\Console\Commands\SyncAlleBayAccounts;
 use App\Console\Commands\SynceBayAccount;
 use App\Console\Commands\TrackRankingForAccount;
 use App\Console\Commands\TrackRankingForItem;
+use App\Console\Commands\UpdateeBayAPIQuota;
 use App\Console\Commands\ViewCrawlerPerformance;
 use App\Console\Commands\ViewRankingOfItem;
 use Illuminate\Console\Scheduling\Schedule;
@@ -42,6 +43,7 @@ class Kernel extends ConsoleKernel
         ForceRefreshRanking::class,
         BulkImportTrackersByAccount::class,
         ApiUsage::class,
+        UpdateeBayAPIQuota::class,
         MakeRepricer::class,
         RunRepricerPeriodically::class,
         ScanAmazonBestSellers::class,
@@ -58,6 +60,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('api:quota')->everyMinute();
         $schedule->command('horizon:snapshot')->everyFiveMinutes();
         $schedule->command("ebay:sync:all --only_orders --since '3 hours ago'")->hourly(); // Fix
         $schedule->command('ranking:refresh')->daily();

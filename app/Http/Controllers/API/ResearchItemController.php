@@ -20,6 +20,7 @@ use DTS\eBaySDK\Trading\Types\ItemType;
 use DTS\eBaySDK\Trading\Types\PaginationType;
 use DTS\eBaySDK\Trading\Types\TransactionType;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
@@ -43,7 +44,14 @@ class ResearchItemController extends Controller
 
         $transactions = $this->performance($id);
 
-        return array_merge($this->extract($response->Item), compact('transactions'));
+        $data = array_merge($this->extract($response->Item), compact('transactions'));
+
+        $headers = [
+            'X-API-LIMIT-USAGE' => cache('X-API-LIMIT-USAGE'),
+            'X-API-LIMIT-QUOTA' => cache('X-API-LIMIT-QUOTA'),
+        ];
+
+        return new Response($data, 200, $headers);
     }
 
     public function extract(ItemType $item): array
