@@ -6,8 +6,10 @@ use App\Account;
 use App\Exceptions\TradingApiException;
 use App\Item;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
+use DTS\eBaySDK\Trading\Enums\DetailLevelCodeType;
 use DTS\eBaySDK\Trading\Services\TradingService;
 use DTS\eBaySDK\Trading\Types\CustomSecurityHeaderType;
+use DTS\eBaySDK\Trading\Types\GetApiAccessRulesRequestType;
 use DTS\eBaySDK\Trading\Types\GetItemRequestType;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use Illuminate\Contracts\Cache\Factory as Cache;
@@ -68,5 +70,26 @@ class TradingAPI extends API
                           $builder->where('sku', $sku);
                       })
                       ->get();
+    }
+
+    public function usage()
+    {
+        $request = new GetApiAccessRulesRequestType;
+
+        $request->DetailLevel = [DetailLevelCodeType::C_RETURN_ALL];
+
+        $response = $this->getApiAccessRules($request, false);
+
+        if ($response->Ack === AckCodeType::C_FAILURE) {
+            throw new TradingApiException($request, $response);
+        }
+
+        foreach ($response->ApiAccessRule as $rule) {
+            if ($rule->CallName === 'ApplicationAggregate') {
+                return [$rule->DailyUsage, $rule->DailySoftLimit, $rule->DailyHardLimit];
+            }
+        }
+
+        return null;
     }
 }

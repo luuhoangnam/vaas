@@ -21,34 +21,12 @@ class UpdateeBayAPIQuota extends Command
     {
         $cacheTime = 60;
 
-        list($usage, $softLimit, $hardLimit) = $this->usage();
+        list($usage, $softLimit, $quota) = Account::random()->trading()->usage();
 
         cache()->put('X-API-LIMIT-USAGE', $usage, $cacheTime);
-        cache()->put('X-API-LIMIT-QUOTA', $hardLimit, $cacheTime);
+        cache()->put('X-API-LIMIT-QUOTA', $quota, $cacheTime);
 
-        $this->updateOnFirebase($usage, $hardLimit);
-    }
-
-    protected function usage()
-    {
-        $request = new GetApiAccessRulesRequestType;
-
-        $request->DetailLevel = [DetailLevelCodeType::C_RETURN_ALL];
-
-        /** @noinspection PhpMethodParametersCountMismatchInspection */
-        $response = Account::random()->trading()->getApiAccessRules($request, false);
-
-        if ($response->Ack === AckCodeType::C_FAILURE) {
-            throw new TradingApiException($request, $response);
-        }
-
-        foreach ($response->ApiAccessRule as $rule) {
-            if ($rule->CallName === 'ApplicationAggregate') {
-                return [$rule->DailyUsage, $rule->DailySoftLimit, $rule->DailyHardLimit];
-            }
-        }
-
-        return null;
+        $this->updateOnFirebase($usage, $quota);
     }
 
     protected function updateOnFirebase($usage, $quota)
