@@ -4,14 +4,11 @@ namespace App\eBay;
 
 use App\Account;
 use App\Exceptions\TradingApiException;
-use App\Item;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Enums\DetailLevelCodeType;
 use DTS\eBaySDK\Trading\Services\TradingService;
-use DTS\eBaySDK\Trading\Types\ApiAccessRuleType;
 use DTS\eBaySDK\Trading\Types\CustomSecurityHeaderType;
 use DTS\eBaySDK\Trading\Types\GetApiAccessRulesRequestType;
-use DTS\eBaySDK\Trading\Types\GetItemRequestType;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use Illuminate\Contracts\Cache\Factory as Cache;
 use Illuminate\Database\Eloquent\Builder;
