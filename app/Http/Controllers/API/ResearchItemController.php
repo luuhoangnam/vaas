@@ -4,9 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Account;
 use App\Exceptions\Amazon\ProductAdvertisingAPIException;
+use App\Exceptions\Amazon\SomethingWentWrongException;
 use App\Exceptions\TradingApiException;
 use App\Http\Controllers\Controller;
 use App\Item;
+use App\Jobs\Amazon\ExtractOffers;
 use App\Jobs\UpdateAPIUsage;
 use App\Sourcing\AmazonAPI;
 use App\Sourcing\AmazonCrawler;
@@ -167,18 +169,24 @@ class ResearchItemController extends Controller
         return cache()->remember($cacheKey, $cacheTime, function () use ($item) {
             try {
                 if ($asin = $this->itemSKU($item)) {
-                    $product = AmazonAPI::inspect($asin, true);
+                    $product = AmazonAPI::inspect($asin, false);
                 } elseif ($upc = $this->itemUPC($item)) {
-                    $product = AmazonAPI::inspect($upc, true, AmazonIdMode::UPC);
+                    $product = AmazonAPI::inspect($upc, false, AmazonIdMode::UPC);
                 } elseif ($ean = $this->itemEAN($item)) {
-                    $product = AmazonAPI::inspect($ean, true, AmazonIdMode::EAN);
+                    $product = AmazonAPI::inspect($ean, false, AmazonIdMode::EAN);
                 } elseif ($ibsn = $this->itemIBSN($item)) {
-                    $product = AmazonAPI::inspect($ibsn, true, AmazonIdMode::IBSN);
+                    $product = AmazonAPI::inspect($ibsn, false, AmazonIdMode::IBSN);
                 } else {
                     return null;
                 }
 
-                return $product;
+                try {
+                    $offers = ExtractOffers::dispatchNow($product['asin']);
+                } catch (SomethingWentWrongException $exception) {
+                    $offers = null;
+                }
+
+                return array_merge($product, compact('offers'));
             } catch (ProductAdvertisingAPIException $exception) {
                 if ($item->SKU && $exception->getCode() !== 'AWS.ECommerceService.ItemNotAccessible') {
                     return AmazonCrawler::get($item->SKU);
