@@ -13,6 +13,6 @@ class UpdateeBayAPIQuota extends Command
 
     public function handle()
     {
-        UpdateAPIUsage::dispatchNow();
+        UpdateAPIUsage::dispatch();
     }
 }

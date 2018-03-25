@@ -60,8 +60,6 @@ class ResearchItemController extends Controller
             ],
         ];
 
-        UpdateAPIUsage::dispatch();
-
         return new Response($data, 200, $headers);
     }
 
