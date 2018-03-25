@@ -100,7 +100,9 @@ class AmazonCrawler
             ],
         ];
 
-        static::configureProxy($config);
+        if (config('crawler.proxy_enable', false)) {
+            static::configureProxy($config);
+        }
 
         $guzzle = new Guzzle($config);
 

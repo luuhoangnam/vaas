@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'proxy_enable' => true,
+
     'proxies' => [
         'http://hoangnam0705:wgHaUXF0@209.54.186.8:60099',
         'http://hoangnam0705:wgHaUXF0@209.54.186.9:60099',
