@@ -2,6 +2,7 @@
 
 namespace App\eBay;
 
+use App\Jobs\UpdateAPIUsage;
 use DTS\eBaySDK\Types\BaseType;
 use Illuminate\Contracts\Cache\Factory as Cache;
 
@@ -79,6 +80,8 @@ abstract class API
         return cache()->remember($cacheKey, $cacheTime, function () use ($method, $request) {
             /** @var BaseType $response */
             $response = $this->forward($method, $request);
+
+            UpdateAPIUsage::dispatch();
 
             return $response->toArray();
         });
