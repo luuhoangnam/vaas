@@ -147,7 +147,7 @@ class ResearchItemController extends Controller
         $cacheTime = 60;
 
         return cache()->remember($cacheKey, $cacheTime, function () use ($item) {
-            if ( ! $item->SKU) {
+            if ( $item->SKU) {
                 return null;
             }
 

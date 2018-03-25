@@ -150,20 +150,27 @@ class Order extends Model
 
     public static function extractAttribute(OrderType $data)
     {
-        /** @var TransactionType $transaction */
-        $transaction = $data->TransactionArray->Transaction[0];
+        $transactions = collect($data->TransactionArray->Transaction)->map(function (TransactionType $transaction) {
+            return [
+                'price'           => $transaction->TransactionPrice->value,
+                'final_value_fee' => $transaction->FinalValueFee->value,
+            ];
+        });
+
+        $total         = $transactions->pluck('price')->sum();
+        $finalValueFee = $transactions->pluck('final_value_fee')->sum();
 
         return [
             'order_id'            => $data->OrderID,
             'record'              => $data->ShippingDetails->SellingManagerSalesRecordNumber,
             'status'              => $data->OrderStatus,
-            'total'               => (double)$transaction->TransactionPrice->value,
+            'total'               => (double)$total,
             'buyer_username'      => $data->BuyerUserID,
             'payment_hold_status' => $data->PaymentHoldStatus,
             'cancel_status'       => $data->CancelStatus,
             'created_time'        => app_carbon($data->CreatedTime),
             // Fees
-            'final_value_fee'     => $transaction->FinalValueFee->value,
+            'final_value_fee'     => $finalValueFee,
             'paypal_fee'          => $data->ExternalTransaction[0]->FeeOrCreditAmount->value,
         ];
     }
