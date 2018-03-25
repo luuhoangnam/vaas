@@ -7,6 +7,7 @@ use App\Exceptions\Amazon\ProductAdvertisingAPIException;
 use App\Exceptions\TradingApiException;
 use App\Http\Controllers\Controller;
 use App\Item;
+use App\Jobs\UpdateAPIUsage;
 use App\Sourcing\AmazonAPI;
 use App\Sourcing\AmazonCrawler;
 use App\Sourcing\AmazonIdMode;
@@ -56,6 +57,8 @@ class ResearchItemController extends Controller
                 'X-RateLimit-Remaining',
             ],
         ];
+
+        UpdateAPIUsage::dispatch();
 
         return new Response($data, 200, $headers);
     }
