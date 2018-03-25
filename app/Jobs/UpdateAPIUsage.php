@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Account;
+use App\eBay\TradingAPI;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -17,17 +18,17 @@ class UpdateAPIUsage implements ShouldQueue
 
     public function handle()
     {
-        $cacheTime = 60;
+        collect(config('ebay.apps'))->each(function ($credentials) {
+            list($usage, $softLimit, $quota) = TradingAPI::build($credentials)->usage();
 
-        list($usage, $softLimit, $quota) = Account::random()->trading()->usage();
+            cache()->put("apps.{$credentials['app_id']}.usage", $usage, 60);
+            cache()->put("apps.{$credentials['app_id']}.quota", $quota, 60);
 
-        cache()->put('X-API-LIMIT-USAGE', $usage, $cacheTime);
-        cache()->put('X-API-LIMIT-QUOTA', $quota, $cacheTime);
-
-        $this->updateOnFirebase($usage, $quota);
+            $this->updateOnFirebase($credentials['app_id'], $usage, $quota);
+        });
     }
 
-    protected function updateOnFirebase($usage, $quota)
+    protected function updateOnFirebase($appId, $usage, $quota)
     {
         $serviceAccount = ServiceAccount::fromJsonFile(resource_path('credentials/vaas-quick-863f4a7a64e2.json'));
 
@@ -35,6 +36,6 @@ class UpdateAPIUsage implements ShouldQueue
                                  ->withDatabaseUri('https://vaas-quick.firebaseio.com/')
                                  ->create();
 
-        $firebase->getDatabase()->getReference('api_limit')->update(compact('usage', 'quota'));
+        $firebase->getDatabase()->getReference("apps/{$appId}")->update(compact('usage', 'quota'));
     }
 }

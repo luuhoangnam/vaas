@@ -4,6 +4,8 @@ namespace App\eBay;
 
 use App\Account;
 use App\Exceptions\TradingApiException;
+use DTS\eBaySDK\Constants\SiteIds;
+use DTS\eBaySDK\Sdk;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Enums\DetailLevelCodeType;
 use DTS\eBaySDK\Trading\Services\TradingService;
@@ -15,15 +17,18 @@ use Illuminate\Database\Eloquent\Builder;
 
 class TradingAPI extends API
 {
+    protected $trading;
+
     protected $token;
 
     protected $shouldCache = [
         '/^get.+$/i',
     ];
 
-    public function __construct($token, Cache $cache = null)
+    public function __construct($token, Cache $cache = null, TradingService $trading = null)
     {
-        $this->token = $token;
+        $this->token   = $token;
+        $this->trading = $trading ?: app(TradingService::class);
 
         parent::__construct($cache);
     }
@@ -33,9 +38,41 @@ class TradingAPI extends API
         return new static($account['token']);
     }
 
+    public static function random(): TradingAPI
+    {
+        $credentials = array_only(array_random(config('ebay.apps')), ['app_id', 'cert_id', 'dev_id', 'token']);
+
+        return static::build($credentials);
+    }
+
+    public static function build(array $credentials)
+    {
+        $sdk = new Sdk([
+            'siteId'      => SiteIds::US,
+            'credentials' => [
+                'appId'  => $credentials['app_id'],
+                'certId' => $credentials['cert_id'],
+                'devId'  => $credentials['dev_id'],
+            ],
+            'Finding'     => [
+                'apiVersion' => '1.13.0', // Release: 2014-10-21
+            ],
+            'Shopping'    => [
+                'apiVersion' => '1027', // Release: 2017-Aug-04
+            ],
+            'Trading'     => [
+                'apiVersion' => '1047', // Release: 2018-Feb-02
+            ],
+        ]);
+
+        $trading = $sdk->createTrading();
+
+        return new static($credentials['token'], null, $trading);
+    }
+
     protected function api()
     {
-        return app(TradingService::class);
+        return $this->trading;
     }
 
     protected function responseClass(string $method): string

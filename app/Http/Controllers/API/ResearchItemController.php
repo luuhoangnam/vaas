@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Account;
+use App\eBay\TradingAPI;
 use App\Exceptions\Amazon\ProductAdvertisingAPIException;
 use App\Exceptions\Amazon\SomethingWentWrongException;
 use App\Exceptions\TradingApiException;
@@ -38,7 +39,7 @@ class ResearchItemController extends Controller
 
         $request->ItemID = (string)$id;
 
-        /** @noinspection PhpMethodParametersCountMismatchInspection */
+        /** @noinspection PhpUndefinedMethodInspection */
         $response = $this->trading()->getItem($request, 60 * 24); // Cached for 1 Day
 
         if ($response->Ack === AckCodeType::C_FAILURE) {
@@ -47,20 +48,7 @@ class ResearchItemController extends Controller
 
         $transactions = $this->performance($id);
 
-        $data = array_merge($this->extract($response->Item), compact('transactions'));
-
-        $headers = [
-            'X-API-LIMIT-USAGE'             => cache('X-API-LIMIT-USAGE'),
-            'X-API-LIMIT-QUOTA'             => cache('X-API-LIMIT-QUOTA'),
-            'Access-Control-Expose-Headers' => [
-                'X-API-LIMIT-USAGE',
-                'X-API-LIMIT-QUOTA',
-                'X-RateLimit-Limit',
-                'X-RateLimit-Remaining',
-            ],
-        ];
-
-        return new Response($data, 200, $headers);
+        return array_merge($this->extract($response->Item), compact('transactions'));
     }
 
     public function extract(ItemType $item): array
@@ -156,7 +144,7 @@ class ResearchItemController extends Controller
 
     protected function trading()
     {
-        return Account::random()->trading();
+        return TradingAPI::random();
     }
 
     protected function guessSource(ItemType $item)
