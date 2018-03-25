@@ -47,8 +47,14 @@ class ResearchItemController extends Controller
         $data = array_merge($this->extract($response->Item), compact('transactions'));
 
         $headers = [
-            'X-API-LIMIT-USAGE' => cache('X-API-LIMIT-USAGE'),
-            'X-API-LIMIT-QUOTA' => cache('X-API-LIMIT-QUOTA'),
+            'X-API-LIMIT-USAGE'             => cache('X-API-LIMIT-USAGE'),
+            'X-API-LIMIT-QUOTA'             => cache('X-API-LIMIT-QUOTA'),
+            'Access-Control-Expose-Headers' => [
+                'X-API-LIMIT-USAGE',
+                'X-API-LIMIT-QUOTA',
+                'X-RateLimit-Limit',
+                'X-RateLimit-Remaining',
+            ],
         ];
 
         return new Response($data, 200, $headers);
