@@ -35,6 +35,29 @@ class ResearchItemController extends Controller
 
         $request->ItemID = (string)$id;
 
+        $request->DetailLevel = [DetailLevelCodeType::C_RETURN_ALL];
+
+        $request->OutputSelector = [
+            'ItemID',
+            'Country',
+            'ConditionDisplayName',
+            'DispatchTimeMax',
+            'ItemSpecifics',
+            'ListingDetails',
+            'ListingType',
+            'Quantity',
+            'PostalCode',
+            'PrimaryCategory',
+            'PictureDetails',
+            'ProductListingDetails',
+            'Title',
+            'SellingStatus',
+            'SKU',
+            'Site',
+            'TopRatedListing',
+            'Variations',
+        ];
+
         /** @noinspection PhpUndefinedMethodInspection */
         $response = $this->trading()->getItem($request, 60); // Cached for 1 Day
 
@@ -43,8 +66,9 @@ class ResearchItemController extends Controller
         }
 
         $transactions = $this->performance($id);
+        $source       = $this->guessSource($response->Item);
 
-        return array_merge($this->extract($response->Item), compact('transactions'));
+        return array_merge($this->extract($response->Item), compact('transactions', 'source'));
     }
 
     public function extract(ItemType $item): array
@@ -75,7 +99,6 @@ class ResearchItemController extends Controller
             'has_variants'         => (bool)$item->Variations,
             'is_top_rated_listing' => $item->TopRatedListing,
             'attributes'           => $this->normalizeAttribute($item),
-            'source'               => $this->guessSource($item),
             'listed_on'            => $item->SKU ? $this->listedOn($item->SKU) : null,
         ];
     }
@@ -136,14 +159,34 @@ class ResearchItemController extends Controller
 
     protected function normalizeAttribute(ItemType $item)
     {
-        if ( ! $item->ItemSpecifics) {
+        if ( ! $item->ItemSpecifics && ! $item->ProductListingDetails) {
             return [];
         }
 
         $attributes = [];
 
-        foreach ($item->ItemSpecifics->NameValueList as $specific) {
-            $attributes[$specific->Name] = $specific->Value[0];
+        // ItemSpecifics
+        if (@$item->ItemSpecifics->NameValueList) {
+            foreach ($item->ItemSpecifics->NameValueList as $specific) {
+                $attributes[$specific->Name] = array_first($specific->Value);
+            }
+        }
+
+        // ProductListingDetails
+        @$item->ProductListingDetails->UPC && $attributes['UPC'] = $item->ProductListingDetails->UPC;
+        @$item->ProductListingDetails->EAN && $attributes['EAN'] = $item->ProductListingDetails->EAN;
+        @$item->ProductListingDetails->ISBN && $attributes['ISBN'] = $item->ProductListingDetails->ISBN;
+
+        if (@$item->ProductListingDetails->NameValueList) {
+            foreach ($item->ProductListingDetails->NameValueList as $detail) {
+                $attributes[$detail->Name] = array_first($detail->Value);
+            }
+        }
+
+        if (@$item->ProductListingDetails->BrandMPN) {
+            $attributes['Brand'] = @$item->ProductListingDetails->BrandMPN->Brand;
+            $attributes['MPN']   = @$item->ProductListingDetails->BrandMPN->MPN;
+            $attributes['MPN']   = @$item->ProductListingDetails->BrandMPN->MPN;
         }
 
         return $attributes;
@@ -167,7 +210,7 @@ class ResearchItemController extends Controller
                     $product = AmazonAPI::inspect($upc, false, AmazonIdMode::UPC);
                 } elseif ($ean = $this->itemEAN($item)) {
                     $product = AmazonAPI::inspect($ean, false, AmazonIdMode::EAN);
-                } elseif ($ibsn = $this->itemIBSN($item)) {
+                } elseif ($ibsn = $this->itemISBN($item)) {
                     $product = AmazonAPI::inspect($ibsn, false, AmazonIdMode::IBSN);
                 } else {
                     return null;
@@ -196,30 +239,51 @@ class ResearchItemController extends Controller
 
     protected function itemASIN(ItemType $item)
     {
-        if ( ! $item->SKU) {
-            return null;
+        if ($item->SKU && preg_match('/^[\d\w]{10}$/i', $item->SKU)) {
+            return $item->SKU;
         }
 
-        if (strlen($item->SKU) !== 10) {
-            return null;
-        }
-
-        return $item->SKU;
+        return null;
     }
 
     protected function itemUPC(ItemType $item)
     {
-        return $this->itemAttribute($item, 'UPC');
+        if ($upc = $this->itemAttribute($item, 'UPC')) {
+            return $upc;
+        }
+
+        // ProductListingDetails
+        if ($upc = @$item->ProductListingDetails->UPC) {
+            return $upc;
+        }
+
+        return null;
     }
 
     protected function itemEAN(ItemType $item)
     {
-        return $this->itemAttribute($item, 'EAN');
+        if ($ean = $this->itemAttribute($item, 'EAN')) {
+            return $ean;
+        }
+
+        if ($ean = @$item->ProductListingDetails->EAN) {
+            return $ean;
+        }
+
+        return null;
     }
 
-    protected function itemIBSN(ItemType $item)
+    protected function itemISBN(ItemType $item)
     {
-        return $this->itemAttribute($item, 'IBSN');
+        if ($isbn = $this->itemAttribute($item, 'ISBN')) {
+            return $isbn;
+        }
+
+        if ($isbn = @$item->ProductListingDetails->ISBN) {
+            return $isbn;
+        }
+
+        return null;
     }
 
     protected function itemAttribute(ItemType $item, $name)
