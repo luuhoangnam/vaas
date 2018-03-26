@@ -159,8 +159,8 @@ class ResearchItemController extends Controller
         return array_merge(
             compact('period', 'count', 'revenue', 'quantity'),
             [
-                'average_price'    => round($revenue / $count, 2, PHP_ROUND_HALF_EVEN),
-                'average_quantity' => round($quantity / $count, 2, PHP_ROUND_HALF_EVEN),
+                'average_price'    => $count ? round($revenue / $count, 2, PHP_ROUND_HALF_EVEN) : 0,
+                'average_quantity' => $count ? round($quantity / $count, 2, PHP_ROUND_HALF_EVEN) : 0,
             ]
         );
     }
