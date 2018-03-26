@@ -18,6 +18,11 @@ return [
 
     'apps' => [
         [
+            'app_id'  => 'wkrvpqew-wkrvpqew-PRD-653e361d2-a44bce4e',
+            'dev_id'  => 'e46e76a5-d3de-4041-98ca-ad68b4412e9f',
+            'cert_id' => 'PRD-53e361d2729b-d073-4375-8b6e-2923',
+            'token'   => 'AgAAAA**AQAAAA**aAAAAA**Tl+4Wg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ADkoClAZmAoQmdj6x9nY+seQ**kDYEAA**AAMAAA**ghw3QYW/DTAx/PBs9JSyhn+rLpMhAD0kxdOXZaWOS0nqK4njKkGfiqxZzb0gyQ0UmCjeii4e2svhlLSRysPKjr7ouBGyyfCL9Fty0ppgwV+xR5esP7T2ki7rtEH8W1XvmuAEHsWtKVGLR6rUv8D2RYW5QJV4RWXysdAjcG7hMDl6M2VwjQbZVnmLiwu0tp3T2CrYy7wPw2TxU9Vb4jYWmovlWH8QhI4WaPLtLYCBQO0nMtJA3efw91w3VFfO0V5GqmPafy/oQqWK3h0YVXdIxlfACWFZwagcX7DB0zsaUw3eno1euuVvVzNACeOa9hzkGxv+1JRqIKPaU0Fn4x8CwKLjTWK4i3WG/BCfp7v0VXsDnHNm4O0qXY1b5DsYTAZ8G4AkJwfdN93uqXdeJ+owIIZlJRR063qSGEO5TS9cUssrziFtC/TwRzyaEuuxbzjZOKR3lIaXZQXThIr821yjxHY5PjxwDO5VwbngRL28M22bROrADRKrdmFz/0FI3o8bjUwOn/Sb5J+gpli+TnJSOwQ1KQz3hDLtkDjKQTVItgpWs/xvh5jWpDSwxFQ4YUK20kBWm6HkNLepnP1rqxIpyTf77SYTce/FUumaHtiNGUPIMTdS6fZrKvUoQtyH1+euVJFarutWztR/4se0gmvXxwXrc1+3l124oT2Zpj5c19sHaw9gMfLGzF4Myuaef/umzkIETy6I7V0U90yDIe9RtdBkaYkR5n+hjUmb/P0qXS4Azv6FfwAZg7osf4e3Bxwz',
+        ], [
             'app_id'  => 'eekbfxyh-eekbfxyh-PRD-d53da1965-adcc7120',
             'dev_id'  => '1b740dd3-e039-4f21-a27b-4a3050531d31',
             'cert_id' => 'PRD-53da1965c219-bd75-453e-8511-0862',
