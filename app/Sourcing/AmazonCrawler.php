@@ -30,7 +30,7 @@ class AmazonCrawler
     public function scrape()
     {
         $cacheKey  = md5("amazon.com:{$this->asin}");
-        $cacheTime = config('crawler.cache_time');
+        $cacheTime = config('crawler.cache_time', 60);
 
         return cache()->remember($cacheKey, $cacheTime, function () {
             // 1. Make Request
