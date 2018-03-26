@@ -38,9 +38,33 @@ class TradingAPI extends API
         return new static($account['token']);
     }
 
+    public static function balancing()
+    {
+        $apps = config('ebay.apps');
+
+        $pool = [];
+        foreach ($apps as $key => $app) {
+            $usage = cache("apps.{$app['app_id']}.usage");
+            $quota = cache("apps.{$app['app_id']}.quota");
+
+            if ($quota) {
+
+                $rate = $usage / $quota;
+
+                $weight = round((1 - $rate) * 100);
+
+                $pool = array_merge($pool, array_fill(0, $weight, $app));
+            } else {
+                $pool[] = $app;
+            }
+        }
+
+        return array_random($pool);
+    }
+
     public static function random(): TradingAPI
     {
-        $credentials = array_only(array_random(config('ebay.apps')), ['app_id', 'cert_id', 'dev_id', 'token']);
+        $credentials = array_only(static::balancing(), ['app_id', 'cert_id', 'dev_id', 'token']);
 
         return static::build($credentials);
     }
