@@ -65,10 +65,10 @@ class ResearchItemController extends Controller
             throw new TradingApiException($request, $response);
         }
 
-        $transactions = $this->performance($id);
-        $source       = $this->guessSource($response->Item);
+        $performance = $this->performance($id);
+        $source      = $this->guessSource($response->Item);
 
-        return array_merge($this->extract($response->Item), compact('transactions', 'source'));
+        return array_merge($this->extract($response->Item), compact('performance', 'source'));
     }
 
     public function extract(ItemType $item): array
@@ -130,31 +130,39 @@ class ResearchItemController extends Controller
         } while ($response->HasMoreTransactions);
 
         // Transaction Last 30 Days
-        $now = Carbon::now();
+        $performance = [7, 14, 21, 30];
 
-        $sold7d  = $this->countTransactionForPeriod($transactions, (clone $now)->subDays(7), $now);
-        $sold14d = $this->countTransactionForPeriod($transactions, (clone $now)->subDays(14), $now);
-        $sold21d = $this->countTransactionForPeriod($transactions, (clone $now)->subDays(21), $now);
-        $sold30d = $this->countTransactionForPeriod($transactions, (clone $now)->subDays(30), $now);
+        foreach ($performance as $key => $period) {
+            $performance[$key] = $this->transactionDetailsForPeriod(
+                $transactions,
+                Carbon::now()->subDays($period),
+                Carbon::now()
+            );
+        }
 
-        return [
-            'average_price'    => $this->averagePrice($transactions),
-            'average_quantity' => $this->averageQuantity($transactions),
-            'sold_7d'          => $sold7d,
-            'sold_14d'         => $sold14d,
-            'sold_21d'         => $sold21d,
-            'sold_30d'         => $sold30d,
-            'chart'            => $this->transactionChart($transactions),
-        ];
+        return $performance;
     }
 
-    protected function countTransactionForPeriod(Collection $transactions, PureCarbon $since, PureCarbon $until): int
+    protected function transactionDetailsForPeriod(Collection $transactions, PureCarbon $since, PureCarbon $until)
     {
         $filtered = $transactions->filter(function (TransactionType $transaction) use ($since, $until) {
             return app_carbon($transaction->CreatedDate)->between($since, $until);
+        })->map(function (TransactionType $transaction) {
+            return $transaction->toArray();
         });
 
-        return $filtered->count();
+        $period   = $until->diffInDays($since);
+        $count    = $filtered->count();
+        $revenue  = round($filtered->sum('TransactionPrice.value'), 2, PHP_ROUND_HALF_EVEN);
+        $quantity = round($filtered->sum('QuantityPurchased'), 0, PHP_ROUND_HALF_EVEN);
+
+        return array_merge(
+            compact('period', 'count', 'revenue', 'quantity'),
+            [
+                'average_price'    => round($revenue / $count, 2, PHP_ROUND_HALF_EVEN),
+                'average_quantity' => round($quantity / $count, 2, PHP_ROUND_HALF_EVEN),
+            ]
+        );
     }
 
     protected function normalizeAttribute(ItemType $item)
