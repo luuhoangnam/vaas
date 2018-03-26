@@ -40,7 +40,7 @@ class ResearchItemController extends Controller
         $request->ItemID = (string)$id;
 
         /** @noinspection PhpUndefinedMethodInspection */
-        $response = $this->trading()->getItem($request, 60 * 24); // Cached for 1 Day
+        $response = $this->trading()->getItem($request, 60); // Cached for 1 Day
 
         if ($response->Ack === AckCodeType::C_FAILURE) {
             throw new TradingApiException($request, $response);
@@ -94,9 +94,9 @@ class ResearchItemController extends Controller
 
         $request->DetailLevel = [DetailLevelCodeType::C_RETURN_ALL];
 
-        /** @noinspection PhpMethodParametersCountMismatchInspection */
+        /** @noinspection PhpUndefinedMethodInspection */
         $response = $this->trading()->getItemTransactions($request, 60 * 24); // Cached for 1 Day
-//        dd($response->toArray());
+
         try {
             $transactions = $this->transactions($response);
         } catch (\Exception $exception) {
@@ -150,7 +150,7 @@ class ResearchItemController extends Controller
     protected function guessSource(ItemType $item)
     {
         $cacheKey  = md5("items:{$item->ItemID}:source");
-        $cacheTime = 60;
+        $cacheTime = 60 * 24; // Cache 1 Day for Source
 
         return cache()->remember($cacheKey, $cacheTime, function () use ($item) {
             try {
