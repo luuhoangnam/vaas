@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Account;
 use App\eBay\TradingAPI;
 use App\Exceptions\Amazon\ProductAdvertisingAPIException;
 use App\Exceptions\Amazon\SomethingWentWrongException;
@@ -10,7 +9,6 @@ use App\Exceptions\TradingApiException;
 use App\Http\Controllers\Controller;
 use App\Item;
 use App\Jobs\Amazon\ExtractOffers;
-use App\Jobs\UpdateAPIUsage;
 use App\Sourcing\AmazonAPI;
 use App\Sourcing\AmazonCrawler;
 use App\Sourcing\AmazonIdMode;
@@ -23,14 +21,12 @@ use DTS\eBaySDK\Trading\Types\GetItemTransactionsResponseType;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use DTS\eBaySDK\Trading\Types\PaginationType;
 use DTS\eBaySDK\Trading\Types\TransactionType;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class ResearchItemController extends Controller
 {
-    public function show(Request $request, $id)
+    public function show($id)
     {
         $request = new GetItemRequestType;
 
@@ -94,14 +90,21 @@ class ResearchItemController extends Controller
 
         $request->DetailLevel = [DetailLevelCodeType::C_RETURN_ALL];
 
-        /** @noinspection PhpUndefinedMethodInspection */
-        $response = $this->trading()->getItemTransactions($request, 60 * 24); // Cached for 1 Day
+        $transactions = new Collection;
 
-        try {
-            $transactions = $this->transactions($response);
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        do {
+            /** @noinspection PhpUndefinedMethodInspection */
+            /** @var GetItemTransactionsResponseType $response */
+            $response = $this->trading()->getItemTransactions($request, 60 * 24); // Cached for 1 Day
+
+            if ($response->TransactionArray->Transaction) {
+                foreach ($response->TransactionArray->Transaction as $transaction) {
+                    $transactions->push($transaction);
+                }
+            }
+
+            $request->Pagination->PageNumber++;
+        } while ($response->HasMoreTransactions);
 
         // Transaction Last 30 Days
         $now = Carbon::now();
@@ -238,15 +241,6 @@ class ResearchItemController extends Controller
                    ->get()
                    ->pluck('account.username')
                    ->values();
-    }
-
-    protected function transactions(GetItemTransactionsResponseType $response): Collection
-    {
-        if (is_null(@$response->TransactionArray->Transaction)) {
-            return new Collection;
-        }
-
-        return new Collection($response->TransactionArray->Transaction);
     }
 
     protected function averagePrice(Collection $transactions)
