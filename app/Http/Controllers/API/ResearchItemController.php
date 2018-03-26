@@ -181,11 +181,11 @@ class ResearchItemController extends Controller
 
                 return array_merge($product, compact('offers'));
             } catch (ProductAdvertisingAPIException $exception) {
-                if ($item->SKU && $exception->getCode() !== 'AWS.ECommerceService.ItemNotAccessible') {
-                    return AmazonCrawler::get($item->SKU);
+                if ($asin = $this->itemASIN($item) && $exception->getCode() === 'AWS.ECommerceService.ItemNotAccessible') {
+                    return AmazonCrawler::get($asin);
                 }
 
-                if ($exception->getCode() !== 'AWS.InvalidParameterValue') {
+                if ($exception->getCode() === 'AWS.InvalidParameterValue') {
                     return null;
                 }
             }

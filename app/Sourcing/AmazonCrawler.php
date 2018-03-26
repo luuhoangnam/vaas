@@ -27,12 +27,12 @@ class AmazonCrawler
         return (new static($asin))->scrape();
     }
 
-    public function scrape()
+    public function scrape($extractOffers = true)
     {
         $cacheKey  = md5("amazon.com:{$this->asin}");
         $cacheTime = config('crawler.cache_time', 60);
 
-        return cache()->remember($cacheKey, $cacheTime, function () {
+        return cache()->remember($cacheKey, $cacheTime, function () use ($extractOffers) {
             // 1. Make Request
             $crawler = $this->requestProductPage();
 
@@ -58,11 +58,14 @@ class AmazonCrawler
             $features    = $this->extractFeatures($crawler);
 
             // Get Offers Available: Only Prime + New
-            $offers    = ExtractOffers::dispatchNow($this->asin);
-            $bestOffer = $this->bestOffer($offers);
+            $offers = $extractOffers ? ExtractOffers::dispatchNow($this->asin) : [];
+            if ($bestOffer = $this->bestOffer($offers)) {
+                $prime = $bestOffer['prime'];
+                $price = $bestOffer['price'];
+            } else {
+                $price = $prime = null;
+            }
 
-            $prime      = $bestOffer['prime'];
-            $price      = $bestOffer['price'];
             $attributes = null;
 
             // 3. Return Data

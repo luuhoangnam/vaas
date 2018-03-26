@@ -66,7 +66,6 @@ class AmazonAPI
             throw new ProductAdvertisingAPIException($error['Message'], $error['Code']);
         }
 
-
         $item        = $response['Items']['Item'];
         $asin        = $item['ASIN'];
         $title       = $item['ItemAttributes']['Title'];
