@@ -93,6 +93,16 @@ class AmazonCrawler
 
     public static function client(): Client
     {
+        $guzzle = static::guzzle();
+
+        $client = new Client;
+        $client->setClient($guzzle);
+
+        return $client;
+    }
+
+    public static function guzzle()
+    {
         $config = [
             'timeout' => 60,
             'headers' => [
@@ -104,12 +114,7 @@ class AmazonCrawler
             static::configureProxy($config);
         }
 
-        $guzzle = new Guzzle($config);
-
-        $client = new Client;
-        $client->setClient($guzzle);
-
-        return $client;
+        return new Guzzle($config);
     }
 
     protected static function configureProxy(array &$config)
