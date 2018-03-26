@@ -22,7 +22,7 @@ return [
             'dev_id'  => '1b740dd3-e039-4f21-a27b-4a3050531d31',
             'cert_id' => 'PRD-53da1965c219-bd75-453e-8511-0862',
             'token'   => 'AgAAAA**AQAAAA**aAAAAA**dUm4Wg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ADkoClAZmAoQmdj6x9nY+seQ**izYEAA**AAMAAA**FS8iOGbSGCdmxNyzTHYmqVyhFDCXM2yhzJ/KBdK6G/7cGmRGfr1fgKPCMEMaB77sU3pbCCTlLlasDEKthjNnvkAjzwE0uIVOIUdrm3qBFKM0aP3b0b53wCxEYO/JB0ygLZh3phGyY9QnkwdgxX8zTzOee0EuVNizs3jimkwvgdbxdnac+5NSoGyKp1goWEYVuaISRWNPMONAdFQAS8p3ztzpk5Rd9vbdtDvOFvPCt5fmaiVbegQz55FgGrjAnn6wDpFco0WtiyQHWYzbpFuKl1vgLOYINkPHpXnOlR7yBUsM+XYbj2JJ4LvEyeOuXKmCku2d2zz6Oc0CAlr+z0KiUsukMK89Ng/m7iQTOqNiqn54LJPdryBx3L65fIyq7qbfJTAawbvE7tbqlT1fByuK3tIidei7lN0OMq1IouN4aXX1O9UlKJsdxAcsk5jkyqMVxTfjE15Zs9QKNqFkc44fhU3dD01GwNuUDh2Fe5oO4SkmKaXnEQRc+aR8TccMYrPCXvD8etJOnVVn56G1XP+b6h+avYBaSCVQFA+y+IRwfWOS0W1fZZHiVruxQsqk22kCjKS7SBUfsEDSCgLbet4+wVo5sxVy003AcQhNPviUPaJmk/YH+boxBcGZfhyXXnX08nc+5aDblc0mEWZVkPPTat3bw1TfrW2XiTdhjbKyvjExzAXWJK32BQ4k2Q1Z58i0FQ9W3RRNlITxB+duQTg7dwU3X7Tl7b0jVEyGVTvC7mIuvl27tHiNr8+A1D1WzDwj',
-        ], 
+        ],
         [
             'app_id'  => 'NamLuu-APIDropi-PRD-853c9ee3a-1c748e26',
             'dev_id'  => '60294a76-d3b1-4d20-8d51-3728bc25cec8',
