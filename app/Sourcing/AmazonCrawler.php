@@ -100,7 +100,7 @@ class AmazonCrawler
             ],
         ];
 
-        if (config('crawler.proxy_enable', false)) {
+        if (config('crawler.use_enable', false)) {
             static::configureProxy($config);
         }
 
@@ -114,9 +114,7 @@ class AmazonCrawler
 
     protected static function configureProxy(array &$config)
     {
-        $proxies = config('crawler.proxies', []);
-
-        $proxies[] = null;
+        $proxies = config('network.outgoing.proxies', []);
 
         $config['proxy'] = array_random($proxies);
     }
