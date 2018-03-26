@@ -136,6 +136,10 @@ class ResearchItemController extends Controller
 
     protected function normalizeAttribute(ItemType $item)
     {
+        if ( ! $item->ItemSpecifics) {
+            return [];
+        }
+
         $attributes = [];
 
         foreach ($item->ItemSpecifics->NameValueList as $specific) {
