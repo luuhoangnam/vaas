@@ -100,7 +100,7 @@ class AmazonCrawler
             ],
         ];
 
-        if (config('crawler.use_enable', false)) {
+        if (config('crawler.use_proxy', false)) {
             static::configureProxy($config);
         }
 
