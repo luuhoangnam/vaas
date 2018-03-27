@@ -57,3 +57,21 @@ if ( ! function_exists('item_url')) {
         return eBay::itemUrl($item);
     }
 }
+
+if ( ! function_exists('is_assoc')) {
+    /**
+     * Check array is assoc or not
+     *
+     * @param array $array
+     *
+     * @return bool
+     */
+    function is_assoc($array)
+    {
+        $keys = array_keys($array);
+
+        // If the array keys of the keys match the keys, then the array must
+        // not be associative (e.g. the keys array looked like {0:0, 1:1...}).
+        return array_keys($keys) !== $keys;
+    }
+}

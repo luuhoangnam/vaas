@@ -219,7 +219,7 @@ class ResearchItemController extends Controller
                 } elseif ($ean = $this->itemEAN($item)) {
                     $product = AmazonAPI::inspect($ean, false, AmazonIdMode::EAN);
                 } elseif ($ibsn = $this->itemISBN($item)) {
-                    $product = AmazonAPI::inspect($ibsn, false, AmazonIdMode::IBSN);
+                    $product = AmazonAPI::inspect($ibsn, false, AmazonIdMode::ISBN);
                 } else {
                     return null;
                 }

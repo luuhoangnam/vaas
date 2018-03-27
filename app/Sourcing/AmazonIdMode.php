@@ -10,5 +10,5 @@ class AmazonIdMode extends Enum
     const SKU = 'SKU';
     const UPC = 'UPC';
     const EAN = 'EAN';
-    const IBSN = 'IBSN';
+    const ISBN = 'ISBN';
 }

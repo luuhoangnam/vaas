@@ -33,7 +33,7 @@ class AmazonAPI
 
     public static function ibsn($ibsn)
     {
-        return static::item($ibsn, AmazonIdMode::IBSN);
+        return static::item($ibsn, AmazonIdMode::ISBN);
     }
 
     public static function upc($upc)
@@ -66,7 +66,9 @@ class AmazonAPI
             throw new ProductAdvertisingAPIException($error['Message'], $error['Code']);
         }
 
-        $item        = $response['Items']['Item'];
+        $itemHolder = $response['Items']['Item'];
+
+        $item        = is_assoc($itemHolder) ? $itemHolder : array_first($itemHolder);
         $asin        = $item['ASIN'];
         $title       = $item['ItemAttributes']['Title'];
         $description = static::description($item);
