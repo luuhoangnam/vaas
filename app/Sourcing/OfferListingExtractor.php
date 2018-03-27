@@ -76,10 +76,11 @@ class OfferListingExtractor
             }
 
             return [
-                'prime'  => true,
-                'new'    => true,
-                'price'  => $price,
-                'seller' => $seller,
+                'prime'   => true,
+                'new'     => true,
+                'price'   => $price,
+                'seller'  => $seller,
+                'has_tax' => $seller === 'Amazon.com',
             ];
         });
     }
