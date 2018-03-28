@@ -67,8 +67,9 @@ class ResearchItemController extends Controller
 
         $performance = $this->performance($id);
         $source      = $this->guessSource($response->Item);
+        $listed_on   = @$source['asin'] ? $this->listedOn($source['asin']) : null;
 
-        return array_merge($this->extract($response->Item), compact('performance', 'source'));
+        return array_merge($this->extract($response->Item), compact('performance', 'source', 'listed_on'));
     }
 
     public function extract(ItemType $item): array
@@ -99,7 +100,6 @@ class ResearchItemController extends Controller
             'has_variants'         => (bool)$item->Variations,
             'is_top_rated_listing' => $item->TopRatedListing,
             'attributes'           => $this->normalizeAttribute($item),
-            'listed_on'            => $item->SKU ? $this->listedOn($item->SKU) : null,
         ];
     }
 
