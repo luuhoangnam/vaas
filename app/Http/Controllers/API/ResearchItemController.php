@@ -112,9 +112,14 @@ class ResearchItemController extends Controller
 
     protected function calcProfit($sellingPrice, $offer)
     {
-        $fees = $sellingPrice * (9.15 + 3.9) / 100 + 0.3;
+        // Configs
+        $finalValueRate = 9.15;
+        $paypalRate     = 3.9;
+        $giftcardRate   = 0.0275;
 
-        return $sellingPrice - $this->costIncTax($offer) - $fees;
+        $fees = $sellingPrice * ($finalValueRate + $paypalRate) / 100 + 0.3;
+        
+        return $sellingPrice - $this->costIncTax($offer) * (1 + $giftcardRate) - $fees;
     }
 
     protected function costIncTax($offer)
