@@ -88,7 +88,7 @@ class ResearchItemController extends Controller
             $warnings[] = 'Margin is not normal (too high)';
         }
 
-        if ($profit > .2) {
+        if ($profit > 10) {
             $warnings[] = 'Profit is not normal (too high)';
         }
 
