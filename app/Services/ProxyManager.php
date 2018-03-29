@@ -12,7 +12,7 @@ class ProxyManager
     {
         $chosen = static::all()->random();
 
-        return "http://{$chosen['login']}:{$chosen['password']}@{$chosen['ip']}:{$chosen['port_http']}";
+        return self::proxyString($chosen);
     }
 
     public static function all(): Collection
@@ -27,6 +27,15 @@ class ProxyManager
         $json = $fs->get('proxies.json');
         $data = json_decode($json, true);
 
-        return collect($data['proxies']);
+        return collect($data['proxies'])->filter(function ($proxy) {
+            $blacklist = config('network.outgoing.blacklist');
+
+            return ! in_array($proxy['ip'], $blacklist);
+        });
+    }
+
+    public static function proxyString($chosen): string
+    {
+        return "http://{$chosen['login']}:{$chosen['password']}@{$chosen['ip']}:{$chosen['port_http']}";
     }
 }

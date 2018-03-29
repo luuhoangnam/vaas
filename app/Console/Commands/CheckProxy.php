@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Services\ProxyManager;
 use Campo\UserAgent;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ServerException;
 use Illuminate\Console\Command;
 
 class CheckProxy extends Command
@@ -31,16 +32,16 @@ class CheckProxy extends Command
 
             $client = new Client($config);
 
-            $response = $client->get('https://www.amazon.com');
-
             try {
+                $response = $client->get('https://www.amazon.com');
+
                 if ($response->getStatusCode() === 200) {
                     $this->info("Proxy: {$proxyString} => OK!");
                 } else {
                     $this->warn("Proxy: {$proxyString} => {$response->getStatusCode()}");
                 }
-            } catch (\Exception $exception) {
-                $this->error("Proxy: {$proxyString} => {$response->getStatusCode()}");
+            } catch (ServerException $exception) {
+                $this->error("Proxy: {$proxyString} => {$exception->getResponse()->getStatusCode()}");
             }
         });
 
