@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\ApiUsage;
 use App\Console\Commands\BulkImportTrackersByAccount;
+use App\Console\Commands\CheckProxy;
 use App\Console\Commands\ForceRefreshRanking;
 use App\Console\Commands\ItemResearch;
 use App\Console\Commands\LoadProxyBonanzaProxies;
@@ -51,6 +52,7 @@ class Kernel extends ConsoleKernel
         ViewCrawlerPerformance::class,
         SpyCompetitor::class,
         LoadProxyBonanzaProxies::class,
+        CheckProxy::class,
     ];
 
     /**

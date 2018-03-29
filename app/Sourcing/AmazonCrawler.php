@@ -293,7 +293,7 @@ class AmazonCrawler
         return AmazonCrawler::client()->request(Request::METHOD_GET, $url);
     }
 
-    protected static function userAgent()
+    public static function userAgent()
     {
         return UserAgent::random();
     }
