@@ -97,7 +97,7 @@ class ResearchItemController extends Controller
         }
 
         if ($best_offer) {
-            $perf30D         = collect($performance)->where('period', '=', 30);
+            $perf30D         = collect($performance)->where('period', '=', 30)->first();
             $priceIsNotRight = $perf30D['count'] && $perf30D['average_price'] / $best_offer['price'] >= 2;
 
             if ($priceIsNotRight) {
