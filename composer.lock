@@ -110,16 +110,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.52.34",
+            "version": "3.52.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "c414752f2f88a036958438a3d973475c6786a387"
+                "reference": "3210be6caaf81dfbbafe5b6623408a3c55d313a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/c414752f2f88a036958438a3d973475c6786a387",
-                "reference": "c414752f2f88a036958438a3d973475c6786a387",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/3210be6caaf81dfbbafe5b6623408a3c55d313a0",
+                "reference": "3210be6caaf81dfbbafe5b6623408a3c55d313a0",
                 "shasum": ""
             },
             "require": {
@@ -186,7 +186,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2018-03-27T19:13:06+00:00"
+            "time": "2018-03-28T22:07:39+00:00"
         },
         {
             "name": "barryvdh/laravel-cors",
@@ -1294,16 +1294,16 @@
         },
         {
             "name": "google/cloud-core",
-            "version": "v1.18.0",
+            "version": "v1.19.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/GoogleCloudPlatform/google-cloud-php-core.git",
-                "reference": "9f905c2d7c58db82e311eeff3843cc490ac68f09"
+                "reference": "569964869444e91899848f188a8cbd421a37663b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GoogleCloudPlatform/google-cloud-php-core/zipball/9f905c2d7c58db82e311eeff3843cc490ac68f09",
-                "reference": "9f905c2d7c58db82e311eeff3843cc490ac68f09",
+                "url": "https://api.github.com/repos/GoogleCloudPlatform/google-cloud-php-core/zipball/569964869444e91899848f188a8cbd421a37663b",
+                "reference": "569964869444e91899848f188a8cbd421a37663b",
                 "shasum": ""
             },
             "require": {
@@ -1314,6 +1314,14 @@
                 "php": ">=5.5",
                 "psr/http-message": "1.0.*",
                 "rize/uri-template": "~0.3"
+            },
+            "require-dev": {
+                "erusev/parsedown": "^1.6",
+                "google/gax": "^0.30",
+                "opis/closure": "^3",
+                "phpdocumentor/reflection": "^3.0",
+                "phpunit/phpunit": "^4.8|^5.0",
+                "squizlabs/php_codesniffer": "2.*"
             },
             "suggest": {
                 "opis/closure": "May be used to serialize closures to process jobs in the batch daemon. Please require version ^3.",
@@ -1327,13 +1335,13 @@
                 "component": {
                     "id": "cloud-core",
                     "target": "GoogleCloudPlatform/google-cloud-php-core.git",
-                    "path": "src/Core",
-                    "entry": "ServiceBuilder.php"
+                    "path": "Core",
+                    "entry": "src/ServiceBuilder.php"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Google\\Cloud\\Core\\": ""
+                    "Google\\Cloud\\Core\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1341,7 +1349,7 @@
                 "Apache-2.0"
             ],
             "description": "Google Cloud PHP shared dependency, providing functionality useful to all components.",
-            "time": "2018-03-16T18:56:38+00:00"
+            "time": "2018-03-28T16:57:27+00:00"
         },
         {
             "name": "google/cloud-storage",
@@ -1775,16 +1783,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.6.13",
+            "version": "v5.6.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "90ccb77a543ff063533083f427d5e655546afbad"
+                "reference": "fba33e59fd43661933e9cecb84dfb0a64c5323ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/90ccb77a543ff063533083f427d5e655546afbad",
-                "reference": "90ccb77a543ff063533083f427d5e655546afbad",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/fba33e59fd43661933e9cecb84dfb0a64c5323ce",
+                "reference": "fba33e59fd43661933e9cecb84dfb0a64c5323ce",
                 "shasum": ""
             },
             "require": {
@@ -1909,7 +1917,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2018-03-26T13:45:20+00:00"
+            "time": "2018-03-28T14:17:03+00:00"
         },
         {
             "name": "laravel/horizon",

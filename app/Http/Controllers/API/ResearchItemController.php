@@ -65,11 +65,36 @@ class ResearchItemController extends Controller
             throw new TradingApiException($request, $response);
         }
 
+        $item        = $this->extract($response->Item);
         $performance = $this->performance($id);
         $source      = $this->guessSource($response->Item);
         $listed_on   = @$source['asin'] ? $this->listedOn($source['asin']) : null;
 
-        return array_merge($this->extract($response->Item), compact('performance', 'source', 'listed_on'));
+        # CALCULATE PROFIT, MARGIN, BEST OFFER
+        $offers = $source['offers'];
+        /** @noinspection PhpUndefinedMethodInspection */
+        $bestOffer = $offers->first();
+
+        if ($bestOffer) {
+            $profit = round($this->calcProfit($item['price'], $bestOffer), 2, PHP_ROUND_HALF_EVEN);
+            $margin = round($profit / $item['price'], 2, PHP_ROUND_HALF_EVEN);
+        } else {
+            $profit = $margin = null;
+        }
+
+        return array_merge($item, compact('performance', 'source', 'profit', 'margin', 'listed_on'));
+    }
+
+    protected function calcProfit($sellingPrice, $offer)
+    {
+        $fees = $sellingPrice * (9.15 + 3.9) / 100 + 0.3;
+
+        return $sellingPrice - $this->costIncTax($offer) - $fees;
+    }
+
+    protected function costIncTax($offer)
+    {
+        return $offer['price'] * ($offer['has_tax'] ? 1.09 : 1);
     }
 
     public function extract(ItemType $item): array
@@ -100,6 +125,9 @@ class ResearchItemController extends Controller
             'has_variants'         => (bool)$item->Variations,
             'is_top_rated_listing' => $item->TopRatedListing,
             'attributes'           => $this->normalizeAttribute($item),
+            // Fees
+            'final_value_fee'      => $item->SellingStatus->CurrentPrice->value * 0.0915,
+            'paypal_fee'           => $item->SellingStatus->CurrentPrice->value * 0.039 + 0.3,
         ];
     }
 
@@ -229,6 +257,10 @@ class ResearchItemController extends Controller
                 } catch (SomethingWentWrongException $exception) {
                     $offers = null;
                 }
+
+                $offers = collect($offers)->sortBy(function ($offer) {
+                    return $this->costIncTax($offer);
+                });
 
                 return array_merge($product, compact('offers'));
             } catch (ProductAdvertisingAPIException $exception) {
