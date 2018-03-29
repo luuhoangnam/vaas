@@ -10,28 +10,29 @@ class ProxyManager
 {
     public static function takeOne()
     {
-        $chosen = static::all()->random();
-
-        return self::proxyString($chosen);
+        return static::all()->random();
     }
 
     public static function all(): Collection
     {
+        $proxies = config('network.outgoing.proxies');
+
+        return collect($proxies);
+    }
+
+    public static function proxyBonanza(): Collection
+    {
         /** @var Filesystem $fs */
         $fs = app(Filesystem::class);
 
-        if ( ! $fs->exists('proxies.json')) {
+        if ( ! $fs->exists('proxy_bonanza.json')) {
             return null;
         }
 
-        $json = $fs->get('proxies.json');
+        $json = $fs->get('proxy_bonanza.json');
         $data = json_decode($json, true);
 
-        return collect($data['proxies'])->filter(function ($proxy) {
-            $blacklist = config('network.outgoing.blacklist');
-
-            return ! in_array($proxy['ip'], $blacklist);
-        });
+        return collect($data['proxies']);
     }
 
     public static function proxyString($chosen): string

@@ -71,7 +71,7 @@ class ResearchItemController extends Controller
         $listed_on   = @$source['asin'] ? $this->listedOn($source['asin']) : null;
 
         # CALCULATE PROFIT, MARGIN, BEST OFFER
-        $offers = $source['offers'];
+        $offers = collect($source['offers']);
         /** @noinspection PhpUndefinedMethodInspection */
         $best_offer = $offers->first();
 

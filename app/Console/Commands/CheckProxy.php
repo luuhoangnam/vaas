@@ -20,11 +20,9 @@ class CheckProxy extends Command
 
         $proxies->each(function ($proxy) {
 
-            $proxyString = "http://{$proxy['login']}:{$proxy['password']}@{$proxy['ip']}:{$proxy['port_http']}";
-
             $config = [
                 'timeout' => 60,
-                'proxy'   => $proxyString,
+                'proxy'   => $proxy,
                 'headers' => [
                     'User-Agent' => UserAgent::random(),
                 ],
@@ -36,12 +34,12 @@ class CheckProxy extends Command
                 $response = $client->get('https://www.amazon.com');
 
                 if ($response->getStatusCode() === 200) {
-                    $this->info("Proxy: {$proxyString} => OK!");
+                    $this->info("Proxy: {$proxy} => OK!");
                 } else {
-                    $this->warn("Proxy: {$proxyString} => {$response->getStatusCode()}");
+                    $this->warn("Proxy: {$proxy} => {$response->getStatusCode()}");
                 }
             } catch (ServerException $exception) {
-                $this->error("Proxy: {$proxyString} => {$exception->getResponse()->getStatusCode()}");
+                $this->error("Proxy: {$proxy} => {$exception->getResponse()->getStatusCode()}");
             }
         });
 
