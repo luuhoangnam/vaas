@@ -33,9 +33,13 @@ class CheckProxy extends Command
 
             $response = $client->get('https://www.amazon.com');
 
-            if ($response->getStatusCode() === 200) {
-                $this->info("Proxy: {$proxyString} => OK!");
-            } else {
+            try {
+                if ($response->getStatusCode() === 200) {
+                    $this->info("Proxy: {$proxyString} => OK!");
+                } else {
+                    $this->warn("Proxy: {$proxyString} => {$response->getStatusCode()}");
+                }
+            } catch (\Exception $exception) {
                 $this->error("Proxy: {$proxyString} => {$response->getStatusCode()}");
             }
         });
