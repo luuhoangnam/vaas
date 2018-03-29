@@ -77,7 +77,7 @@ class ResearchItemController extends Controller
 
         if ($bestOffer) {
             $profit = round($this->calcProfit($item['price'], $bestOffer), 2, PHP_ROUND_HALF_EVEN);
-            $margin = round($profit / $item['price'], 2, PHP_ROUND_HALF_EVEN);
+            $margin = round($profit / $item['price'], 4, PHP_ROUND_HALF_EVEN);
         } else {
             $profit = $margin = null;
         }
