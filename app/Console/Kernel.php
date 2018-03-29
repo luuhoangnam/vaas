@@ -6,6 +6,7 @@ use App\Console\Commands\ApiUsage;
 use App\Console\Commands\BulkImportTrackersByAccount;
 use App\Console\Commands\ForceRefreshRanking;
 use App\Console\Commands\ItemResearch;
+use App\Console\Commands\LoadProxyBonanzaProxies;
 use App\Console\Commands\LowPerformanceListing;
 use App\Console\Commands\MakeRepricer;
 use App\Console\Commands\PeriodicRefreshRank;
@@ -49,6 +50,7 @@ class Kernel extends ConsoleKernel
         ScanAmazonBestSellers::class,
         ViewCrawlerPerformance::class,
         SpyCompetitor::class,
+        LoadProxyBonanzaProxies::class,
     ];
 
     /**
@@ -60,6 +62,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('proxy:load')->daily();
         $schedule->command('api:quota')->everyFiveMinutes();
         $schedule->command('horizon:snapshot')->everyFiveMinutes();
         $schedule->command("ebay:sync:all --only_orders --since '3 hours ago'")->hourly(); // Fix

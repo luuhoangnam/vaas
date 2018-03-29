@@ -118,7 +118,7 @@ class ResearchItemController extends Controller
         $giftcardRate   = 0.0275;
 
         $fees = $sellingPrice * ($finalValueRate + $paypalRate) / 100 + 0.3;
-        
+
         return $sellingPrice - $this->costIncTax($offer) * (1 + $giftcardRate) - $fees;
     }
 

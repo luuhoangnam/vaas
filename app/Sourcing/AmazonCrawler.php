@@ -5,6 +5,7 @@ namespace App\Sourcing;
 use App\Exceptions\Amazon\ProductNotFoundException;
 use App\Exceptions\Amazon\SomethingWentWrongException;
 use App\Jobs\Amazon\ExtractOffers;
+use App\Services\ProxyManager;
 use Campo\UserAgent;
 use Goutte\Client;
 use GuzzleHttp\Client as Guzzle;
@@ -114,17 +115,10 @@ class AmazonCrawler
         ];
 
         if (config('crawler.use_proxy', false)) {
-            static::configureProxy($config);
+            $config['proxy'] = ProxyManager::takeOne();
         }
 
         return new Guzzle($config);
-    }
-
-    protected static function configureProxy(array &$config)
-    {
-        $proxies = config('network.outgoing.proxies', []);
-
-        $config['proxy'] = array_random($proxies);
     }
 
     protected function getProductUrl(): string
