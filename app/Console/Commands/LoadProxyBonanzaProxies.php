@@ -34,7 +34,7 @@ class LoadProxyBonanzaProxies extends Command
             'proxies' => $proxies->toArray(),
         ];
 
-        $this->filesystem->put('proxies.json', json_encode($data));
+        $this->filesystem->put('proxy_bonanza.json', json_encode($data));
 
         return;
     }
