@@ -73,16 +73,41 @@ class ResearchItemController extends Controller
         # CALCULATE PROFIT, MARGIN, BEST OFFER
         $offers = $source['offers'];
         /** @noinspection PhpUndefinedMethodInspection */
-        $bestOffer = $offers->first();
+        $best_offer = $offers->first();
 
-        if ($bestOffer) {
-            $profit = round($this->calcProfit($item['price'], $bestOffer), 2, PHP_ROUND_HALF_EVEN);
+        if ($best_offer) {
+            $profit = round($this->calcProfit($item['price'], $best_offer), 2, PHP_ROUND_HALF_EVEN);
             $margin = round($profit / $item['price'], 4, PHP_ROUND_HALF_EVEN);
         } else {
             $profit = $margin = null;
         }
 
-        return array_merge($item, compact('performance', 'source', 'profit', 'margin', 'listed_on'));
+        $warnings = [];
+
+        if ($margin > .2) {
+            $warnings[] = 'Margin is not normal (too high)';
+        }
+
+        if ($profit > .2) {
+            $warnings[] = 'Profit is not normal (too high)';
+        }
+
+        if ($item['status'] === 'Completed') {
+            $warnings[] = 'Competitor\'s item has ended';
+        }
+
+        if ($best_offer) {
+            $perf30D         = collect($performance)->where('period', '=', 30);
+            $priceIsNotRight = $perf30D['count'] && $perf30D['average_price'] / $best_offer['price'] >= 2;
+
+            if ($priceIsNotRight) {
+                $warnings[] = 'Price is seems not right';
+            }
+        }
+
+        $more = compact('performance', 'source', 'profit', 'margin', 'listed_on', 'warnings', 'best_offer');
+
+        return array_merge($item, $more);
     }
 
     protected function calcProfit($sellingPrice, $offer)
