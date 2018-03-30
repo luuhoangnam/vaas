@@ -33,7 +33,7 @@
 
                         $textClass = $order['profit'] > 2.0 ? 'text-success' : ($order['profit'] > 0 ? 'text-warning' :'text-danger');
                     @endphp
-                    <tr class="{{ $isToday ? 'table-primary' : '' }}">
+                    <tr class="{{ $isToday ? 'row__bold' : '' }}">
                         <td><a href="{{ $order['account']['ebay_link'] }}">{{ $order['account']['username'] }}</a></td>
                         <td><a href="{{ $order['ebay_link'] }}">{{ $order['record'] }}</a></td>
                         <td>{{ usd($order['total']) }}</td>
