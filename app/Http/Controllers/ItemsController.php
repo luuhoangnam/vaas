@@ -63,6 +63,7 @@ class ItemsController extends AuthRequiredController
                 $query->where('status', ListingStatusCodeType::C_COMPLETED);
                 break;
             default:
+                $query->where('status', ListingStatusCodeType::C_ACTIVE);
                 break;
         }
 
