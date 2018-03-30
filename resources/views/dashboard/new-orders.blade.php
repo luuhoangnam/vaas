@@ -25,6 +25,7 @@
                 <tbody>
                 @foreach($ordersPaginated as $order)
                     @php
+                        $isToday = $order['created_time']->isToday();
                         $roundedFVF = round($order['total'] * 0.0915, 2, PHP_ROUND_HALF_DOWN);
                         $goodFVFTextClass =  $order['final_value_fee'] < $roundedFVF ? 'text-success' : '';
                         $roundedPPF = round($order['total'] * 0.039 + 0.3, 2, PHP_ROUND_HALF_DOWN);
@@ -32,7 +33,7 @@
 
                         $textClass = $order['profit'] > 2.0 ? 'text-success' : ($order['profit'] > 0 ? 'text-warning' :'text-danger');
                     @endphp
-                    <tr>
+                    <tr class="{{ $isToday ? 'table-primary' : '' }}">
                         <td><a href="{{ $order['account']['ebay_link'] }}">{{ $order['account']['username'] }}</a></td>
                         <td><a href="{{ $order['ebay_link'] }}">{{ $order['record'] }}</a></td>
                         <td>{{ usd($order['total']) }}</td>

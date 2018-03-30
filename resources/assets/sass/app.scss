@@ -18,6 +18,10 @@ tr > td {
   vertical-align: middle !important;
 }
 
+.row__bold > * {
+  font-weight: bold;
+}
+
 .trumbowyg {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
