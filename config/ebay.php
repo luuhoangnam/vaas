@@ -16,6 +16,14 @@ return [
         ],
     ],
 
+    'miner' => [
+        'competitor' => [
+            'min_feedback' => null,
+            'max_feedback' => null,
+            'blacklist'    => [],
+        ],
+    ],
+
     'apps' => [
         [
             'app_id'  => 'wkrvpqew-wkrvpqew-PRD-653e361d2-a44bce4e',

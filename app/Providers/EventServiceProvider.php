@@ -8,12 +8,14 @@ use App\Events\ItemCreated;
 use App\Events\ListerJobCreated;
 use App\Events\PlatformNotificationReceived;
 use App\Events\PlatformNotifications\FixedPriceTransaction;
-use App\Listeners\AutoResearchCompetitorItem;
+use App\Events\SeedKeywordAdded;
 use App\Listeners\AttachTracker;
+use App\Listeners\ResearchCompetitorItem;
 use App\Listeners\CreateCompanionListerQueueJob;
-use App\Listeners\FindActiveSellingItems;
+use App\Listeners\FindCompetitorItems;
 use App\Listeners\LogPlatformNotificationPayload;
 use App\Listeners\RefillItemQuantity;
+use App\Listeners\SearchKeywordToFindCompetitor;
 use App\Listeners\Subscribers\ItemEventsSubscriber;
 use App\Listeners\TriggerSyncNewlyOrders;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -57,11 +59,15 @@ class EventServiceProvider extends ServiceProvider
 
         // Spying
         CompetitorSpied::class  => [
-//            FindActiveSellingItems::class,
+             FindCompetitorItems::class,
         ],
 
         FoundNewCompetitorItem::class => [
-            AutoResearchCompetitorItem::class,
+             ResearchCompetitorItem::class,
+        ],
+
+        SeedKeywordAdded::class => [
+            SearchKeywordToFindCompetitor::class,
         ],
     ];
 

@@ -39,6 +39,7 @@
         "rtconner/laravel-tagging": "~2.2",
         "sabre/xml": "^2.1",
         "spatie/db-dumper": "^2.9",
+        "spatie/flysystem-dropbox": "^1.0",
         "venturecraft/revisionable": "^1.28"
     },
     "require-dev": {

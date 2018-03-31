@@ -71,7 +71,9 @@ abstract class API
 
     protected function cacheKey(BaseType $request): string
     {
-        return md5(serialize($request->toArray()));
+        $signature = $request->toArray();
+
+        return md5(serialize($signature));
     }
 
     protected function cacheData(string $cacheKey, $cacheTime, string $method, BaseType $request)

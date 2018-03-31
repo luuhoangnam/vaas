@@ -8,7 +8,7 @@ use App\Spy\CompetitorItem;
 use Carbon\Carbon as PureCarbon;
 use Carbon\Carbon;
 
-class AutoResearchCompetitorItem
+class ResearchCompetitorItem
 {
     public function handle(FoundNewCompetitorItem $event)
     {
@@ -19,42 +19,10 @@ class AutoResearchCompetitorItem
 
     protected function willResearch(CompetitorItem $item): bool
     {
-        $qualifiedPrice     = $item['price'] > 15;
-        $listedWithin90Days = Carbon::now()->diffInDays($item['start_time']) < 90;
+        $qualifiedPrice      = $item['price'] > 10;
+        $listedWithin365Days = Carbon::now()->diffInDays($item['start_time']) < 90;
 
-        return $qualifiedPrice && $listedWithin90Days ? true : false;
-
-//        foreach (config('ebay.spying.auto_research') as $config) {
-//            $field = $item[$config['field']];
-//
-//            if ($field === 'start_time' || $field === 'end_time') {
-//                return $this->compareCarbon($field, $config['operator'], $config['value']);
-//            }
-//
-//            if ($config['operator'] === '>' && $field <= $config['value']) {
-//                return false;
-//            }
-//
-//            if ($config['operator'] === '>=' && $field < $config['value']) {
-//                return false;
-//            }
-//
-//            if ($config['operator'] === '=' && $field != $config['value']) {
-//                return false;
-//            }
-//
-//            if ($config['operator'] === '!=' && $field == $config['value']) {
-//                return false;
-//            }
-//
-//            if ($config['operator'] === '<=' && $field > $config['value']) {
-//                return false;
-//            }
-//
-//            if ($config['operator'] === '<' && $field >= $config['value']) {
-//                return false;
-//            }
-//        }
+        return $qualifiedPrice && $listedWithin365Days ? true : false;
     }
 
     protected function compareCarbon($field, $operator, $value)

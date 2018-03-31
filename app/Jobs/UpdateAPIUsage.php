@@ -21,8 +21,8 @@ class UpdateAPIUsage implements ShouldQueue
         collect(config('ebay.apps'))->each(function ($credentials) {
             list($usage, $softLimit, $quota) = TradingAPI::build($credentials)->usage();
 
-            cache()->put("apps.{$credentials['app_id']}.usage", $usage, 60);
-            cache()->put("apps.{$credentials['app_id']}.quota", $quota, 60);
+            cache()->put("apps.{$credentials['app_id']}.trading.usage", $usage, 60);
+            cache()->put("apps.{$credentials['app_id']}.trading.quota", $quota, 60);
 
             $this->updateOnFirebase($credentials['app_id'], $usage, $quota);
         });

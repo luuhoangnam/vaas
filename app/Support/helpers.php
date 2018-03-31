@@ -1,6 +1,7 @@
 <?php
 
 use App\Support\eBay;
+use DTS\eBaySDK\Finding\Types\ItemFilter;
 use DTS\eBaySDK\Finding\Types\SellerInfo;
 use DTS\eBaySDK\Shopping\Enums\SeverityCodeType as ShoppingSeverityCodeType;
 use DTS\eBaySDK\Shopping\Types\SimpleUserType;
@@ -73,5 +74,26 @@ if ( ! function_exists('is_assoc')) {
         // If the array keys of the keys match the keys, then the array must
         // not be associative (e.g. the keys array looked like {0:0, 1:1...}).
         return array_keys($keys) !== $keys;
+    }
+}
+
+if ( ! function_exists('item_filter')) {
+    /**
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return ItemFilter
+     */
+    function item_filter($name, $value): ItemFilter
+    {
+        if (is_array($value)) {
+            foreach ($value as $k => $v) {
+                $value[$k] = (string)$v;
+            }
+        } else {
+            $value = [(string)$value];
+        }
+
+        return new ItemFilter(compact('name', 'value'));
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCompetitorsTable extends Migration
+class CreateSeedKeywordsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,10 @@ class CreateCompetitorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('competitors', function (Blueprint $table) {
+        Schema::create('seed_keywords', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('username');
-            $table->boolean('watch')->default(false);
-            $table->unsignedInteger('seed_keyword_id')->nullable();
+            $table->text('keyword');
             $table->timestamps();
-
-            $table->foreign('seed_keyword_id')->references('id')->on('seed_keywords')->onDelete('SET NULL');
         });
     }
 
@@ -31,6 +27,6 @@ class CreateCompetitorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('competitors');
+        Schema::dropIfExists('seed_keywords');
     }
 }

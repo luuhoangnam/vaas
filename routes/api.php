@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 
 Route::get('/items/{id}', 'API\\ResearchItemController@show');
+Route::post('/competitors', 'API\\CompetitorController@store');
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/user', function (Request $request) {

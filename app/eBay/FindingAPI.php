@@ -16,7 +16,7 @@ class FindingAPI extends API
      */
     protected function api()
     {
-        return app(FindingService::class);
+        return AppPool::sdk(AppPool::balancing('finding'))->createFinding();
     }
 
     protected function responseClass(string $method): string

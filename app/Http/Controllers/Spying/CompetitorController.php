@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Spying;
 
 use App\Http\Controllers\AuthRequiredController;
-use App\Jobs\FindItemAdvanced;
+use App\Jobs\FindCompetitorItemTask;
 use App\Listeners\FindActiveSellingItems;
 use App\Spy\Competitor;
 use Illuminate\Http\Request;
@@ -29,7 +29,7 @@ class CompetitorController extends AuthRequiredController
         );
 
         // Auto Research
-        FindItemAdvanced::dispatch($request['username']);
+        FindCompetitorItemTask::dispatch($request['username']);
 
         return redirect()->route('competitor');
     }
