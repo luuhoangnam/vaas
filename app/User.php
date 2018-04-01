@@ -5,7 +5,6 @@ namespace App;
 use App\Exceptions\AccountAlreadyLinkedException;
 use App\Exceptions\SourceProductClassDoesNotExistsException;
 use App\Sourcing\AmazonAPI;
-use App\Sourcing\AmazonCom;
 use App\Support\TemplateType;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -93,7 +92,7 @@ class User extends Authenticatable
 
         /** @var AmazonAPI $scraper */
         $scraper = new $type($id);
-        
+
         $data = $scraper->scrape();
 
         return $this->updateOrCreateProduct($data);
