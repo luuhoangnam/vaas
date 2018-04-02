@@ -210,6 +210,10 @@ class AmazonAPI
             return (double)$listing['SalePrice']['Amount'] / 100;
         }
 
+        if ( ! @$listing['Price']['Amount']) {
+            return null;
+        }
+
         return (double)$listing['Price']['Amount'] / 100;
     }
 
