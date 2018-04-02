@@ -210,7 +210,7 @@ class AmazonAPI
             return (double)$listing['SalePrice']['Amount'] / 100;
         }
 
-        return (double)@$listing['Price']['Amount'] / 100;
+        return (double)$listing['Price']['Amount'] / 100;
     }
 
     protected static function description($item): string
