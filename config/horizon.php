@@ -108,7 +108,7 @@ return [
                     'miner.item.performance',
                 ],
                 'balance'    => 'auto',
-                'processes'  => 60,
+                'processes'  => 150,
                 'tries'      => 5,
             ],
         ],

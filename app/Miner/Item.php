@@ -21,6 +21,11 @@ class Item extends Model
         return static::query()->where('item_id', $itemID)->exists();
     }
 
+    public static function notExists($itemID): bool
+    {
+        return ! static::exists($itemID);
+    }
+
     public static function find($itemID): Item
     {
         return static::query()->where('item_id', $itemID)->firstOrFail();

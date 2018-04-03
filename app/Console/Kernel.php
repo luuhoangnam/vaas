@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Console\Commands\AddCompetitor;
+use App\Console\Commands\Miner\AddCompetitor;
 use App\Console\Commands\ApiUsage;
 use App\Console\Commands\BulkImportTrackersByAccount;
 use App\Console\Commands\CheckProxy;
@@ -11,6 +11,7 @@ use App\Console\Commands\ItemResearch;
 use App\Console\Commands\LoadProxyBonanzaProxies;
 use App\Console\Commands\LowPerformanceListing;
 use App\Console\Commands\MakeRepricer;
+use App\Console\Commands\Miner\ASINResearch;
 use App\Console\Commands\PeriodicRefreshRank;
 use App\Console\Commands\RunRepricerPeriodically;
 use App\Console\Commands\ScanAmazonBestSellers;
@@ -55,6 +56,7 @@ class Kernel extends ConsoleKernel
         LoadProxyBonanzaProxies::class,
         CheckProxy::class,
         AddCompetitor::class,
+        ASINResearch::class,
     ];
 
     /**
