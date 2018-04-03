@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Account;
+use App\eBay\App;
 use App\eBay\TradingAPI;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,9 +17,18 @@ class UpdateAPIUsage implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * @throws \Exception
+     */
     public function handle()
     {
-        collect(config('ebay.apps'))->each(function ($credentials) {
+        $apps = cache()->remember('ebay.apps', 1 / 6, function () {
+            return App::query()->get(['app_id', 'dev_id', 'cert_id', 'token'])->toArray();
+        });
+
+        $apps = array_merge($apps, config('ebay.apps'));
+
+        collect($apps)->each(function ($credentials) {
             list($usage, $softLimit, $quota) = TradingAPI::build($credentials)->usage();
 
             cache()->put("apps.{$credentials['app_id']}.trading.usage", $usage, 60);

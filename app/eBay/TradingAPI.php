@@ -4,8 +4,6 @@ namespace App\eBay;
 
 use App\Account;
 use App\Exceptions\TradingApiException;
-use DTS\eBaySDK\Constants\SiteIds;
-use DTS\eBaySDK\Sdk;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Enums\DetailLevelCodeType;
 use DTS\eBaySDK\Trading\Services\TradingService;
@@ -38,6 +36,10 @@ class TradingAPI extends API
         return new static($account['token']);
     }
 
+    /**
+     * @return mixed
+     * @throws \Exception
+     */
     public static function balancing()
     {
         return AppPool::balancing();
@@ -45,6 +47,7 @@ class TradingAPI extends API
 
     /**
      * @return TradingAPI|TradingService
+     * @throws \Exception
      */
     public static function random()
     {

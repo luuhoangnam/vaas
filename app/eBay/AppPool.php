@@ -15,7 +15,11 @@ class AppPool
      */
     public static function balancing($service = 'trading')
     {
-        $apps = config('ebay.apps');
+        $apps = cache()->remember('ebay.apps', 1 / 6, function () {
+            return App::query()->get(['app_id', 'dev_id', 'cert_id', 'token'])->toArray();
+        });
+
+        $apps = array_merge($apps, config('ebay.apps'));
 
         $pool = [];
 
