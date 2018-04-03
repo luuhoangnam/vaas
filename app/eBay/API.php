@@ -76,6 +76,15 @@ abstract class API
         return md5(serialize($signature));
     }
 
+    /**
+     * @param string   $cacheKey
+     * @param          $cacheTime
+     * @param string   $method
+     * @param BaseType $request
+     *
+     * @return mixed
+     * @throws \Exception
+     */
     protected function cacheData(string $cacheKey, $cacheTime, string $method, BaseType $request)
     {
         return cache()->remember($cacheKey, $cacheTime, function () use ($method, $request) {

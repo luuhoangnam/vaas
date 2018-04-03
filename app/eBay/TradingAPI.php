@@ -97,6 +97,12 @@ class TradingAPI extends API
                       ->get();
     }
 
+    /**
+     * @param string $method
+     *
+     * @return array|null
+     * @throws TradingApiException
+     */
     public function usage($method = 'ApplicationAggregate')
     {
         $request = new GetApiAccessRulesRequestType;

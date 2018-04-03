@@ -7,6 +7,12 @@ use DTS\eBaySDK\Sdk;
 
 class AppPool
 {
+    /**
+     * @param string $service
+     *
+     * @return mixed
+     * @throws \Exception
+     */
     public static function balancing($service = 'trading')
     {
         $apps = config('ebay.apps');
@@ -18,6 +24,9 @@ class AppPool
             $quota = cache("apps.{$app['app_id']}.{$service}.quota");
 
             if ($quota) {
+                if ($usage > $quota) {
+                    continue; // This app is over load. Void it!
+                }
 
                 $rate = $usage / $quota;
 
@@ -32,6 +41,10 @@ class AppPool
         return array_random($pool);
     }
 
+    /**
+     * @return Sdk
+     * @throws \Exception
+     */
     public static function random(): Sdk
     {
         return static::sdk(static::balancing());

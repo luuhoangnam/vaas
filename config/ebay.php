@@ -42,6 +42,12 @@ return [
             'dev_id'  => '60294a76-d3b1-4d20-8d51-3728bc25cec8',
             'cert_id' => 'PRD-53c9ee3a95b4-d1ed-4230-83c3-e770',
             'token'   => 'AgAAAA**AQAAAA**aAAAAA**Y3O3Wg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ADkoClAZmAoQmdj6x9nY+seQ**ZzYEAA**AAMAAA**08yKHNw/QBihxrrcpMCbPCgQnpeSU4sp2ATRBh0xtym7GmAa3WZw8Os7U9W06r8xcTyJqdbRegY9w9Wk1N4NMXlb1ahDG/IBCoYBiRgeH1d+0YPVXH1PMah6+8wn2Mkv8wTkB8YK08Gwvje9lyxRF2LyVFqPlmAm+AgSQVs055oSemrFzgCoHGkH/fFcXKi/bB4nzNDDyWn84cjsFrLyfTp5gPUoUthGqDWhwvrpBF32mltoO0cgzgtm3GV7Z5h+g5PL44CPBjtyY2vBSyr5PCGpzp0SFay4ciWPFU6AceU8SZXxMsmLrBZ3/mGgbQ3kZ3FirQ/rIivqtagNSrWnrB8gqEXwEFU/h4v1wm17s24GDLwCy8bDMh8GXPhAC7I4rF3XbNY+inID8IF6EqNJfqDkbRy5tdK0mebvvn4Z3n7IrsPe1zqxPwwS7h0Yw7/t9KPM2Ao2zThXOpedBfth3gXW/ydBi243mjgDesZqWyv5mWPi7PIgMtDCQqTzVDS0pBf00cScNM4ujmZ6ZlbW33VUrwEAwJ+290UzLcc3OoZfjS8O6c/x0zfVqpV5Y1nMKaIo9rqwk5ovFn1oUaGHCx4g2AOCrAfXzmc39hDcVpAOaLFY9XQox3B/PDiwyn1I+8kOCD6rDs24Gsvbzo87UIsgLVAyjKQ8vdSE+Ow5M+4S4cGnmBphm81gybR5vZjXi6KuyRRnqL67KuhPsrwtpY97ZD5pPvS/G//y0S2zB42zp4So842Adr9FVHZYy6Hz',
+        ],
+        [
+            'app_id'  => 'NamDavid-beleclzf-PRD-478771aae-fd123dab',
+            'dev_id'  => 'a6fe4979-aa39-45dd-92be-ecb8b69a77b2',
+            'cert_id' => 'PRD-78771aae0aab-5dce-4e35-b486-74cd',
+            'token'   => 'AgAAAA**AQAAAA**aAAAAA**YznDWg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ADkoClAZmAoQmdj6x9nY+seQ**tjoEAA**AAMAAA**RIpfR1A/S7xbLikb/c35FNFCbsymkmsQt1e2hB9LO37oRe7y/cdE7RVe4tiGAZw1Sui4GvPnOsp1/f/G3/hWh6/iDNvhTDRdGCk9NhN46ABjQp41dqFzVRNethm2fD/8vEiI33j8guYk1FUkahox6OXJKA3Gvqfgx4tt5GTej8TTz9ZIpfj/pCEMNWo7gmgsBAs+Wk/OLIi471X0Yk0fOegwiYu0NWGZC7PjNoIR9Sn3x6uQu4q8PW5BmAOG1weF1PfEDv5SR5mYy0AvevX9cPDpyp8/D8BZj43LC3dP+0fnY7lhcAf+/O5E4bUywdsv3/CWHNa8P5hbIxq0FEJDKiGvsy5Rfn3K2VHyY8Gs3IbAV492yKkVpumttZisoI1eHqakBj+80rmycMf/+tBImid5RPw4I1tR+dnnetBDbDea6iYfE6NeXlxW14p10qOwxgFAe/yEm47GRQXuhHBB0JeszMDMlxYRhVdejVWxfOrDGbuIrbr0sH+QJAgajFPUZGfM1ChhfkdI/zs3PhYC3Aut1qBnOG7lk2e3kgh4ETSE94vgKqDmR+Nu9ElqSmD5ALpU4SxSVighjCoN4qzW19nMwWKNKsqTNJBC1xxwzcevYYJ1sETN5lX16GE5O0xjeO2LERP2TGkXCifJVzvvgh1pipOMD0ojtlH3cZiJlm2/IL0iBjNIJCz3yn7V6rNvLYnLnLKYQAksge2491f3Rr2wpZGs30cFIrO4iAe2nrr8q3rjHEd+AArKuPzFxx6s',
         ]
     ],
 
