@@ -76,7 +76,7 @@ return [
                 'connection' => 'redis',
                 'queue'      => ['default', 'repricer', 'ranking'],
                 'balance'    => 'auto',
-                'processes'  => 100,
+                'processes'  => 30,
                 'tries'      => 5,
             ],
             'miner'        => [
@@ -87,7 +87,7 @@ return [
                     'miner.item.performance',
                 ],
                 'balance'    => 'auto',
-                'processes'  => 100,
+                'processes'  => 60,
                 'tries'      => 5,
             ],
         ],
