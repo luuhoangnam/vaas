@@ -15,6 +15,10 @@ class CreateCompetitorsTable extends Migration
     {
         Schema::create('competitors', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('username')->unique();
+            $table->unsignedInteger('feedback_score')->nullable();
+            $table->float('positive_feedback_percent')->nullable();
+            $table->string('country')->nullable();
             $table->timestamps();
         });
     }

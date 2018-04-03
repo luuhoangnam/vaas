@@ -97,3 +97,16 @@ if ( ! function_exists('item_filter')) {
         return new ItemFilter(compact('name', 'value'));
     }
 }
+
+if ( ! function_exists('round_even')) {
+    /**
+     * @param mixed $value
+     * @param int   $precision
+     *
+     * @return float
+     */
+    function round_even($value, $precision = 2)
+    {
+        return round($value, $precision, PHP_ROUND_HALF_EVEN);
+    }
+}

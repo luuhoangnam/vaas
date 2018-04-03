@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\AddCompetitor;
 use App\Console\Commands\ApiUsage;
 use App\Console\Commands\BulkImportTrackersByAccount;
 use App\Console\Commands\CheckProxy;
@@ -53,6 +54,7 @@ class Kernel extends ConsoleKernel
         SpyCompetitor::class,
         LoadProxyBonanzaProxies::class,
         CheckProxy::class,
+        AddCompetitor::class,
     ];
 
     /**

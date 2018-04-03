@@ -26,6 +26,12 @@ use Illuminate\Support\Collection;
 
 class ResearchItemController extends Controller
 {
+    /**
+     * @param string|int $id
+     *
+     * @return array
+     * @throws TradingApiException
+     */
     public function show($id)
     {
         $request = new GetItemRequestType;

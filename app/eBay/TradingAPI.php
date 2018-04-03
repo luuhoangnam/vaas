@@ -43,7 +43,10 @@ class TradingAPI extends API
         return AppPool::balancing();
     }
 
-    public static function random(): TradingAPI
+    /**
+     * @return TradingAPI|TradingService
+     */
+    public static function random()
     {
         $credentials = array_only(static::balancing(), ['app_id', 'cert_id', 'dev_id', 'token']);
 

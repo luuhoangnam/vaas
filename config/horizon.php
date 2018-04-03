@@ -79,6 +79,17 @@ return [
                 'processes'  => 100,
                 'tries'      => 5,
             ],
+            'miner'        => [
+                'connection' => 'redis',
+                'queue'      => [
+                    'miner.competitor.items',
+                    'miner.item.details',
+                    'miner.item.performance',
+                ],
+                'balance'    => 'auto',
+                'processes'  => 300,
+                'tries'      => 5,
+            ],
         ],
 
         'local' => [
@@ -87,6 +98,17 @@ return [
                 'queue'      => ['default', 'repricer', 'ranking'],
                 'balance'    => 'auto',
                 'processes'  => 50,
+                'tries'      => 5,
+            ],
+            'miner'        => [
+                'connection' => 'redis',
+                'queue'      => [
+                    'miner.competitor.items',
+                    'miner.item.details',
+                    'miner.item.performance',
+                ],
+                'balance'    => 'auto',
+                'processes'  => 60,
                 'tries'      => 5,
             ],
         ],

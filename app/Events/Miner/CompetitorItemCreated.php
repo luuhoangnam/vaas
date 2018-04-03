@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\Miner;
 
-use App\Spy\Competitor;
+use App\Miner\Item;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class CompetitorSpied
+class CompetitorItemCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $competitor;
+    public $item;
 
-    public function __construct(Competitor $competitor)
+    public function __construct(Item $item)
     {
-        $this->competitor = $competitor;
+        $this->item = $item;
     }
 }

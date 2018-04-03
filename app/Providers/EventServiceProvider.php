@@ -2,20 +2,20 @@
 
 namespace App\Providers;
 
-use App\Events\CompetitorSpied;
-use App\Events\FoundNewCompetitorItem;
 use App\Events\ItemCreated;
 use App\Events\ListerJobCreated;
+use App\Events\Miner\CompetitorCreated;
+use App\Events\Miner\CompetitorItemCreated;
 use App\Events\PlatformNotificationReceived;
 use App\Events\PlatformNotifications\FixedPriceTransaction;
-use App\Events\SeedKeywordAdded;
 use App\Listeners\AttachTracker;
-use App\Listeners\ResearchCompetitorItem;
 use App\Listeners\CreateCompanionListerQueueJob;
-use App\Listeners\FindCompetitorItems;
 use App\Listeners\LogPlatformNotificationPayload;
+use App\Listeners\Miner\MinerSubscriber;
+use App\Listeners\Miner\GetItemDetails;
+use App\Listeners\Miner\GetItemSellingPerformance;
+use App\Listeners\Miner\SearchCompetitorItems;
 use App\Listeners\RefillItemQuantity;
-use App\Listeners\SearchKeywordToFindCompetitor;
 use App\Listeners\Subscribers\ItemEventsSubscriber;
 use App\Listeners\TriggerSyncNewlyOrders;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -53,26 +53,15 @@ class EventServiceProvider extends ServiceProvider
             AttachTracker::class,
         ],
 
-        ListerJobCreated::class => [
+        ListerJobCreated::class  => [
             CreateCompanionListerQueueJob::class,
-        ],
-
-        // Spying
-        CompetitorSpied::class  => [
-             FindCompetitorItems::class,
-        ],
-
-        FoundNewCompetitorItem::class => [
-             ResearchCompetitorItem::class,
-        ],
-
-        SeedKeywordAdded::class => [
-            SearchKeywordToFindCompetitor::class,
         ],
     ];
 
     protected $subscribe = [
         ItemEventsSubscriber::class,
+        // Miner
+        MinerSubscriber::class,
     ];
 
     /**
