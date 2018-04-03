@@ -6,7 +6,6 @@ use App\eBay\FindingAPI;
 use App\Exceptions\Amazon\ProductAdvertisingAPIException;
 use App\Exceptions\FindingApiException;
 use App\Miner\Competitor;
-use App\Miner\Item;
 use App\Sourcing\AmazonAPI;
 use DTS\eBaySDK\Finding\Enums\AckValue;
 use DTS\eBaySDK\Finding\Enums\ItemFilterType;
