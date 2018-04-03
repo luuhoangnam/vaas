@@ -54,12 +54,6 @@ class GetItem implements ShouldQueue
             'end_time'            => app_carbon($itemType->ListingDetails->EndTime),
             'status'              => $itemType->SellingStatus->ListingStatus,
         ]);
-
-        // Get Item Performance if it qualified
-        $qualifiedPrice = config('miner.criterias.min_price', 10);
-        if ($this->item->price >= $qualifiedPrice) {
-            GetItemTransactions::dispatch($this->item)->onQueue('miner.item.performance');
-        }
     }
 
     protected function itemASIN(ItemType $item)
