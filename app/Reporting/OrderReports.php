@@ -91,9 +91,20 @@ class OrderReports
 
     public function profit()
     {
-        $costOfGoodsIncGC = $this->costOfGoods() * (100 + config('ebay.giftcard_rate')) / 100;
+        $giftcardFee = $this->orders->sum(function (Order $order) {
+            $newRateDay = new Carbon('2018/04/04');
 
-        return $this->revenue() - $this->finalVaueFee() - $this->paypalFee() - $costOfGoodsIncGC + $this->cashback();
+            $oldRate = 0.0275;
+            $newRate = 0.0375;
+
+            $rate = $order->created_time->lessThan($newRateDay) ? $oldRate : $newRate;
+
+            return $order->cog * $rate;
+        });
+
+        $fees = $this->finalVaueFee() + $this->paypalFee() + $giftcardFee;
+
+        return $this->revenue() - $fees - $this->costOfGoods() + $this->cashback();
     }
 
     public function margin()

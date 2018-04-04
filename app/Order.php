@@ -8,9 +8,14 @@ use DTS\eBaySDK\Trading\Types\TransactionType;
 use DTS\eBaySDK\Types\RepeatableType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Laravel\Scout\Searchable;
 
+/**
+ * @property Carbon created_time
+ * @property double cog
+ */
 class Order extends Model
 {
     use Searchable;
