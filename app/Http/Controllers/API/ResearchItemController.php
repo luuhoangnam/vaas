@@ -123,9 +123,12 @@ class ResearchItemController extends Controller
         $paypalRate     = config('ebay.paypal_rate');
         $giftcardRate   = config('ebay.giftcard_rate');
 
-        $fees = $sellingPrice * ($finalValueRate + $paypalRate) / 100 + 0.3;
+        $costIncTax  = $this->costIncTax($offer);
+        $giftcardFee = $costIncTax * $giftcardRate / 100;
 
-        return $sellingPrice - $this->costIncTax($offer) * (1 + $giftcardRate) - $fees;
+        $fees = $giftcardFee + $sellingPrice * ($finalValueRate + $paypalRate) / 100 + 0.3;
+
+        return $sellingPrice - $costIncTax - $fees;
     }
 
     protected function costIncTax($offer)
