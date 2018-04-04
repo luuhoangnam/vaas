@@ -12,6 +12,7 @@ class AppServiceProvider extends ServiceProvider
 {
     protected $developers = [
         'hoangnam0705@icloud.com',
+        'davidhazeland@gmail.com',
     ];
 
     /**
