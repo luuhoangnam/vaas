@@ -91,7 +91,9 @@ class OrderReports
 
     public function profit()
     {
-        return $this->revenue() - $this->finalVaueFee() - $this->paypalFee() - $this->costOfGoods() * config('ebay.reporting.giftcard') + $this->cashback();
+        $costOfGoodsIncGC = $this->costOfGoods() * (1 + config('ebay.giftcard_rate'));
+
+        return $this->revenue() - $this->finalVaueFee() - $this->paypalFee() - $costOfGoodsIncGC + $this->cashback();
     }
 
     public function margin()
