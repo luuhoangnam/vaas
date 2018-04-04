@@ -91,7 +91,7 @@ class OrderReports
 
     public function profit()
     {
-        $costOfGoodsIncGC = $this->costOfGoods() * (1 + config('ebay.giftcard_rate'));
+        $costOfGoodsIncGC = $this->costOfGoods() * (100 + config('ebay.giftcard_rate')) / 100;
 
         return $this->revenue() - $this->finalVaueFee() - $this->paypalFee() - $costOfGoodsIncGC + $this->cashback();
     }
