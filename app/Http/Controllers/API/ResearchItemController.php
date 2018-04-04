@@ -119,9 +119,9 @@ class ResearchItemController extends Controller
     protected function calcProfit($sellingPrice, $offer)
     {
         // Configs
-        $finalValueRate = 9.15;
-        $paypalRate     = 3.9;
-        $giftcardRate   = 0.0275;
+        $finalValueRate = config('ebay.final_value_rate');
+        $paypalRate     = config('ebay.paypal_rate');
+        $giftcardRate   = config('ebay.giftcard_rate');
 
         $fees = $sellingPrice * ($finalValueRate + $paypalRate) / 100 + 0.3;
 

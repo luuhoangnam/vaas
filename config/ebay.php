@@ -4,6 +4,10 @@ use App\eBay\FindingAPI;
 use App\eBay\TradingAPI;
 
 return [
+    'final_value_rate' => 9.15,
+    'paypal_rate'      => 3.9,
+    'giftcard_rate'    => 4,
+
     'api' => [
         'cache_time' => 1,
 
@@ -60,7 +64,7 @@ return [
             'dev_id'  => 'af0dcc47-fb6e-4fb9-8c87-e8e842940a76',
             'cert_id' => 'PRD-7873192f6c3d-0bd0-4f6f-9c6d-1d95',
             'token'   => 'AgAAAA**AQAAAA**aAAAAA**fDvDWg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ADkoClAZmAoQmdj6x9nY+seQ**uToEAA**AAMAAA**/CQf/ysFC81l0TvNC+wvWprjKZ27IP3V0x3c99fBE8yWzdqcu1634ACkdUGzGpbu92YfRvsJcCFJYsLk2L50c+6onFXMUrKlIB1LlmZA7xp4aEtnXglF0WS5XaePwLWM0Y1QTfH5KpH5/18StFCPvswfsEHOvSyekwlCYVg2lz1fOSoq82sh9GVh0eCrJp0SI4Z9cWBAEZDH9KQfa7/7Xb+z0FxtKNqSBhw96DdpCAENMwNDLwdW5+7gc7QbpgHjqaR6rzGAYs6dhdxt0SNJul/PHoM3dqvfLMIokWH8VcOAJWCCZW07RjRbImqE4L6x/bX6dGP3flefQ8S6Z4UsRfeKiXoIjTzadL3OngJRtnkBLX/bWDBuAFB9r5DfbOrgq0b5E7g/PRjAnG+xfsbj+9vW05P+eZE1nXKSc6vt0ZD2cgs0Kuwk3emQ2UujNyd/7aFNMDuxSorQLW5vPo3MwBoemfUVSXNyhppi2qNoPNC6+/j+QpAr3Xi5Vuq2895h6kNhQFhm/4M8vzQ1QN2ASPRZ9z/rugo3sQe43y4Wu0jSw22qxPFlE/1xks1f2j6fET60GkxRXYGI6NN/yAlvfDYvFORA/bGYBu6fY3hTGZr/sdHzy967VBh0lc7qGzPsEmuoECwTEKTHj5hi4diXbBFCdwJIpngt053r+wDwiKG4U1FG+Juy1u1/22eyvu2HWyqjoRBtcliCPECY3x1ybF2oK/3hI9LL0xH2S1jxdeb8CYsvJ4OizxqaLCidrZ6o',
-        ]
+        ],
     ],
 
     'webhooks' => [
