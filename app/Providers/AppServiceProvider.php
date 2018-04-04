@@ -24,8 +24,7 @@ class AppServiceProvider extends ServiceProvider
     {
         # HORIZON
         Horizon::auth(function (Request $request) {
-            return $this->app->environment('local') ||
-                   $request->user() && in_array($request->user()['email'], $this->developers);
+            return $this->app->environment('local') || $request->user() && $request->user()->isDeveloper();
         });
 
         Horizon::routeSlackNotificationsTo(config('horizon.notifications.slack'));
