@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\eBay;
 
 use App\Events\PlatformNotificationReceived;
+use App\Http\Controllers\Controller;
 use App\Support\PlatformNotificaitonRequestParser;
 use DTS\eBaySDK\Trading\Types\AbstractResponseType;
 use Illuminate\Http\Request;
-
 
 class NotificationsController extends Controller
 {

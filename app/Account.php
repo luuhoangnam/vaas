@@ -5,6 +5,7 @@ namespace App;
 use App\eBay\TradingAPI;
 use App\Exceptions\TradingApiException;
 use App\Ranking\Trackable;
+use Carbon\Carbon as PureCarbon;
 use DTS\eBaySDK\BusinessPoliciesManagement\Services\BusinessPoliciesManagementService;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Enums\CountryCodeType;
@@ -330,12 +331,12 @@ class Account extends Model
     }
 
     /**
-     * @param \Carbon\Carbon|null $from
-     * @param \Carbon\Carbon|null $until
+     * @param PureCarbon|null $from
+     * @param PureCarbon|null $until
      *
      * @throws TradingApiException
      */
-    public function syncItemsByStartTimeRange(\Carbon\Carbon $from = null, \Carbon\Carbon $until = null)
+    public function syncItemsByStartTimeRange(PureCarbon $from = null, PureCarbon $until = null)
     {
         $request = new GetSellerListRequestType;
 
@@ -396,12 +397,12 @@ class Account extends Model
     }
 
     /**
-     * @param \Carbon\Carbon|null $from
-     * @param \Carbon\Carbon|null $until
+     * @param PureCarbon|null $from
+     * @param PureCarbon|null $until
      *
      * @throws TradingApiException
      */
-    public function syncOrdersByCreatedTimeRange(\Carbon\Carbon $from = null, \Carbon\Carbon $until = null)
+    public function syncOrdersByCreatedTimeRange(PureCarbon $from = null, PureCarbon $until = null)
     {
         $request = new GetOrdersRequestType;
 
