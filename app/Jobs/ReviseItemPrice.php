@@ -8,6 +8,7 @@ use App\Item;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Enums\CurrencyCodeType;
 use DTS\eBaySDK\Trading\Types\AmountType;
+use DTS\eBaySDK\Trading\Types\ReviseItemRequestType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -39,7 +40,7 @@ class ReviseItemPrice implements ShouldQueue
 
     public function handle()
     {
-        $request = $this->account()->reviseItemRequest();
+        $request = new ReviseItemRequestType;
 
         $request->Item = $this->item->itemType();
 

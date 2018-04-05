@@ -6,6 +6,7 @@ use App\Account;
 use App\Exceptions\TradingApiException;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Enums\DetailLevelCodeType;
+use DTS\eBaySDK\Trading\Types\GetApiAccessRulesRequestType;
 use Illuminate\Console\Command;
 
 class ApiUsage extends Command
@@ -14,14 +15,22 @@ class ApiUsage extends Command
 
     protected $description = 'Get eBay API Usage';
 
+    /**
+     * @throws TradingApiException
+     */
     public function handle()
     {
         $this->printApiCallUsage(Account::random());
     }
 
+    /**
+     * @param Account $account
+     *
+     * @throws TradingApiException
+     */
     protected function printApiCallUsage(Account $account): void
     {
-        $request = $account->getApiAccessRulesRequest();
+        $request = new GetApiAccessRulesRequestType;
 
         $request->DetailLevel = [DetailLevelCodeType::C_RETURN_ALL];
 
@@ -39,7 +48,7 @@ class ApiUsage extends Command
         $rows = collect();
         foreach ($response->ApiAccessRule as $rule) {
             $hourly = "{$rule->HourlyUsage}/{$rule->HourlySoftLimit}/{$rule->HourlyHardLimit}";
-            $daily  = "{$rule->DailyUsage}/{$rule->DailySoftLimit}/{$rule->DailyHardLimit}";
+            $daily = "{$rule->DailyUsage}/{$rule->DailySoftLimit}/{$rule->DailyHardLimit}";
 
             $rows->push([$rule->CallName, $hourly, $daily]);
         }

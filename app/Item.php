@@ -2,16 +2,13 @@
 
 namespace App;
 
-use App\Cashback\AmazonAssociates;
 use App\Events\ItemCreated;
-use App\Exceptions\CanNotFetchProductInformation;
 use App\Ranking\Trackable;
 use App\Ranking\Tracker;
 use App\Repricing\Repricer;
 use Carbon\Carbon;
 use DTS\eBaySDK\Trading\Enums\ListingStatusCodeType;
 use DTS\eBaySDK\Trading\Types\ItemType;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
@@ -186,11 +183,6 @@ class Item extends Model
     public function getEbayLinkAttribute()
     {
         return "https://www.ebay.com/itm/{$this['item_id']}";
-    }
-
-    public function getAssociateLinkAttribute()
-    {
-        return (new AmazonAssociates)->link($this['sku']);
     }
 
     public function getQuantityAvailableAttribute()

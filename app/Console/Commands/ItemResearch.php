@@ -171,12 +171,12 @@ class ItemResearch extends Command
 
     protected function trading(): TradingService
     {
-        return app(TradingService::class);
+        return $this->getAccount()->trading();
     }
 
     protected function getItemTransactionsRequest(): GetItemTransactionsRequestType
     {
-        return $this->getAccount()->getItemTransactionsRequest();
+        return new GetItemTransactionsRequestType;
     }
 
     protected function getAccount(): Account

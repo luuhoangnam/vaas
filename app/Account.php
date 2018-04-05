@@ -22,6 +22,11 @@ use DTS\eBaySDK\Trading\Types\AmountType;
 use DTS\eBaySDK\Trading\Types\ApplicationDeliveryPreferencesType;
 use DTS\eBaySDK\Trading\Types\CategoryType;
 use DTS\eBaySDK\Trading\Types\CustomSecurityHeaderType;
+use DTS\eBaySDK\Trading\Types\GetCategoryFeaturesRequestType;
+use DTS\eBaySDK\Trading\Types\GetOrdersRequestType;
+use DTS\eBaySDK\Trading\Types\GetSellerListRequestType;
+use DTS\eBaySDK\Trading\Types\GetSuggestedCategoriesRequestType;
+use DTS\eBaySDK\Trading\Types\GetUserPreferencesRequestType;
 use DTS\eBaySDK\Trading\Types\ItemType;
 use DTS\eBaySDK\Trading\Types\NotificationEnableArrayType;
 use DTS\eBaySDK\Trading\Types\NotificationEnableType;
@@ -33,13 +38,15 @@ use DTS\eBaySDK\Trading\Types\SellerPaymentProfileType;
 use DTS\eBaySDK\Trading\Types\SellerProfilesType;
 use DTS\eBaySDK\Trading\Types\SellerReturnProfileType;
 use DTS\eBaySDK\Trading\Types\SellerShippingProfileType;
+use DTS\eBaySDK\Trading\Types\SetNotificationPreferencesRequestType;
+use DTS\eBaySDK\Trading\Types\VerifyAddItemRequestType;
 use DTS\eBaySDK\Trading\Types\VerifyAddItemResponseType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 class Account extends Model
 {
-    use TradingRequests, Trackable;
+    use Trackable;
 
     protected $fillable = ['username', 'token'];
 
@@ -127,7 +134,7 @@ class Account extends Model
     public function prepareAuthRequiredRequest(AbstractRequestType $request): AbstractRequestType
     {
         // Credentials
-        $credentials                = new CustomSecurityHeaderType;
+        $credentials = new CustomSecurityHeaderType;
         $credentials->eBayAuthToken = $this['token'];
 
         // Prepare the Request
@@ -136,9 +143,12 @@ class Account extends Model
         return $request;
     }
 
+    /**
+     * @throws TradingApiException
+     */
     public function subscribePlatformNotification(): void
     {
-        $request = $this->setNotificationPreferencesRequest();
+        $request = new SetNotificationPreferencesRequestType;
 
         $request->ApplicationDeliveryPreferences = new ApplicationDeliveryPreferencesType;
 
@@ -168,7 +178,7 @@ class Account extends Model
 
     public function addItem(array $data): VerifyAddItemResponseType
     {
-        $request = $this->addItemRequest();
+        $request = new VerifyAddItemRequestType;
 
         $request->Item = new ItemType;
 
@@ -189,29 +199,29 @@ class Account extends Model
         $request->Item->StartPrice = new AmountType;
 
         $request->Item->StartPrice->currencyID = CurrencyCodeType::C_USD;
-        $request->Item->StartPrice->value      = (float)$data['price'];
+        $request->Item->StartPrice->value = (float)$data['price'];
 
         // Category
-        $request->Item->PrimaryCategory             = new CategoryType;
+        $request->Item->PrimaryCategory = new CategoryType;
         $request->Item->PrimaryCategory->CategoryID = (string)$data['category_id'];
 
         // Profiles
         $request->Item->SellerProfiles = new SellerProfilesType;
 
-        $request->Item->SellerProfiles->SellerPaymentProfile                   = new SellerPaymentProfileType;
+        $request->Item->SellerProfiles->SellerPaymentProfile = new SellerPaymentProfileType;
         $request->Item->SellerProfiles->SellerPaymentProfile->PaymentProfileID = $data['payment_profile_id'];
 
-        $request->Item->SellerProfiles->SellerShippingProfile                    = new SellerShippingProfileType;
+        $request->Item->SellerProfiles->SellerShippingProfile = new SellerShippingProfileType;
         $request->Item->SellerProfiles->SellerShippingProfile->ShippingProfileID = $data['shipping_profile_id'];
 
-        $request->Item->SellerProfiles->SellerReturnProfile                  = new SellerReturnProfileType;
+        $request->Item->SellerProfiles->SellerReturnProfile = new SellerReturnProfileType;
         $request->Item->SellerProfiles->SellerReturnProfile->ReturnProfileID = $data['return_profile_id'];
 
         // Description
         $request->Item->Description = $data['description'];
 
         // Pictures
-        $request->Item->PictureDetails             = new PictureDetailsType;
+        $request->Item->PictureDetails = new PictureDetailsType;
         $request->Item->PictureDetails->PictureURL = $data['pictures'];
 
         // Duration (Always GTC)
@@ -219,7 +229,7 @@ class Account extends Model
 
         // Location
         $request->Item->Location = 'Florida, 34249';
-        $request->Item->Country  = CountryCodeType::C_US;
+        $request->Item->Country = CountryCodeType::C_US;
 
         // Condition
         $request->Item->ConditionID = $data['condition_id'];
@@ -248,13 +258,19 @@ class Account extends Model
         return $response;
     }
 
+    /**
+     * @param string $query
+     *
+     * @return array
+     * @throws \Exception
+     */
     public function suggestCategory(string $query): array
     {
-        $cacheKey  = md5("suggestCategory({$query})");
+        $cacheKey = md5("suggestCategory({$query})");
         $cacheTime = 60 * 24 * 30; // Cache for 30 days
 
         return cache()->remember($cacheKey, $cacheTime, function () use ($query) {
-            $request = $this->getSuggestedCategoriesRequest();
+            $request = new GetSuggestedCategoriesRequestType;
 
             $request->Query = $query;
 
@@ -268,9 +284,13 @@ class Account extends Model
         });
     }
 
+    /**
+     * @return array
+     * @throws TradingApiException
+     */
     public function sellerProfiles(): array
     {
-        $request = $this->getUserPreferencesRequest();
+        $request = new GetUserPreferencesRequestType;
 
         $request->ShowSellerProfilePreferences = true;
 
@@ -283,9 +303,15 @@ class Account extends Model
         return $response->SellerProfilePreferences->SupportedSellerProfiles->toArray()['SupportedSellerProfile'];
     }
 
+    /**
+     * @param $categoryId
+     *
+     * @return mixed
+     * @throws TradingApiException
+     */
     public function categoryFeatures($categoryId)
     {
-        $request = $this->getCategoryFeaturesRequest();
+        $request = new GetCategoryFeaturesRequestType;
 
         $request->CategoryID = (string)$categoryId;
 
@@ -303,19 +329,25 @@ class Account extends Model
         return $response->Category[0]->ConditionValues->toArray()['Condition'];
     }
 
+    /**
+     * @param \Carbon\Carbon|null $from
+     * @param \Carbon\Carbon|null $until
+     *
+     * @throws TradingApiException
+     */
     public function syncItemsByStartTimeRange(\Carbon\Carbon $from = null, \Carbon\Carbon $until = null)
     {
-        $request = $this->getSellerListRequest();
+        $request = new GetSellerListRequestType;
 
         # START TIME RAGE WITHIN LAST 3 MONTHS
         $request->StartTimeFrom = dt($from, 'GMT');
-        $request->StartTimeTo   = dt($until, 'GMT');
+        $request->StartTimeTo = dt($until, 'GMT');
 
         # PAGINATION
         $request->Pagination = new PaginationType;
 
         $request->Pagination->EntriesPerPage = 100;
-        $request->Pagination->PageNumber     = 1;
+        $request->Pagination->PageNumber = 1;
 
         # OUTPUT SELECTOR
         $request->DetailLevel = [DetailLevelCodeType::C_RETURN_ALL];
@@ -363,17 +395,23 @@ class Account extends Model
         );
     }
 
+    /**
+     * @param \Carbon\Carbon|null $from
+     * @param \Carbon\Carbon|null $until
+     *
+     * @throws TradingApiException
+     */
     public function syncOrdersByCreatedTimeRange(\Carbon\Carbon $from = null, \Carbon\Carbon $until = null)
     {
-        $request = $this->getOrdersRequest();
+        $request = new GetOrdersRequestType;
 
         # DEFAULT FOR TIME RANGE IF NOT SETTED
-        $from  = $from ?: Carbon::now()->subMonths(3);
+        $from = $from ?: Carbon::now()->subMonths(3);
         $until = $until ?: Carbon::now();
 
         # CREATED TIME RAGE
         $request->CreateTimeFrom = dt($from, 'GMT');
-        $request->CreateTimeTo   = dt($until, 'GMT');
+        $request->CreateTimeTo = dt($until, 'GMT');
 
         # Final Value Fee
         $request->IncludeFinalValueFee = true;
@@ -382,7 +420,7 @@ class Account extends Model
         $request->Pagination = new PaginationType;
 
         $request->Pagination->EntriesPerPage = 100;
-        $request->Pagination->PageNumber     = 1;
+        $request->Pagination->PageNumber = 1;
 
         # OUTPUT SELECTOR
         $request->DetailLevel = [DetailLevelCodeType::C_RETURN_ALL];

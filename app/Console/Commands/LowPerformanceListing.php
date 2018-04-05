@@ -7,6 +7,7 @@ use App\Exceptions\CanNotEndItemsException;
 use App\Item;
 use DTS\eBaySDK\Trading\Enums\EndReasonCodeType;
 use DTS\eBaySDK\Trading\Types\EndItemRequestContainerType;
+use DTS\eBaySDK\Trading\Types\EndItemsRequestType;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 
@@ -56,7 +57,7 @@ class LowPerformanceListing extends Command
         if ($lowPerformanceItems->count() === 0) {
             $this->info('Done!');
 
-            return 0;
+            return;
         }
 
         // Draw Table
@@ -110,7 +111,7 @@ class LowPerformanceListing extends Command
         if ( ! $willEndListings) {
             $this->info('Bye!');
 
-            return 0;
+            return;
         }
 
         $this->warn('Ending Items...');
@@ -118,7 +119,7 @@ class LowPerformanceListing extends Command
         // END LISTING BY REQUESTED
         $lowPerformanceItems->chunk(10)->each(function (Collection $itemSet) use ($account) {
 
-            $request = $account->endItemsRequest();
+            $request = new EndItemsRequestType;
 
             foreach ($itemSet as $item) {
                 $container = new EndItemRequestContainerType;
@@ -156,6 +157,8 @@ class LowPerformanceListing extends Command
         });
 
         $this->info('Done!');
+
+        return;
     }
 
     protected function getAccount($username): Account

@@ -6,12 +6,12 @@ use App\Account;
 use App\Exceptions\TradingApiException;
 use App\Item;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
-use DTS\eBaySDK\Trading\Types\ItemType;
+use DTS\eBaySDK\Trading\Types\ReviseItemRequestType;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class ReviseItemQuantityToZero implements ShouldQueue
 {
@@ -34,9 +34,12 @@ class ReviseItemQuantityToZero implements ShouldQueue
         $this->item = $item;
     }
 
+    /**
+     * @throws TradingApiException
+     */
     public function handle()
     {
-        $request = $this->account()->reviseItemRequest();
+        $request = new ReviseItemRequestType;
 
         $request->Item = $this->item->itemType();
 
