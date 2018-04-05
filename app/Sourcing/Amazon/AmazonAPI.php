@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Sourcing;
+namespace App\Sourcing\Amazon;
 
 use App\Exceptions\Amazon\ProductAdvertisingAPIException;
 use App\Jobs\Amazon\ExtractOffers;

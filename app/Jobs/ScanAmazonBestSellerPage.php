@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Product;
-use App\Sourcing\AmazonCrawler;
+use App\Sourcing\Amazon\AmazonCrawler;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

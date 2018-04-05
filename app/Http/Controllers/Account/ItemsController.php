@@ -6,7 +6,7 @@ use App\Account;
 use App\Exceptions\CanNotFetchProductInformation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ListAnItemRequest;
-use App\Sourcing\AmazonProduct;
+use App\Sourcing\Amazon\AmazonProduct;
 use Illuminate\Http\Request;
 
 class ItemsController extends Controller

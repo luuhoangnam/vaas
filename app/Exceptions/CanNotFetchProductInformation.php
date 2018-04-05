@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-use App\Sourcing\SourceProductInterface;
+use App\Sourcing\Amazon\SourceProductInterface;
 
 class CanNotFetchProductInformation extends \Exception
 {
