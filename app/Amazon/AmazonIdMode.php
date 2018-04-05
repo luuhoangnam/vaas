@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Sourcing\Amazon;
+namespace App\Amazon;
 
 use LuuHoangNam\Support\Enum;
 

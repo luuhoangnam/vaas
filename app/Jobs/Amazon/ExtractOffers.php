@@ -4,7 +4,7 @@ namespace App\Jobs\Amazon;
 
 use App\Exceptions\Amazon\SomethingWentWrongException;
 use App\Product;
-use App\Sourcing\Amazon\OfferListingExtractor;
+use App\Amazon\OfferListingExtractor;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

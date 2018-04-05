@@ -151,6 +151,7 @@ return [
          * Package Service Providers...
          */
         LuuHoangNam\Debug\ServiceProvider::class,
+        App\Sourcing\SourcingServiceProvider::class,
 
         /*
          * Application Service Providers...

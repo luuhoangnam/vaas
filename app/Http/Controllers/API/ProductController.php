@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Exceptions\AmazonException;
 use App\Http\Controllers\AuthRequiredController;
-use App\Sourcing\Amazon\AmazonAPI;
+use App\Amazon\AmazonAPI;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 

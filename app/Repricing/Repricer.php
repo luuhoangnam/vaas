@@ -6,7 +6,7 @@ use App\Exceptions\Amazon\ProductAdvertisingAPIException;
 use App\Item;
 use App\Jobs\ReviseItemPrice;
 use App\Jobs\ReviseItemQuantityToZero;
-use App\Sourcing\Amazon\AmazonAPI;
+use App\Amazon\AmazonAPI;
 use App\Support\ReviseCase;
 use App\Support\SellingPriceCalculator;
 use Illuminate\Database\Eloquent\Model;

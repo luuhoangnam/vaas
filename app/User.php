@@ -4,7 +4,7 @@ namespace App;
 
 use App\Exceptions\AccountAlreadyLinkedException;
 use App\Exceptions\SourceProductClassDoesNotExistsException;
-use App\Sourcing\Amazon\AmazonAPI;
+use App\Amazon\AmazonAPI;
 use App\Support\TemplateType;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;

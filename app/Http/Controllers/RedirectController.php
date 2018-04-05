@@ -6,7 +6,7 @@ use App\Cashback\AmazonAssociates;
 use App\Cashback\AmazonAssociatesCashbackRateResolver;
 use App\Exceptions\InvalidAmazonAssociatesItemException;
 use App\Exceptions\NonAffiliatableException;
-use App\Sourcing\Amazon\AmazonProduct;
+use App\Amazon\AmazonProduct;
 use Illuminate\Http\Request;
 
 class RedirectController extends Controller
