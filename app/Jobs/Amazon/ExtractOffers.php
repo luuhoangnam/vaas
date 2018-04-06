@@ -33,7 +33,6 @@ class ExtractOffers implements ShouldQueue
 
     /**
      * @return array
-     * @throws SomethingWentWrongException
      */
     public function handle(): array
     {
