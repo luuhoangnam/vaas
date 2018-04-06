@@ -31,6 +31,7 @@ class ResearchItemController extends Controller
      *
      * @return array
      * @throws TradingApiException
+     * @throws \Exception
      */
     public function show($id)
     {
@@ -74,7 +75,7 @@ class ResearchItemController extends Controller
         $item = $this->extract($response->Item);
         $performance = $this->performance($id);
         $source = $this->guessSource($response->Item);
-        $listed_on = @$source['asin'] ? $this->listedOn($source['asin']) : null;
+        $listed_on = @$source['asin'] ? $this->listedOn($source['asin']) : [];
 
         # CALCULATE PROFIT, MARGIN, BEST OFFER
         $offers = collect($source['offers']);
@@ -296,7 +297,7 @@ class ResearchItemController extends Controller
                 } else {
                     return null;
                 }
-                
+
                 $offers = ExtractOffers::dispatchNow($product['asin']);
 
                 $offers = collect($offers)->sortBy(function ($offer) {
