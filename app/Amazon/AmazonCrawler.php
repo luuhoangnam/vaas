@@ -30,7 +30,7 @@ class AmazonCrawler
 
     public function scrape($extractOffers = true)
     {
-        $cacheKey  = md5("amazon.com:{$this->asin}");
+        $cacheKey = md5("amazon.com:{$this->asin}");
         $cacheTime = config('crawler.cache_time', 60);
 
         return cache()->remember($cacheKey, $cacheTime, function () use ($extractOffers) {
@@ -52,11 +52,11 @@ class AmazonCrawler
 
             $id = $this->asin;
 //            $price       = $this->extractPrice($crawler); // Buy Box Price
-            $title       = $this->extractTitle($crawler);
+            $title = $this->extractTitle($crawler);
             $description = $this->extractDescription($crawler);
-            $available   = $this->extractAvailability($crawler);
-            $images      = $this->extractImages($crawler);
-            $features    = $this->extractFeatures($crawler);
+            $available = $this->extractAvailability($crawler);
+            $images = $this->extractImages($crawler);
+            $features = $this->extractFeatures($crawler);
 
             // Get Offers Available: Only Prime + New
             $offers = $extractOffers ? ExtractOffers::dispatchNow($this->asin) : [];
@@ -114,8 +114,20 @@ class AmazonCrawler
             ],
         ];
 
+        $useCrawlera = config('network.outgoing.use_crawlera', false);
+
+
         if (config('crawler.use_proxy', false)) {
-            $config['proxy'] = ProxyManager::takeOne();
+            if ($useCrawlera) {
+                $username = env('CRAWLERA_API_KEY');
+                $password = '';
+
+//                $config['auth'] = [$username, $password];
+                $config['proxy'] = "{$username}:{$password}@proxy.crawlera.com:8010";
+                $config['verify'] = resource_path('certs/crawlera-ca.crt');
+            } else {
+                $config['proxy'] = ProxyManager::takeOne();
+            }
         }
 
         return new Guzzle($config);
