@@ -2,7 +2,7 @@
 
 return [
     'outgoing' => [
-        'use_crawlera' => true,
+        'use_crawlera' => false,
 
         'proxies'   => [
             '196.19.44.33:3128',
