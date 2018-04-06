@@ -5,6 +5,7 @@ return [
         'use_crawlera' => false,
 
         'proxies'   => [
+//            'http://lum-customer-hl_b028c365-zone-static:f259b7kl3yhn@127.0.0.1:22225'
             '196.19.44.33:3128',
             '196.19.44.191:3128',
             '196.19.44.138:3128',
