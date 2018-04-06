@@ -33,6 +33,7 @@ class ExtractOffers implements ShouldQueue
 
     /**
      * @return array
+     * @throws SomethingWentWrongException
      */
     public function handle(): array
     {
@@ -46,6 +47,8 @@ class ExtractOffers implements ShouldQueue
             $this->release(3 ^ $this->attempts());
 
             Redis::incr('crawler:amazon:retries');
+
+            throw $exception;
         }
     }
 }
