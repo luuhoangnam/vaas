@@ -123,6 +123,7 @@ class AmazonCrawler
                 $password = '';
 
 //                $config['auth'] = [$username, $password];
+                $config['timeout'] = 600;
                 $config['proxy'] = "{$username}:{$password}@proxy.crawlera.com:8010";
                 $config['verify'] = resource_path('certs/crawlera-ca.crt');
             } else {
