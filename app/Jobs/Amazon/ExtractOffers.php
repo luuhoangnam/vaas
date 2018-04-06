@@ -25,12 +25,16 @@ class ExtractOffers implements ShouldQueue
 
     public function __construct($asin, $prime = true, $new = true, $freeShipping = true)
     {
-        $this->asin         = $asin;
-        $this->prime        = $prime;
-        $this->new          = $new;
+        $this->asin = $asin;
+        $this->prime = $prime;
+        $this->new = $new;
         $this->freeShipping = $freeShipping;
     }
 
+    /**
+     * @return array
+     * @throws SomethingWentWrongException
+     */
     public function handle(): array
     {
         try {
@@ -43,8 +47,6 @@ class ExtractOffers implements ShouldQueue
             $this->release(3 ^ $this->attempts());
 
             Redis::incr('crawler:amazon:retries');
-
-            throw $exception;
         }
     }
 }

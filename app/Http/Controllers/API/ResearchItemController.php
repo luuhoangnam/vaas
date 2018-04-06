@@ -36,7 +36,7 @@ class ResearchItemController extends Controller
     {
         $request = new GetItemRequestType;
 
-        $request->IncludeWatchCount    = true;
+        $request->IncludeWatchCount = true;
         $request->IncludeItemSpecifics = true;
 
         $request->ItemID = (string)$id;
@@ -64,17 +64,17 @@ class ResearchItemController extends Controller
             'Variations',
         ];
 
-        /** @noinspection PhpUndefinedMethodInspection */
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
         $response = $this->trading()->getItem($request, 60); // Cached for 1 Day
 
         if ($response->Ack === AckCodeType::C_FAILURE) {
             throw new TradingApiException($request, $response);
         }
 
-        $item        = $this->extract($response->Item);
+        $item = $this->extract($response->Item);
         $performance = $this->performance($id);
-        $source      = $this->guessSource($response->Item);
-        $listed_on   = @$source['asin'] ? $this->listedOn($source['asin']) : null;
+        $source = $this->guessSource($response->Item);
+        $listed_on = @$source['asin'] ? $this->listedOn($source['asin']) : null;
 
         # CALCULATE PROFIT, MARGIN, BEST OFFER
         $offers = collect($source['offers']);
@@ -103,7 +103,7 @@ class ResearchItemController extends Controller
         }
 
         if ($best_offer) {
-            $perf30D         = collect($performance)->where('period', '=', 30)->first();
+            $perf30D = collect($performance)->where('period', '=', 30)->first();
             $priceIsNotRight = $perf30D['count'] && $perf30D['average_price'] / $best_offer['price'] >= 2;
 
             if ($priceIsNotRight) {
@@ -120,10 +120,10 @@ class ResearchItemController extends Controller
     {
         // Configs
         $finalValueRate = config('ebay.final_value_rate');
-        $paypalRate     = config('ebay.paypal_rate');
-        $giftcardRate   = config('ebay.giftcard_rate');
+        $paypalRate = config('ebay.paypal_rate');
+        $giftcardRate = config('ebay.giftcard_rate');
 
-        $costIncTax  = $this->costIncTax($offer);
+        $costIncTax = $this->costIncTax($offer);
         $giftcardFee = $costIncTax * $giftcardRate / 100;
 
         $fees = $giftcardFee + $sellingPrice * ($finalValueRate + $paypalRate) / 100 + 0.3;
@@ -174,8 +174,8 @@ class ResearchItemController extends Controller
     {
         $request = new GetItemTransactionsRequestType;
 
-        $request->ItemID       = (string)$itemID;
-        $request->Pagination   = new PaginationType(['EntriesPerPage' => 100, 'PageNumber' => 1]);
+        $request->ItemID = (string)$itemID;
+        $request->Pagination = new PaginationType(['EntriesPerPage' => 100, 'PageNumber' => 1]);
         $request->NumberOfDays = 30;
 
         $request->DetailLevel = [DetailLevelCodeType::C_RETURN_ALL];
@@ -218,9 +218,9 @@ class ResearchItemController extends Controller
             return $transaction->toArray();
         });
 
-        $period   = $until->diffInDays($since);
-        $count    = $filtered->count();
-        $revenue  = round($filtered->sum('TransactionPrice.value'), 2, PHP_ROUND_HALF_EVEN);
+        $period = $until->diffInDays($since);
+        $count = $filtered->count();
+        $revenue = round($filtered->sum('TransactionPrice.value'), 2, PHP_ROUND_HALF_EVEN);
         $quantity = round($filtered->sum('QuantityPurchased'), 0, PHP_ROUND_HALF_EVEN);
 
         return array_merge(
@@ -260,8 +260,8 @@ class ResearchItemController extends Controller
 
         if (@$item->ProductListingDetails->BrandMPN) {
             $attributes['Brand'] = @$item->ProductListingDetails->BrandMPN->Brand;
-            $attributes['MPN']   = @$item->ProductListingDetails->BrandMPN->MPN;
-            $attributes['MPN']   = @$item->ProductListingDetails->BrandMPN->MPN;
+            $attributes['MPN'] = @$item->ProductListingDetails->BrandMPN->MPN;
+            $attributes['MPN'] = @$item->ProductListingDetails->BrandMPN->MPN;
         }
 
         return $attributes;
@@ -272,9 +272,15 @@ class ResearchItemController extends Controller
         return TradingAPI::random();
     }
 
+    /**
+     * @param ItemType $item
+     *
+     * @return mixed
+     * @throws \Exception
+     */
     protected function guessSource(ItemType $item)
     {
-        $cacheKey  = md5("items:{$item->ItemID}:source");
+        $cacheKey = md5("items:{$item->ItemID}:source");
         $cacheTime = 60 * 24; // Cache 1 Day for Source
 
         return cache()->remember($cacheKey, $cacheTime, function () use ($item) {
@@ -290,12 +296,8 @@ class ResearchItemController extends Controller
                 } else {
                     return null;
                 }
-
-                try {
-                    $offers = ExtractOffers::dispatchNow($product['asin']);
-                } catch (SomethingWentWrongException $exception) {
-                    $offers = null;
-                }
+                
+                $offers = ExtractOffers::dispatchNow($product['asin']);
 
                 $offers = collect($offers)->sortBy(function ($offer) {
                     return $this->costIncTax($offer);
@@ -435,14 +437,14 @@ class ResearchItemController extends Controller
             ];
         });
 
-        $orders   = $data->pluck('count');
+        $orders = $data->pluck('count');
         $revenues = $data->pluck('revenue');
 
         $orderAxisStep = round($orders->max()) ?: 1;
         $maxOrdersAxis = (round($orders->max() / $orderAxisStep, 0, PHP_ROUND_HALF_UP) + 1) * $orderAxisStep;
 
         $revenueAxisStep = round($revenues->max()) ?: 1;
-        $maxRevenueAxis  = (round($revenues->max() / $revenueAxisStep, 0, PHP_ROUND_HALF_UP) + 1) * $revenueAxisStep;
+        $maxRevenueAxis = (round($revenues->max() / $revenueAxisStep, 0, PHP_ROUND_HALF_UP) + 1) * $revenueAxisStep;
 
         return [
             'type' => 'bar',
