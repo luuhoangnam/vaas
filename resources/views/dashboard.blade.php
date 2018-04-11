@@ -44,7 +44,9 @@
                         @include('dashboard.price-distribution')
 
                     </div>
+                </div>
 
+                <div class="row">
                     <div class="col-xl-12">
 
                         @include('dashboard.new-items')
