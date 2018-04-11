@@ -125,7 +125,7 @@ class HomeController extends AuthRequiredController
                               ->orderByDesc('start_time');
 
         $newItems          = $newItemsQuery->get();
-        $newItemsPaginated = $newItemsQuery->paginate(30);
+        $newItemsPaginated = $newItemsQuery->paginate(35);
 
         # ITEM PRICE DISTRIBUTION
         $priceDistributionChart = $this->generatePriceDistributionChart($request, $startDate, $endDate);
