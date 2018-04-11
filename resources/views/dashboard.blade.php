@@ -28,14 +28,6 @@
 
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="col-xl-12">
-
-                        @include('dashboard.new-items')
-
-                    </div>
-                </div>
             </div>
 
             <div class="col-xl-6">
@@ -50,6 +42,12 @@
                     <div class="col-xl-12">
 
                         @include('dashboard.price-distribution')
+
+                    </div>
+
+                    <div class="col-xl-12">
+
+                        @include('dashboard.new-items')
 
                     </div>
                 </div>

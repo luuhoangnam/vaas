@@ -54,7 +54,7 @@ class HomeController extends AuthRequiredController
         $ordersQuery = $this->buildOrdersQuery($request, $startDate, $endDate);
 
         $orders          = $ordersQuery->get();
-        $ordersPaginated = $ordersQuery->paginate();
+        $ordersPaginated = $ordersQuery->paginate(50);
         $ordersLastWeek  = $this->buildOrdersQuery($request, $previousPeriodStartDate, $previousPeriodEndDate)->get();
 
         $orderReports               = new OrderReports($orders);
