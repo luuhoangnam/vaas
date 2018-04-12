@@ -306,7 +306,7 @@ class ResearchItemController extends Controller
 
                 return array_merge($product, compact('offers'));
             } catch (ProductAdvertisingAPIException $exception) {
-                if ($asin = $this->itemASIN($item) && $exception->getCode() === 'AWS.ECommerceService.ItemNotAccessible') {
+                if (($asin = $this->itemASIN($item)) && $exception->getCode() === 'AWS.ECommerceService.ItemNotAccessible') {
                     return AmazonCrawler::get($asin);
                 }
 
