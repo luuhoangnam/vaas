@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Amazon\AmazonAPI;
+use App\Amazon\AmazonCrawler;
+use App\Amazon\AmazonIdMode;
 use App\eBay\TradingAPI;
 use App\Exceptions\Amazon\ProductAdvertisingAPIException;
-use App\Exceptions\Amazon\SomethingWentWrongException;
 use App\Exceptions\TradingApiException;
 use App\Http\Controllers\Controller;
 use App\Item;
 use App\Jobs\Amazon\ExtractOffers;
-use App\Amazon\AmazonAPI;
-use App\Amazon\AmazonCrawler;
-use App\Amazon\AmazonIdMode;
 use Carbon\Carbon as PureCarbon;
 use DTS\eBaySDK\Trading\Enums\AckCodeType;
 use DTS\eBaySDK\Trading\Enums\DetailLevelCodeType;
