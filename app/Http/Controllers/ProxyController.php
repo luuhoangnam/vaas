@@ -16,7 +16,7 @@ PACSCRIPT;
 
         $proxies = collect(config('network.outgoing.proxies'));
         $script = sprintf($template, $proxies->random());
-dd($script);
+
         return response($script, 200, [
             'Content-Type' => 'application/x-ns-proxy-autoconfig',
         ]);
