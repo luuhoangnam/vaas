@@ -51,3 +51,11 @@ Route::middleware('auth:api')->group(function () {
     # END TRACKING
 # END EBAY INTERACTIONS
 });
+
+# REDIS UTILS
+Route::get('redis-info/{section?}', function ($section = null) {
+    $redis = app('redis');
+
+    return $section ? $redis->command('info', [$section]) : $redis->command('info');
+});
+# END REDIS UTILS
