@@ -14,3 +14,7 @@ Route::get('redirect/amazon/{asin}', 'RedirectController@redirect')->name('redir
 # LISTINGS
 Route::get('items', 'ItemsController@index')->name('items');
 # END LISTINGS
+
+# PROXY AUTO CONFIG
+Route::get('proxy.pac', 'ProxyController@pac');
+# END PROXY AUTO CONFIG
