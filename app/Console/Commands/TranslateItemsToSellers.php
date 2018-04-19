@@ -11,7 +11,7 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 
 class TranslateItemsToSellers extends Command
 {
-    protected $signature = 'trans-items {--I|input=items.txt} {--O|pouput=sellers.txt}';
+    protected $signature = 'trans-items {--I|input=items.txt} {--O|output=sellers.txt}';
     protected $description = 'Translate a list of items into another list of equivalent sellers';
 
     protected $filesystem;
