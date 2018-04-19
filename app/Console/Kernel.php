@@ -21,6 +21,7 @@ use App\Console\Commands\SyncAlleBayAccounts;
 use App\Console\Commands\SynceBayAccount;
 use App\Console\Commands\TrackRankingForAccount;
 use App\Console\Commands\TrackRankingForItem;
+use App\Console\Commands\TranslateItemsToSellers;
 use App\Console\Commands\UpdateeBayAPIQuota;
 use App\Console\Commands\ViewCrawlerPerformance;
 use App\Console\Commands\ViewRankingOfItem;
@@ -57,6 +58,7 @@ class Kernel extends ConsoleKernel
         CheckProxy::class,
         AddCompetitor::class,
         ASINResearch::class,
+        TranslateItemsToSellers::class,
     ];
 
     /**
