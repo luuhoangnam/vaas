@@ -55,7 +55,7 @@ class TranslateItemsToSellers extends Command
 
                 return $response->Item->Seller->UserID;
             } catch (Exception $exception) {
-                return '<Invalid Seller>';
+                return '[Invalid Seller]';
             }
         })->unique();
 
