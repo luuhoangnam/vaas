@@ -110,7 +110,7 @@ class Order extends Model
         $transaction = $this['transactions'][0];
 
         $transactionID = $transaction['transaction_id'];
-        $itemID        = $transaction['item_id'];
+        $itemID = $transaction['item_id'];
 
         $rootUrl = 'https://k2b-bulk.ebay.com/ws/eBayISAPI.dll?EditSalesRecord&urlstack=5508||';
 
@@ -150,7 +150,7 @@ class Order extends Model
             return null;
         }
 
-        $giftcardRate = config('ebay.giftcard_rate'); // 1.0375
+        $giftcardRate = (1 + config('ebay.giftcard_rate')) / 100; // 1.0375
 
         return $this['total'] - $this['final_value_fee'] - $this['paypal_fee'] - $this['cog'] * $giftcardRate + $this['cashback'];
     }
@@ -164,7 +164,7 @@ class Order extends Model
             ];
         });
 
-        $total         = $transactions->pluck('price')->sum();
+        $total = $transactions->pluck('price')->sum();
         $finalValueFee = $transactions->pluck('final_value_fee')->sum();
 
         return [
