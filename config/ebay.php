@@ -96,14 +96,6 @@ return [
         ],
     ],
 
-    'reporting' => [
-        'giftcard' => 1.0275,
-    ],
-
-    'ranking' => [
-        //
-    ],
-
     'quantity_manager' => [
         'ignore'          => [
 //            'goodie.depot',
