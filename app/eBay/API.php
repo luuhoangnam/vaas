@@ -73,6 +73,8 @@ abstract class API
     {
         $signature = $request->toArray();
 
+        $signature = array_except($signature, 'RequesterCredentials');
+
         return md5(serialize($signature));
     }
 
@@ -97,7 +99,7 @@ abstract class API
 
     protected function defaultCacheTime()
     {
-        $global   = config('ebay.api.cache_time');
+        $global = config('ebay.api.cache_time');
         $specific = config('ebay.api.' . get_class($this) . '.cache_time');
 
         return $specific ?: $global;

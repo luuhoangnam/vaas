@@ -449,6 +449,8 @@ class Account extends Model
             'OrderArray.Order.TransactionArray.Transaction.QuantityPurchased',
             'OrderArray.Order.TransactionArray.Transaction.TransactionPrice',
             'OrderArray.Order.TransactionArray.Transaction.Item',
+            // Shipping
+            'OrderArray.Order.TransactionArray.Transaction.ShippingDetails',
         ];
 
         do {
