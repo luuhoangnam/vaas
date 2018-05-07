@@ -16,9 +16,9 @@
 
         <div class="row">
 
-            @include('snippets.statistic', ['title' => 'Cost Of Goods', 'number' => usd($cog), 'change' => $cogChange, 'positive' => $cogChange < 0])
+            @include('snippets.statistic', ['title' => 'Cost Of Goods', 'number' => usd($cog)])
 
-            @include('snippets.statistic', ['title' => 'Fees', 'number' => usd($fees), 'change' => $feesChange, 'positive' => $feesChange < 0])
+            @include('snippets.statistic', ['title' => 'Fees', 'number' => usd($fees)])
 
             @include('snippets.statistic', ['title' => 'Cashback', 'number' => usd($cashback), 'change' => $cashbackChange])
 
