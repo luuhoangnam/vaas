@@ -18,3 +18,7 @@ Route::get('items', 'ItemsController@index')->name('items');
 # PROXY AUTO CONFIG
 Route::get('proxy.pac', 'ProxyController@pac');
 # END PROXY AUTO CONFIG
+
+# PRODUCT RESEARCH (LIKE ZIK)
+Route::get('search/seller', 'SearchController@seller')->name('search.seller');
+# END PRODUCT RESEARCH (LIKE ZIK)

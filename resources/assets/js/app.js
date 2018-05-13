@@ -34,6 +34,8 @@ require('./components/listings/Builder');
 // Lister
 require('./components/Lister');
 
+require('./components/SearchSeller');
+
 const app = new Vue({
     el: '#app'
 });
