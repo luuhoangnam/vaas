@@ -79,9 +79,14 @@ class OrderReports
         return $this->orders->sum('paypal_fee');
     }
 
+    public function adFee()
+    {
+        return $this->orders->sum('ad_fee');
+    }
+
     public function fees()
     {
-        return $this->finalVaueFee() + $this->paypalFee();
+        return $this->finalVaueFee() + $this->paypalFee() + $this->adFee();
     }
 
     public function cashback()
@@ -102,7 +107,7 @@ class OrderReports
             return $order->cog * $rate;
         });
 
-        $fees = $this->finalVaueFee() + $this->paypalFee() + $giftcardFee;
+        $fees = $this->fees() + $giftcardFee;
 
         return $this->revenue() - $fees - $this->costOfGoods() + $this->cashback();
     }

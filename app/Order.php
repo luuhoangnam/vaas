@@ -152,7 +152,7 @@ class Order extends Model
 
         $giftcardFee = $this['cog'] * config('ebay.giftcard_rate') / 100; // 1.0375
 
-        $fees = $this['final_value_fee'] + $this['paypal_fee'] + $giftcardFee;
+        $fees = $this['final_value_fee'] + $this['paypal_fee'] + $this['ad_fee'] + $giftcardFee;
 
         return $this['total'] - $this['cog'] - $fees + $this['cashback'];
     }

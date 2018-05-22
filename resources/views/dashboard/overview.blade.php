@@ -20,15 +20,17 @@
 
             @include('snippets.statistic', ['title' => 'Fees', 'number' => usd($fees)])
 
-            @include('snippets.statistic', ['title' => 'Cashback', 'number' => usd($cashback), 'change' => $cashbackChange])
-
             @include('snippets.statistic', ['title' => 'Avg Order Value', 'number' => usd($aov), 'change' => $aovChange])
+
+            @include('snippets.statistic', ['title' => 'Avg Order Frofit', 'number' => usd($aof), 'change' => $aofChange])
 
         </div>
 
         <div class="row">
 
-            @include('snippets.statistic', ['title' => 'Avg Order Frofit', 'number' => usd($aof), 'change' => $aofChange])
+            @include('snippets.statistic', ['title' => 'Ads', 'number' => usd($ads), 'change' => $adsChange])
+
+            @include('snippets.statistic', ['title' => 'Cashback', 'number' => usd($cashback), 'change' => $cashbackChange])
 
             @include('snippets.statistic', ['title' => 'Cashback Rate', 'number' => percent($cashbackRate), 'change' => $cashbackRateChange])
 

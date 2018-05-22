@@ -73,6 +73,10 @@ class HomeController extends AuthRequiredController
         $feesPrev   = $orderReportsPreviousPeriod->fees();
         $feesChange = $feesPrev ? ($fees - $feesPrev) / $feesPrev : null;
 
+        $ads       = $orderReports->adFee();
+        $adsPrev   = $orderReportsPreviousPeriod->adFee();
+        $adsChange = $adsPrev ? ($ads - $adsPrev) / $adsPrev : null;
+
         $cashback       = $orderReports->cashback();
         $cashbackPrev   = $orderReportsPreviousPeriod->cashback();
         $cashbackChange = $cashbackPrev ? ($cashback - $cashbackPrev) / $cashbackPrev : null;
@@ -139,6 +143,7 @@ class HomeController extends AuthRequiredController
             'revenue', 'revenueChange',
             'ordersCount', 'ordersCountChange',
             'fees', 'feesChange',
+            'ads', 'adsChange',
             'cashback', 'cashbackChange',
             'aov', 'aovChange', 'aof', 'aofChange',
             'cog', 'cogChange',

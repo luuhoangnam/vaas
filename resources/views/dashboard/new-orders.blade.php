@@ -16,6 +16,7 @@
                     <th>Total</th>
                     <th>FVF</th>
                     <th>PPF</th>
+                    <th>Ad</th>
                     <th>COG</th>
                     <th>Cashback</th>
                     <th>Profit</th>
@@ -40,6 +41,7 @@
                         @if ($order['effective'])
                             <td class="{{ $goodFVFTextClass }}">{{ usd($order['final_value_fee']) }}</td>
                             <td class="{{ $goodPPFTextClass }}">{{ usd($order['paypal_fee']) }}</td>
+                            <td>{{ usd($order['ad_fee']) }}</td>
                             @if ($order['cog'])
                                 <td>{{ usd($order['cog']) }}</td>
                                 <td class="{{ $order['cashback'] ? 'text-success' : ''}}">{{ usd($order['cashback']) }}</td>
