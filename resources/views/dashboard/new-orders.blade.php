@@ -51,7 +51,7 @@
                                 <td colspan="4" class="text-muted text-center">Missing Cost of Goods</td>
                             @endif
                         @else
-                            <td colspan="6" class="text-muted text-center">Order Canceled</td>
+                            <td colspan="7" class="text-muted text-center">Order Canceled</td>
                         @endif
                     </tr>
                 @endforeach
