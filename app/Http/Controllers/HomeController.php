@@ -177,11 +177,7 @@ class HomeController extends AuthRequiredController
 
         $totalActiveItem = (clone $baseQuery)->where('status', 'Active')->count();
 
-        $totalSoldListedItem = (clone $baseQuery)->whereHas('orders',
-            function (Builder $builder) use ($startDate, $endDate) {
-                $builder->where('created_time', '>=', $startDate)
-                        ->where('created_time', '<=', $endDate);
-            })->count();
+        $totalSoldListedItem = (clone $baseQuery)->whereHas('orders')->count();
 
         return $totalActiveItem ? $totalSoldListedItem / $totalActiveItem : null;
     }
