@@ -30,7 +30,7 @@
                         $roundedFVF = round($order['total'] * 0.0915, 2, PHP_ROUND_HALF_DOWN);
                         $goodFVFTextClass =  $order['final_value_fee'] < $roundedFVF ? 'text-success' : '';
                         $roundedPPF = round($order['total'] * 0.039 + 0.3, 2, PHP_ROUND_HALF_DOWN);
-                        $goodPPFTextClass =  $order['final_value_fee'] < $roundedPPF ? 'text-success' : '';
+                        $goodPPFTextClass =  $order['paypal_fee'] < $roundedPPF ? 'text-success' : '';
 
                         $textClass = $order['profit'] > 2.0 ? 'text-success' : ($order['profit'] > 0 ? 'text-warning' :'text-danger');
                     @endphp
