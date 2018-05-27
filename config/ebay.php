@@ -5,7 +5,7 @@ use App\eBay\TradingAPI;
 
 return [
     'final_value_rate' => 9.15,
-    'paypal_rate'      => 3.9,
+    'paypal_rate'      => 3.4,
     'giftcard_rate'    => 3.75,
 
     'api' => [
