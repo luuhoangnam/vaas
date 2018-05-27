@@ -34,7 +34,7 @@
 
             @include('snippets.statistic', ['title' => 'Cashback Rate', 'number' => percent($cashbackRate), 'change' => $cashbackRateChange])
 
-            @include('snippets.statistic', ['title' => 'Sell Through', 'number' => percent($sellThrough), 'change' => $sellThroughChange])
+            @include('snippets.statistic', ['title' => 'Sell Through Rate', 'number' => percent($sellThrough), 'change' => $sellThroughChange])
 
         </div>
     </div>
