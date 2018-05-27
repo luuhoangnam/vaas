@@ -38,7 +38,7 @@ class HomeController extends AuthRequiredController
             $startDate = $this->defaultStartDate();
         }
 
-        $previousPeriodEndDate   = $this->previousPeriodEndDate($startDate, $endDate);
+        $previousPeriodEndDate = $this->previousPeriodEndDate($startDate, $endDate);
         $previousPeriodStartDate = $this->previousPeriodStartDate($startDate, $endDate);
 
         # USER
@@ -53,60 +53,60 @@ class HomeController extends AuthRequiredController
         # QUERY ORDERS & MAKE REPORTER
         $ordersQuery = $this->buildOrdersQuery($request, $startDate, $endDate);
 
-        $orders          = $ordersQuery->get();
+        $orders = $ordersQuery->get();
         $ordersPaginated = $ordersQuery->paginate(50);
-        $ordersLastWeek  = $this->buildOrdersQuery($request, $previousPeriodStartDate, $previousPeriodEndDate)->get();
+        $ordersLastWeek = $this->buildOrdersQuery($request, $previousPeriodStartDate, $previousPeriodEndDate)->get();
 
-        $orderReports               = new OrderReports($orders);
+        $orderReports = new OrderReports($orders);
         $orderReportsPreviousPeriod = new OrderReports($ordersLastWeek);
 
         # METRICS
-        $ordersCount       = $orderReports->count();
-        $ordersCountPrev   = $orderReportsPreviousPeriod->count();
+        $ordersCount = $orderReports->count();
+        $ordersCountPrev = $orderReportsPreviousPeriod->count();
         $ordersCountChange = $ordersCountPrev ? ($ordersCount - $ordersCountPrev) / $ordersCountPrev : null;
 
-        $revenue       = $orderReports->revenue();
-        $revenuePrev   = $orderReportsPreviousPeriod->revenue();
+        $revenue = $orderReports->revenue();
+        $revenuePrev = $orderReportsPreviousPeriod->revenue();
         $revenueChange = $revenuePrev ? ($revenue - $revenuePrev) / $revenuePrev : null;
 
-        $fees       = $orderReports->fees();
-        $feesPrev   = $orderReportsPreviousPeriod->fees();
+        $fees = $orderReports->fees();
+        $feesPrev = $orderReportsPreviousPeriod->fees();
         $feesChange = $feesPrev ? ($fees - $feesPrev) / $feesPrev : null;
 
-        $ads       = $orderReports->adFee();
-        $adsPrev   = $orderReportsPreviousPeriod->adFee();
+        $ads = $orderReports->adFee();
+        $adsPrev = $orderReportsPreviousPeriod->adFee();
         $adsChange = $adsPrev ? ($ads - $adsPrev) / $adsPrev : null;
 
-        $cashback       = $orderReports->cashback();
-        $cashbackPrev   = $orderReportsPreviousPeriod->cashback();
+        $cashback = $orderReports->cashback();
+        $cashbackPrev = $orderReportsPreviousPeriod->cashback();
         $cashbackChange = $cashbackPrev ? ($cashback - $cashbackPrev) / $cashbackPrev : null;
 
-        $profit       = $orderReports->profit();
-        $profitPrev   = $orderReportsPreviousPeriod->profit();
+        $profit = $orderReports->profit();
+        $profitPrev = $orderReportsPreviousPeriod->profit();
         $profitChange = $profitPrev ? ($profit - $profitPrev) / $profitPrev : null;
 
-        $margin       = $orderReports->margin();
-        $marginPrev   = $orderReportsPreviousPeriod->margin();
+        $margin = $orderReports->margin();
+        $marginPrev = $orderReportsPreviousPeriod->margin();
         $marginChange = $marginPrev ? ($margin - $marginPrev) / $marginPrev : null;
 
-        $aov       = $orderReports->averageOrderValue();
-        $aovPrev   = $orderReportsPreviousPeriod->averageOrderValue();
+        $aov = $orderReports->averageOrderValue();
+        $aovPrev = $orderReportsPreviousPeriod->averageOrderValue();
         $aovChange = $aovPrev ? ($aov - $aovPrev) / $aovPrev : null;
 
-        $aof       = $orderReports->averageOrderProfit();
-        $aofPrev   = $orderReportsPreviousPeriod->averageOrderProfit();
+        $aof = $orderReports->averageOrderProfit();
+        $aofPrev = $orderReportsPreviousPeriod->averageOrderProfit();
         $aofChange = $aofPrev ? ($aof - $aofPrev) / $aofPrev : null;
 
-        $cog       = $orderReports->costOfGoods();
-        $cogPrev   = $orderReportsPreviousPeriod->costOfGoods();
+        $cog = $orderReports->costOfGoods();
+        $cogPrev = $orderReportsPreviousPeriod->costOfGoods();
         $cogChange = $cogPrev ? ($cog - $cogPrev) / $cogPrev : null;
 
-        $sellThrough       = $this->sellThroughInPeriod($startDate, $endDate);
-        $sellThroughPrev   = $this->sellThroughInPeriod($previousPeriodStartDate, $previousPeriodEndDate);
+        $sellThrough = $this->sellThroughInPeriod($startDate, $endDate);
+        $sellThroughPrev = $this->sellThroughInPeriod($previousPeriodStartDate, $previousPeriodEndDate);
         $sellThroughChange = $sellThroughPrev ? ($sellThrough - $sellThroughPrev) / $sellThroughPrev : null;
 
-        $cashbackRate       = $this->cashbackOrdersCountInPeriod($startDate, $endDate) / $ordersCount;
-        $cashbackRatePrev   = $this->cashbackOrdersCountInPeriod($previousPeriodStartDate,
+        $cashbackRate = $this->cashbackOrdersCountInPeriod($startDate, $endDate) / $ordersCount;
+        $cashbackRatePrev = $this->cashbackOrdersCountInPeriod($previousPeriodStartDate,
                 $previousPeriodEndDate) / $ordersCountPrev;
         $cashbackRateChange = $cashbackRatePrev ? ($cashbackRate - $cashbackRatePrev) / $cashbackRatePrev : null;
 
@@ -128,7 +128,7 @@ class HomeController extends AuthRequiredController
                               ->whereDate('start_time', '<=', $endDate)
                               ->orderByDesc('start_time');
 
-        $newItems          = $newItemsQuery->get();
+        $newItems = $newItemsQuery->get();
         $newItemsPaginated = $newItemsQuery->paginate(35);
 
         # ITEM PRICE DISTRIBUTION
@@ -162,17 +162,20 @@ class HomeController extends AuthRequiredController
 
     public function sellThroughInPeriod(PureCarbon $startDate, PureCarbon $endDate)
     {
-        $items = $this->resolveCurrentUser()
-                      ->items()
-                      ->whereHas('account', function (Builder $query) {
-                          if (request()->has('accounts')) {
-                              $query->whereIn('username', request('accounts'));
-                          }
-                      })
-                      ->whereDate('start_time', '>=', $startDate)
-                      ->whereDate('start_time', '<=', $endDate);
+        $baseQuery = $this->resolveCurrentUser()
+                          ->items()
+                          ->whereHas('account', function (Builder $query) {
+                              if (request()->has('accounts')) {
+                                  $query->whereIn('username', request('accounts'));
+                              }
+                          });
 
-        $totalListedItem = (clone $items)->count();
+        $items = $baseQuery->whereDate('start_time', '>=', $startDate)
+                           ->whereDate('start_time', '<=', $endDate);
+
+//        $totalListedItem = (clone $items)->count();
+
+        $totalActiveItem = (clone $baseQuery)->where('status', 'Active')->count();
 
         $totalSoldListedItem = (clone $items)->whereHas('orders',
             function (Builder $builder) use ($startDate, $endDate) {
@@ -180,7 +183,7 @@ class HomeController extends AuthRequiredController
                         ->where('created_time', '<=', $endDate);
             })->count();
 
-        return $totalListedItem ? $totalSoldListedItem / $totalListedItem : null;
+        return $totalActiveItem ? $totalSoldListedItem / $totalActiveItem : null;
     }
 
     protected function buildOrdersQuery(Request $request, PureCarbon $startDate, PureCarbon $endDate)
@@ -221,22 +224,22 @@ class HomeController extends AuthRequiredController
             ];
         });
 
-        $counts   = $data->pluck('count');
+        $counts = $data->pluck('count');
         $revenues = $data->pluck('revenue');
-        $profits  = $data->pluck('profit');
+        $profits = $data->pluck('profit');
 
         $orderAxisStep = 5;
         $maxOrdersAxis = (round($counts->max() / $orderAxisStep) + 1) * $orderAxisStep;
 
         $revenueAxisStep = 50;
-        $maxRevenueAxis  = (round($revenues->max() / $revenueAxisStep) + 1) * $revenueAxisStep;
+        $maxRevenueAxis = (round($revenues->max() / $revenueAxisStep) + 1) * $revenueAxisStep;
 
         $profitAxisStep = 10;
-        $maxProfitAxis  = (round($profits->max() / $profitAxisStep) + 1) * $profitAxisStep;
+        $maxProfitAxis = (round($profits->max() / $profitAxisStep) + 1) * $profitAxisStep;
 
-        $countData   = $counts->toArray();
+        $countData = $counts->toArray();
         $revenueData = $revenues->toArray();
-        $profitData  = $profits->toArray();
+        $profitData = $profits->toArray();
 
         return [
             'type' => 'bar',
@@ -247,7 +250,7 @@ class HomeController extends AuthRequiredController
                     [
                         'type'            => 'bar',
                         'label'           => 'Orders',
-//                        'backgroundColor' => 'rgba(6, 84, 186, 0.6)',
+                        //                        'backgroundColor' => 'rgba(6, 84, 186, 0.6)',
                         'backgroundColor' => "rgba(54, 162, 235, 0.2)",
                         'borderColor'     => "rgb(54, 162, 235)",
                         'data'            => $countData,
@@ -411,20 +414,20 @@ class HomeController extends AuthRequiredController
             }
         );
 
-        $lessThanTen    = (clone $baseQuery)->where('price', '<=', 10)->count();
-        $tenToTwenty    = (clone $baseQuery)->where('price', '>', 10)
-                                            ->where('price', '<=', 20)
-                                            ->count();
-        $twentyToForty  = (clone $baseQuery)->where('price', '>', 20)
-                                            ->where('price', '<=', 40)
-                                            ->count();
+        $lessThanTen = (clone $baseQuery)->where('price', '<=', 10)->count();
+        $tenToTwenty = (clone $baseQuery)->where('price', '>', 10)
+                                         ->where('price', '<=', 20)
+                                         ->count();
+        $twentyToForty = (clone $baseQuery)->where('price', '>', 20)
+                                           ->where('price', '<=', 40)
+                                           ->count();
         $fortyToHundred = (clone $baseQuery)->where('price', '>', 40)
                                             ->where('price', '<=', 100)
                                             ->count();
-        $overHundred    = (clone $baseQuery)->where('price', '>', 100)->count();
+        $overHundred = (clone $baseQuery)->where('price', '>', 100)->count();
 
         $labels = ['Price <= $10', '$10 < Price <= $20', '$20 < Price <= $40', '$40 < Price <= $100', 'Price > $100'];
-        $data   = [$lessThanTen, $tenToTwenty, $twentyToForty, $fortyToHundred, $overHundred];
+        $data = [$lessThanTen, $tenToTwenty, $twentyToForty, $fortyToHundred, $overHundred];
 
         return [
             'type' => 'pie',
